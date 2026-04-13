@@ -1,0 +1,1016 @@
+%% ============================================================
+%%  Dispensa — CT0540 Social Network Analysis
+%%  Ca' Foscari University of Venice
+%%  Prof. Fabiana Zollo
+%%  A.A. 2025–2026
+%% ============================================================
+\documentclass[12pt,a4paper]{article}
+
+%% ---- encoding & language ----
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+
+%% ---- layout ----
+\usepackage[top=2.5cm,bottom=2.5cm,left=3cm,right=3cm,headheight=15pt]{geometry}
+\usepackage{setspace}
+\onehalfspacing
+
+%% ---- fonts ----
+\usepackage{lmodern}
+\usepackage{microtype}
+
+%% ---- math ----
+\usepackage{amsmath,amssymb,mathtools}
+
+%% ---- code listings ----
+\usepackage{listings}
+\usepackage{xcolor}
+
+\definecolor{codebg}{rgb}{0.95,0.95,0.95}
+\definecolor{codecomment}{rgb}{0.4,0.4,0.4}
+\definecolor{codestring}{rgb}{0.18,0.5,0.18}
+\definecolor{codekeyword}{rgb}{0.0,0.35,0.7}
+
+\lstset{
+  backgroundcolor=\color{codebg},
+  basicstyle=\ttfamily\small,
+  commentstyle=\color{codecomment}\itshape,
+  keywordstyle=\color{codekeyword}\bfseries,
+  stringstyle=\color{codestring},
+  breaklines=true,
+  frame=single,
+  framerule=0.4pt,
+  xleftmargin=1em,
+  xrightmargin=1em,
+  aboveskip=6pt,
+  belowskip=6pt,
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  stepnumber=1,
+  tabsize=2,
+  showstringspaces=false
+}
+
+\lstdefinelanguage{R}{
+  keywords={if,else,repeat,while,function,for,in,next,break,TRUE,FALSE,NULL,
+            Inf,NaN,NA,NA_integer_,NA_real_,NA_complex_,NA_character_,
+            library,require,source,return,stop,warning,message},
+  sensitive=true,
+  comment=[l]{\#},
+  string=[b]{"'},
+  morestring=[b]{'}
+}
+
+%% ---- tables ----
+\usepackage{booktabs}
+\usepackage{array}
+
+%% ---- graphics & figures ----
+\usepackage{graphicx}
+\usepackage{float}
+
+%% ---- hyperlinks & PDF metadata ----
+\usepackage[hidelinks,
+            pdftitle={Dispensa CT0540 – Social Network Analysis},
+            pdfauthor={Prof. Fabiana Zollo},
+            pdfsubject={Social Network Analysis},
+            pdfkeywords={reti sociali, teoria dei grafi, centralità, BERTopic, R}
+            ]{hyperref}
+
+%% ---- header / footer ----
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\textit{CT0540 – Social Network Analysis}}
+\fancyhead[R]{\small\textit{Ca' Foscari University of Venice}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+%% ---- section style ----
+\usepackage{titlesec}
+\titleformat{\section}[block]{\large\bfseries\color{blue!70!black}}{Capitolo \thesection.}{0.8em}{}[\titlerule]
+\titleformat{\subsection}[block]{\normalsize\bfseries}{}{0em}{}
+\titleformat{\subsubsection}[runin]{\normalsize\itshape\bfseries}{}{0em}{}[.]
+
+%% ---- table of contents depth ----
+\setcounter{tocdepth}{2}
+
+%% ---- custom commands ----
+\newcommand{\definition}[2]{%
+  \vspace{4pt}%
+  \noindent\textbf{Definizione (#1).}\ #2\par\vspace{4pt}%
+}
+\newcommand{\formula}[1]{%
+  \begin{equation*}#1\end{equation*}%
+}
+
+%% ============================================================
+\begin{document}
+
+%% ---- Title page ----
+\begin{titlepage}
+  \centering
+  \vspace*{2cm}
+
+  {\Huge\bfseries Dispensa di\\[0.4em] Social Network Analysis\par}
+  \vspace{0.5cm}
+  {\large Corso CT0540\par}
+  \vspace{1.5cm}
+  \rule{10cm}{1pt}\par
+  \vspace{1cm}
+  {\large Prof.ssa \textbf{Fabiana Zollo}\par}
+  \vspace{0.3cm}
+  {\normalsize Dipartimento di Scienze Ambientali, Informatica e Statistica\par}
+  {\normalsize Università Ca' Foscari di Venezia\par}
+  \vspace{1.5cm}
+  {\normalsize Anno Accademico 2025–2026\par}
+  \vspace{2cm}
+
+  \begin{minipage}{0.85\textwidth}
+    \small\itshape
+    Questa dispensa sintetizza i materiali didattici del corso CT0540 (Social Network Analysis)
+    tenuto presso l'Università Ca' Foscari di Venezia. I contenuti sono tratti dalle slide,
+    dai notebook e dagli script R utilizzati durante le lezioni.
+    Testi di riferimento principali: Easley \& Kleinberg, \textit{Networks, Crowds, and Markets}
+    (Cambridge, 2012); Barabási, \textit{Network Science} (Cambridge, 2016).
+  \end{minipage}
+
+  \vfill
+  {\small\today}
+\end{titlepage}
+
+%% ---- Table of Contents ----
+\tableofcontents
+\newpage
+
+%% ============================================================
+\section{Introduzione alle Reti Sociali}
+%% ============================================================
+
+\subsection{Il corso CT0540}
+
+Il corso \textbf{CT0540 – Social Network Analysis} introduce lo studio delle reti complesse
+con un'enfasi sulle reti sociali. Gli argomenti spaziano dalla teoria matematica dei grafi
+alle applicazioni pratiche con strumenti come R, fino all'analisi del testo e al topic modeling.
+
+Durata: 30 ore di lezioni frontali. Orari: mercoledì 15:45–17:15 (Lab 5) e venerdì 8:45–10:15.
+
+\subsection{Cosa sono le reti sociali?}
+
+Una \textbf{rete sociale} è un insieme di attori (individui, organizzazioni, pagine web, …)
+e delle relazioni che li connettono. L'analisi di tali reti consente di studiare:
+\begin{itemize}
+  \item come scorrono le informazioni attraverso la società;
+  \item i meccanismi di formazione e dissoluzione dei legami;
+  \item le strutture di potere e influenza;
+  \item fenomeni come la diffusione di notizie false (\textit{misinformation}) o di comportamenti.
+\end{itemize}
+
+\subsection{Tipi di reti}
+
+\begin{itemize}
+  \item \textbf{Reti di comunicazione}: nodi = dispositivi/persone, archi = canali di comunicazione
+        (es.\ ARPANET, Internet).
+  \item \textbf{Reti di informazione}: nodi = risorse informative (pagine web, articoli),
+        archi = collegamenti logici (hyperlink, citazioni).
+  \item \textbf{Reti sociali}: nodi = persone o gruppi, archi = interazioni sociali
+        (amicizia, collaborazione, follower).
+  \item \textbf{Reti biologiche}: reti di interazione tra proteine, reti neurali, ecc.
+\end{itemize}
+
+\subsection{Testi di riferimento}
+
+\begin{itemize}
+  \item D.~Easley \& J.~Kleinberg, \textit{Networks, Crowds, and Markets}, Cambridge
+        University Press, 2012. (Bozza pre-pubblicazione liberamente disponibile online.)
+  \item A.-L.~Barabási, \textit{Network Science}, Cambridge University Press, 2016.
+\end{itemize}
+
+\subsection{Ricerca e progetti del gruppo}
+
+La Prof.ssa Zollo guida il \textit{Laboratory of Data Science for Society} di Ca' Foscari
+e coordina diversi progetti europei legati alle reti sociali digitali:
+IRIS (ecosistemi informativi sani), EUMEPLAT (identità europea nei media),
+IMSyPP (hate speech), QUEST (comunicazione scientifica).
+
+%% ============================================================
+\section{Teoria dei Grafi}
+%% ============================================================
+
+\subsection{Il problema dei ponti di Königsberg}
+
+Nel 1735, Königsberg (Prussia Orientale) era attraversata dal fiume Pregel e disponeva di
+\textbf{sette ponti}. Il quesito classico era: è possibile compiere una passeggiata che attraversi
+ciascun ponte esattamente una volta?
+
+\textbf{Soluzione di Eulero (1736).} Euler modellò il problema con un grafo: quattro nodi
+(A, B, C, D) corrispondenti ai lembi di terra e sette archi corrispondenti ai ponti.
+Dimostrò che un cammino euleriano (che attraversa ogni arco una sola volta) \emph{esiste} se
+e solo se il grafo ha \textbf{al più due nodi di grado dispari}.
+Nel grafo di Königsberg tutti e quattro i nodi hanno grado dispari → nessun cammino ammissibile.
+
+\medskip
+\noindent\textbf{Lezioni chiave:}
+\begin{enumerate}
+  \item Alcuni problemi diventano più semplici se rappresentati come grafi.
+  \item I grafi possiedono proprietà intrinseche che limitano o amplificano i comportamenti
+        della rete.
+\end{enumerate}
+
+\subsection{Definizioni fondamentali}
+
+\definition{Grafo}{Un grafo $G=(V,E)$ è definito da un insieme di nodi (o vertici) $V$ e
+un insieme di archi $E \subseteq V \times V$.}
+
+\definition{Grafo non orientato}{Gli archi non hanno direzione: $(u,v) \equiv (v,u)$.}
+
+\definition{Grafo orientato (digrafo)}{Gli archi hanno una direzione: $(u,v) \neq (v,u)$.}
+
+\definition{Rete pesata}{Ogni arco $(i,j)$ ha un peso $w_{ij} \in \mathbb{R}$.}
+
+\subsection{Grado e distribuzione di grado}
+
+Il \textbf{grado} $k_i$ di un nodo $i$ è il numero di archi che lo collegano ad altri nodi.
+
+\textbf{Reti non orientate.}
+\formula{L = \frac{1}{2}\sum_{i=1}^{N} k_i \qquad \langle k \rangle = \frac{1}{N}\sum_{i=1}^{N} k_i = \frac{2L}{N}}
+
+\textbf{Reti orientate.} Si distinguono grado entrante $k_i^{in}$ e uscente $k_i^{out}$:
+\formula{k_i = k_i^{in} + k_i^{out} \qquad
+  \langle k^{in} \rangle = \frac{L}{N} = \langle k^{out} \rangle}
+
+\textbf{Distribuzione di grado.}
+\formula{p_k = \frac{N_k}{N}}
+dove $N_k$ è il numero di nodi con grado $k$. Le reti reali spesso mostrano distribuzioni
+a \textit{power-law} $p_k \sim k^{-\gamma}$ (reti \emph{scale-free}).
+
+\subsection{Matrice di adiacenza}
+
+Per una rete di $N$ nodi, la matrice di adiacenza $A \in \{0,1\}^{N \times N}$ è definita da:
+\[
+  A_{ij} = \begin{cases} 1 & \text{se esiste un arco da } j \text{ a } i \\ 0 & \text{altrimenti} \end{cases}
+\]
+
+Proprietà:
+\begin{itemize}
+  \item $G$ non orientato $\Leftrightarrow$ $A$ simmetrica.
+  \item $G$ ha un self-loop $\Leftrightarrow$ $A_{ii} \neq 0$.
+  \item $G$ completo $\Leftrightarrow$ $A_{ij} \neq 0$ $\forall i \neq j$.
+\end{itemize}
+
+Il grado di un nodo si ricava direttamente dalla matrice:
+\[
+  k_i = \sum_{j=1}^{N} A_{ji} = \sum_{j=1}^{N} A_{ij} \quad (\text{non orientato})
+\]
+
+\subsection{Reti sparse}
+
+Il numero massimo teorico di archi è:
+\formula{|E|_{\max} = \binom{N}{2} = \frac{N(N-1)}{2}}
+Le reti reali sono tipicamente \textbf{sparse}: $|E| \ll |E|_{\max}$.
+Ad esempio, il Karate Club di Zachary: $|V|=34$, $|E|=78$, $|E|_{\max}=561$.
+
+\subsection{Cammini, distanza e diametro}
+
+\definition{Cammino}{Sequenza di archi $(v_0,v_1),(v_1,v_2),\ldots,(v_{k-1},v_k)$.}
+\definition{Distanza geodesica}{$d(u,v)$ è la lunghezza del cammino più breve tra $u$ e $v$.}
+\definition{Diametro}{Il diametro di una rete è $\max_{u,v} d(u,v)$.}
+
+\subsection{Il Piccolo Mondo (\textit{Small World})}
+
+L'esperimento di Milgram (1967) suggerì che la distanza media tra due individui negli USA
+fosse circa \textbf{sei gradi di separazione}. Le reti reali mostrano:
+\begin{enumerate}
+  \item \textbf{Diametro piccolo}: la distanza media cresce come $\log N$.
+  \item \textbf{Alto coefficiente di clustering}: i vicini di un nodo tendono ad essere
+        connessi tra loro.
+\end{enumerate}
+Questo è il modello di Watts–Strogatz (1998).
+
+%% ============================================================
+\section{Legami Forti e Deboli}
+%% ============================================================
+
+\subsection{L'ipotesi di Granovetter}
+
+Negli anni '60, il sociologo Mark Granovetter condusse interviste con persone che avevano
+cambiato lavoro. Scoprì che molti avevano appreso dell'opportunità tramite
+\textbf{conoscenti}, non amici intimi.
+
+Granovetter formulò l'ipotesi della \textbf{``forza dei legami deboli''}: i legami deboli
+(con conoscenti distanti) fungono da \emph{ponti} tra porzioni diverse della rete,
+trasmettendo informazioni nuove non disponibili nel proprio gruppo stretto.
+
+\subsection{Chiusura Triadica}
+
+\definition{Chiusura triadica}{Se A è amico di B e di C, allora esiste una probabilità
+elevata che B e C diventino amici nel tempo.}
+
+\noindent Ragioni della chiusura triadica:
+\begin{enumerate}
+  \item \textbf{Opportunità}: B e C si incontrano attraverso A.
+  \item \textbf{Fiducia}: la conoscenza comune A funge da garante.
+  \item \textbf{Incentivo}: la tensione cognitiva spinge verso equilibrio.
+\end{enumerate}
+
+\subsection{Coefficiente di Clustering}
+
+Il \textbf{coefficiente di clustering locale} di un nodo $i$ con grado $k_i$ è:
+\formula{C_i = \frac{2L_i}{k_i(k_i-1)}}
+dove $L_i$ è il numero di archi tra i vicini di $i$.
+
+$C_i = 0$: nessuno dei vicini è connesso tra loro.
+$C_i = 1$: tutti i vicini formano un grafo completo.
+
+Il \textbf{coefficiente di clustering medio} di una rete è:
+\formula{\langle C \rangle = \frac{1}{N}\sum_{i=1}^{N} C_i}
+
+\subsection{Ponti e Ponti Locali}
+
+\definition{Ponte}{Un arco $(A,B)$ è un ponte se la sua rimozione disconnette $A$ e $B$
+(li porta in componenti distinte).}
+
+\definition{Ponte locale}{Un arco $(A,B)$ è un ponte locale se $A$ e $B$ non hanno
+nessun amico in comune. La sua rimozione aumenta la distanza $d(A,B) > 2$.}
+
+\noindent\textit{Relazione con la chiusura triadica}: un arco è un ponte locale precisamente
+quando non forma il lato di nessun triangolo. Ponti locali e chiusura triadica sono concetti
+opposti.
+
+\subsection{La Proprietà di Chiusura Triadica Forte}
+
+Categorizzando i legami in \textbf{forti} (amici intimi) e \textbf{deboli} (conoscenti):
+
+\medskip
+\noindent\textbf{Proprietà STCP.} Se un nodo A ha legami forti con B e C, allora esiste
+un legame (almeno debole) tra B e C.
+
+\medskip
+\noindent\textbf{Conseguenza.} I legami deboli sono candidati naturali a essere ponti locali:
+se A–B fosse forte e fosse un ponte locale, violerebbero STCP.
+Questo spiega perché i legami deboli portano informazioni nuove.
+
+%% ============================================================
+\section{Contesti Sociali e Omofilia}
+%% ============================================================
+
+\subsection{Omofilia}
+
+\definition{Omofilia}{Il principio per cui tendiamo ad essere simili ai nostri amici.}
+
+I legami nelle reti sociali tendono a connettere persone simili per età, etnia, luogo di
+residenza, occupazione, interessi e opinioni. L'omofilia può guidare la formazione di legami
+e rafforzare la chiusura triadica: se A–B e A–C sono amici, l'omofilia suggerisce che B e C
+siano già simili tra loro, aumentando la probabilità di un legame B–C.
+
+\subsection{Misurare l'Omofilia}
+
+Dato un attributo categorico (es.\ genere) con frazione $p$ di nodi tipo ``maschio'' e
+frazione $q = 1-p$ di nodi tipo ``femmina'':
+
+Se i legami fossero formati casualmente, la frazione attesa di archi \emph{eterogenei}
+(che collegano i due tipi) sarebbe:
+\formula{2pq}
+
+Se la frazione osservata di archi eterogenei è \emph{minore} di $2pq$, la rete
+mostra \textbf{omofilia}; se è \emph{maggiore}, mostra \textbf{eterofilia}.
+
+\subsection{Selezione e Influenza Sociale}
+
+Due meccanismi generano l'omofilia osservata:
+
+\begin{itemize}
+  \item \textbf{Selezione}: le persone formano legami con chi è già simile a loro
+        (\textit{``birds of a feather flock together''}).
+  \item \textbf{Influenza sociale}: i legami esistenti modificano i comportamenti e le
+        caratteristiche degli individui (\textit{peer pressure}).
+\end{itemize}
+
+\noindent\textbf{Caratteristiche immutabili} (sesso biologico, etnia): solo la selezione opera.\\
+\noindent\textbf{Caratteristiche mutabili} (comportamenti, opinioni, interessi): entrambi
+i meccanismi operano.
+
+\medskip
+\noindent\textbf{Esempio}. Studi longitudinali sugli adolescenti (Cohen \& Kandel) mostrano
+che sia selezione sia influenza sociale spiegano la somiglianza comportamentale tra amici,
+con l'influenza sociale più moderata della selezione. Capire quale meccanismo prevalga è
+fondamentale per progettare interventi efficaci (es.\ programmi anti-droga).
+
+\subsection{Affiliazione e Reti Bipartite}
+
+Possiamo modellare reti che includono sia \textbf{persone} sia \textbf{contesti} (focus group,
+club, classi, eventi) come nodi, connettendo persone ai contesti in cui partecipano.
+Si ottiene una \textbf{rete bipartita}: due tipi di nodi, archi solo tra tipi diversi.
+
+La \textbf{proiezione} su un tipo di nodi crea archi tra persone che condividono un contesto,
+spiegando così l'emergere dell'omofilia anche senza scelta esplicita di amici simili.
+
+%% ============================================================
+\section{Analisi delle Reti con R}
+%% ============================================================
+
+\subsection{Il pacchetto \texttt{igraph}}
+
+La libreria \textbf{igraph} (disponibile per R e Python) è lo strumento standard per l'analisi
+e la visualizzazione di reti. Si installa con:
+
+\begin{lstlisting}[language=R]
+install.packages("igraph")
+library(igraph)
+\end{lstlisting}
+
+\subsection{Costruzione di un grafo}
+
+\begin{lstlisting}[language=R]
+# Grafo diretto vuoto
+g <- graph.empty(directed = TRUE)
+
+# Aggiunta di nodi
+g <- g + vertex("Elizabeth II")
+g <- g + vertex("Philip")
+g <- g + vertex("Charles")
+g <- g + vertex("Diana")
+g <- g + vertex("William")
+
+# Aggiunta di archi
+g <- g + edges("Elizabeth II", "Charles")
+g <- g + edges("Philip",       "Charles")
+g <- g + edges("Charles",      "William")
+g <- g + edges("Diana",        "William")
+
+plot.igraph(g)
+\end{lstlisting}
+
+\begin{lstlisting}[language=R]
+# Grafo da lista di archi
+g1 <- graph(edges = c(1,2, 2,3, 3,1), n = 3, directed = FALSE)
+plot(g1)
+
+# Grafo con nomi
+g3 <- graph(c("John","Jim","Jim","Jill","Jill","John"))
+plot(g3)
+
+# Grafo da formula letterale
+plot(graph_from_literal(a---b, b---c))  # non orientato
+plot(graph_from_literal(a--+b, b+--c)) # orientato
+\end{lstlisting}
+
+\subsection{Lettura di dati da file}
+
+\begin{lstlisting}[language=R]
+# Dataset 1: rete media (orientata, lista di archi)
+nodes <- read.csv("Dataset1-Media-Example-NODES.csv",
+                  header = TRUE, as.is = TRUE)
+links <- read.csv("Dataset1-Media-Example-EDGES.csv",
+                  header = TRUE, as.is = TRUE)
+net <- graph_from_data_frame(d = links, vertices = nodes,
+                              directed = TRUE)
+plot(net, edge.arrow.size = 0.4, edge.curved = 0.1)
+\end{lstlisting}
+
+\begin{lstlisting}[language=R]
+# Dataset 2: rete bipartita (matrice di incidenza)
+nodes2 <- read.csv("Dataset2-Media-User-Example-NODES.csv",
+                   header = TRUE, as.is = TRUE)
+links2 <- read.csv("Dataset2-Media-User-Example-EDGES.csv",
+                   header = TRUE, row.names = 1)
+links2 <- as.matrix(links2)
+net2   <- graph_from_incidence_matrix(links2)
+table(V(net2)$type)  # numero nodi per tipo
+plot(net2, vertex.label = NA)
+\end{lstlisting}
+
+\subsection{Visualizzazione avanzata}
+
+\begin{lstlisting}[language=R]
+# Colori per tipo di medium
+colrs <- c("gray50", "tomato", "gold")
+V(net)$color <- colrs[V(net)$media.type]
+
+# Dimensione nodi proporzionale al grado
+V(net)$size <- degree(net) * 2
+
+# Stile degli archi
+E(net)$width  <- E(net)$weight / 5
+E(net)$arrow.size <- 0.3
+
+plot(net,
+     vertex.label = V(net)$media,
+     vertex.label.color = "black",
+     vertex.label.cex = 0.7,
+     layout = layout_with_fr(net))
+\end{lstlisting}
+
+\begin{lstlisting}[language=R]
+# Rete bipartita con proiezioni
+net2.bp <- bipartite.projection(net2)
+plot(net2.bp$proj1,
+     vertex.label.color = "black",
+     vertex.label.dist  = 1,
+     vertex.label = nodes2$media[!is.na(nodes2$media.type)])
+
+# Layout bipartito esplicito
+plot(net2, vertex.label = NA, vertex.size = 7,
+     layout = layout_as_bipartite)
+\end{lstlisting}
+
+%% ============================================================
+\section{Misure di Centralità e Citation Networks}
+%% ============================================================
+
+\subsection{Centralità nelle reti}
+
+La \textbf{centralità} misura l'importanza di un nodo nella rete. Esistono diverse misure,
+ognuna con un'interpretazione diversa di ``importanza''.
+
+\subsection{Centralità di grado (\textit{Degree Centrality})}
+
+Il nodo più connesso è quello con il grado massimo:
+\formula{C_D(i) = k_i}
+
+\subsection{Centralità di betweenness}
+
+La \textbf{betweenness centrality} misura quante volte un nodo si trova sui cammini più corti
+tra coppie di nodi:
+\formula{C_B(i) = \sum_{s \neq i \neq t} \frac{\sigma_{st}(i)}{\sigma_{st}}}
+dove $\sigma_{st}$ è il numero di cammini più corti tra $s$ e $t$, e $\sigma_{st}(i)$
+quanti di essi passano per $i$.
+
+I nodi con alta betweenness sono \textbf{broker} di informazione.
+
+\subsection{Centralità di vicinanza (\textit{Closeness Centrality})}
+
+\formula{C_C(i) = \frac{N-1}{\sum_{j \neq i} d(i,j)}}
+
+Un nodo con alta closeness raggiunge rapidamente tutti gli altri.
+
+\subsection{Centralità di autovettore (\textit{Eigenvector Centrality})}
+
+La centralità di autovettore assegna importanza a un nodo in base all'importanza dei suoi
+vicini:
+\formula{C_E(i) = \frac{1}{\lambda} \sum_{j \in \mathcal{N}(i)} C_E(j)}
+In notazione matriciale: $\mathbf{A}\,\mathbf{x} = \lambda\,\mathbf{x}$ dove $\mathbf{x}$
+è l'autovettore associato all'autovalore massimo. PageRank di Google è una variante.
+
+\subsection{Applicazione: Citation Networks con R}
+
+\begin{lstlisting}[language=R]
+library(igraph)
+
+# Caricamento dati
+allCounts <- as.matrix(read.csv("ac.csv", as.is = TRUE))
+G <- graph.edgelist(allCounts, directed = FALSE)
+
+# Sottografo su specifici temi
+themes <- read.csv("themes.csv", as.is = TRUE)
+matchingCases    <- which(themes$issue %in% c(20040, 20050))
+matchingCases_ids <- themes$usid[matchingCases]
+H <- induced.subgraph(G, matchingCases_ids)
+
+# Layout di Fruchterman-Reingold
+set.seed(1)
+lout <- layout.fruchterman.reingold(H)
+plot.igraph(H, layout = lout, vertex.size = 5,
+            vertex.label.cex = 0.5)
+\end{lstlisting}
+
+\begin{lstlisting}[language=R]
+# Eigenvector Centrality
+eigenCent <- evcent(H)$vector
+sort(eigenCent, decreasing = TRUE)[1:10]
+
+# Colorazione heat map per centralita'
+bins     <- unique(quantile(eigenCent, seq(0, 1, length.out = 30)))
+vals     <- cut(eigenCent, bins, labels = FALSE, include.lowest = TRUE)
+colorVals <- rev(heat.colors(length(bins)))[vals]
+V(H)$color <- colorVals
+plot.igraph(H, vertex.label = NA, vertex.size = 5)
+
+# Betweenness Centrality
+betweenCent <- betweenness(H)
+sort(betweenCent, decreasing = TRUE)[1:10]
+cor(betweenCent, eigenCent)   # correlazione tra le due misure
+\end{lstlisting}
+
+\subsection{Comunità: algoritmo di Girvan–Newman}
+
+L'algoritmo di \textbf{Girvan–Newman} individua comunità rimuovendo iterativamente gli archi
+con betweenness più alta (gli archi ``ponti'' tra comunità).
+
+\begin{lstlisting}[language=R]
+# Rilevamento comunita' tramite edge betweenness
+w <- edge.betweenness.community(H)
+sort(table(w$membership))   # distribuzione delle comunita'
+\end{lstlisting}
+
+%% ============================================================
+\section{Visualizzazione dei Dati}
+%% ============================================================
+
+\subsection{Principi fondamentali}
+
+Una buona visualizzazione deve:
+\begin{enumerate}
+  \item Mostrare i dati veritieramente, senza distorsioni.
+  \item Facilitare il confronto.
+  \item Essere comprensibile al pubblico di riferimento.
+  \item Scegliere il tipo di grafico adatto al tipo di dato.
+\end{enumerate}
+
+\subsection{ggplot2 in R}
+
+\textbf{ggplot2} implementa la \textit{Grammar of Graphics}: ogni visualizzazione si
+compone di dati, mapping estetici (\textit{aesthetics}) e oggetti geometrici (\textit{geom}).
+
+\begin{lstlisting}[language=R]
+library(ggplot2)
+
+# Scatterplot base
+ggplot(data = mpg) +
+  geom_point(mapping = aes(x = displ, y = hwy))
+
+# Colore per classe
+ggplot(data = mpg) +
+  geom_point(mapping = aes(x = displ, y = hwy, color = class))
+
+# Dimensione per classe
+ggplot(data = mpg) +
+  geom_point(mapping = aes(x = displ, y = hwy, size = class))
+
+# Facets (griglia di grafici per sotto-gruppi)
+ggplot(data = mpg) +
+  geom_point(mapping = aes(x = displ, y = hwy)) +
+  facet_wrap(~ class)
+\end{lstlisting}
+
+\begin{lstlisting}[language=R]
+# Curva smoothing
+ggplot(data = mpg) +
+  geom_smooth(mapping = aes(x = displ, y = hwy))
+
+# Linee differenti per tipo di trazione
+ggplot(data = mpg) +
+  geom_smooth(mapping = aes(x = displ, y = hwy, linetype = drv))
+
+# Combinare piu' geom
+ggplot(data = mpg) +
+  geom_point(mapping  = aes(x = displ, y = hwy)) +
+  geom_smooth(mapping = aes(x = displ, y = hwy))
+\end{lstlisting}
+
+\subsection{Esempio: Salari dei professori}
+
+\begin{lstlisting}[language=R]
+library(car)
+data(Salaries)
+
+# Correlazione tra stipendio e anni dal PhD
+with(Salaries, cor(salary, yrs.since.phd))   # ~0.42
+with(Salaries, cor(salary, yrs.service))     # ~0.33
+
+# Test di correlazione
+with(Salaries, cor.test(salary, yrs.since.phd))
+\end{lstlisting}
+
+\subsection{Buone pratiche}
+
+\begin{itemize}
+  \item Evitare grafici a torta per più di 4-5 categorie (preferire barplot).
+  \item Non troncare l'asse Y (a meno che non sia esplicitamente giustificato).
+  \item Usare colori accessibili (palette friendly per daltonici).
+  \item Includere sempre assi etichettati, titolo e fonte dei dati.
+  \item Scegliere la scala appropriata (lineare vs.\ logaritmica).
+\end{itemize}
+
+%% ============================================================
+\section{Filtraggio Dati e Text Analysis}
+%% ============================================================
+
+\subsection{Dataset NYT / COVID-19}
+
+L'analisi testuale del corso utilizza un corpus di post Facebook del \textit{New York Times}
+relativi alla pandemia COVID-19. Il workflow di preprocessing è il seguente.
+
+\begin{lstlisting}[language=R]
+posts <- read.csv("nyt_posts.csv")
+posts <- posts[, -(37:40)]    # rimozione colonne inutili
+dim(posts)
+
+# Filtraggio per engagement minimo
+p <- posts[posts$Likes > 4 & posts$Comments > 4 & posts$Shares > 4, ]
+paste0(round(dim(p)[1] / dim(posts)[1], 2) * 100, "%")
+
+# Estrazione ID post dall'URL
+library(stringr)
+p$post_id <- str_sub(p$URL, 43, 60)
+table(p$Type)
+\end{lstlisting}
+
+\begin{lstlisting}[language=R]
+# Selezione post con "COVID-19" nel testo
+m <- as.character(df_other$text)
+y <- which(unlist(lapply(m, function(x) {
+       grepl("COVID-19", x, ignore.case = TRUE)
+     })))
+posts_covid_m <- df_other[y, ]
+\end{lstlisting}
+
+\subsection{Pre-elaborazione del testo con \texttt{quanteda}}
+
+\begin{lstlisting}[language=R]
+library(quanteda)
+source("stopwords_extended.R")
+
+# Costruzione del corpus
+corpus <- corpus(posts_covid_lm, text_field = "text")
+
+# Tokenizzazione e pulizia
+doc.tokens <- tokens(corpus)
+doc.tokens <- tokens(doc.tokens,
+                     remove_punct   = TRUE,
+                     remove_numbers = TRUE)
+doc.tokens <- tokens_select(doc.tokens,
+                stopwords(language = "en", source = "snowball"),
+                selection = "remove")
+doc.tokens <- tokens_select(doc.tokens, stopmore,
+                            selection = "remove")
+doc.tokens <- tokens_tolower(doc.tokens)
+toks_ngram  <- tokens_ngrams(doc.tokens, n = 1:2)
+
+# Document-Feature Matrix (DFM)
+dfmat1 <- dfm(toks_ngram) |> dfm_trim(min_termfreq = 10)
+dfmat1
+\end{lstlisting}
+
+\subsection{TF-IDF}
+
+Il peso \textbf{TF-IDF} (\textit{Term Frequency – Inverse Document Frequency})
+misura l'importanza di un termine $t$ in un documento $d$ rispetto a un corpus $D$:
+\formula{
+  \text{TF}(t,d) = \frac{f_{t,d}}{\sum_{t'} f_{t',d}}
+  \qquad
+  \text{IDF}(t,D) = \log\frac{|D|}{|\{d \in D : t \in d\}|}
+}
+\formula{
+  \text{TF-IDF}(t,d,D) = \text{TF}(t,d) \times \text{IDF}(t,D)
+}
+
+Termini molto frequenti in tutto il corpus (es.\ ``the'', ``a'') ricevono
+IDF basso e quindi peso basso, mentre termini specifici di pochi documenti
+ricevono peso alto.
+
+\begin{lstlisting}[language=R]
+library(quanteda.textstats)
+
+# 100 termini piu' frequenti
+features_dfm <- textstat_frequency(dfmat1, n = 100)
+
+# TF-IDF
+dfmat_tfidf <- dfm_tfidf(dfmat1)
+\end{lstlisting}
+
+\subsection{Analisi del sentimento}
+
+L'analisi del sentimento assegna a testi un punteggio di valenza emotiva (positivo,
+negativo, neutro). Approcci principali:
+\begin{itemize}
+  \item \textbf{Dizionari lessicali} (es.\ AFINN, BING, NRC): lookup diretto.
+  \item \textbf{Modelli ML supervisionati}: classificatori addestrati su testi annotati.
+  \item \textbf{Modelli basati su trasformatori} (BERT): catturano il contesto.
+\end{itemize}
+
+%% ============================================================
+\section{Topic Modeling con BERTopic}
+%% ============================================================
+
+\subsection{Cos'è il Topic Modeling?}
+
+Il \textbf{topic modeling} è una tecnica di apprendimento non supervisionato per scoprire
+temi latenti in un corpus di testi. Dato un insieme di documenti (tweet, articoli, commenti,
+ecc.), l'obiettivo è assegnare automaticamente ogni documento a uno o più argomenti.
+
+\subsection{Rappresentazione dei documenti}
+
+\subsubsection{Bag of Words (BoW)}
+Ogni documento è rappresentato dalla frequenza delle sue parole (vettore sparso).
+\begin{itemize}
+  \item[\checkmark] Semplice, interpretabile.
+  \item[$\times$] Perde informazione sintattica e semantica; problemi con omonimia ed enantiosemia.
+\end{itemize}
+
+\subsubsection{Embeddings (word2vec, BERT)}
+Ogni parola/frase viene mappata in un vettore denso nello spazio $\mathbb{R}^d$ dove
+la similarità vettoriale riflette la similarità semantica.
+
+Il modello \textbf{BERT} (\textit{Bidirectional Encoder Representations from Transformers})
+legge il testo in entrambe le direzioni e produce rappresentazioni contestuali.
+\textbf{Sentence-BERT} (SBERT) usa il \textit{mean pooling} sulle rappresentazioni per
+ottenere un embedding a livello di frase.
+\begin{itemize}
+  \item[\checkmark] Nessun preprocessing testuale specifico; mantiene il contesto.
+  \item[$\times$] Non interpretabile; limite di lunghezza (~500 token $\approx$ 300 parole).
+\end{itemize}
+
+\subsection{Il pipeline di BERTopic}
+
+\textbf{BERTopic} (Grootendorst, 2022) combina quattro passi:
+
+\begin{enumerate}
+  \item \textbf{Embedding dei documenti} tramite SBERT: ogni documento diventa un vettore
+        in uno spazio ad alta dimensione ($d \approx 768$).
+  \item \textbf{Riduzione della dimensionalità} con UMAP: da $\mathbb{R}^{768}$ a
+        $\mathbb{R}^5$ (o meno), preservando la struttura locale.
+  \item \textbf{Clustering} con HDBSCAN: raggruppa documenti semanticamente simili
+        in cluster; i documenti fuori da tutti i cluster sono etichettati come ``rumore''.
+  \item \textbf{Rappresentazione dei topic} con c-TF-IDF: per ogni cluster si calcola
+        un TF-IDF ``classico'' applicato ai cluster come fossero documenti.
+\end{enumerate}
+
+\subsubsection{UMAP (Uniform Manifold Approximation and Projection)}
+
+UMAP riduce la dimensionalità preservando la struttura locale dei dati:
+\begin{enumerate}
+  \item Costruisce un grafo di vicinanza nello spazio ad alta dimensione.
+  \item Costruisce un grafo equivalente in bassa dimensione.
+  \item Minimizza la \textit{cross-entropy loss} tra i due grafi tramite
+        discesa del gradiente stocastica.
+\end{enumerate}
+Il risultato è una proiezione che preserva i cluster semantici. La qualità dipende dal
+parametro $K$ (numero di vicini considerati).
+
+\subsubsection{HDBSCAN (Hierarchical DBSCAN)}
+
+HDBSCAN è un algoritmo di clustering basato sulla densità che:
+\begin{itemize}
+  \item non richiede di specificare il numero di cluster \textit{a priori};
+  \item individua cluster di forma arbitraria;
+  \item etichetta come rumore i punti in regioni a bassa densità.
+\end{itemize}
+
+\subsubsection{c-TF-IDF (class-TF-IDF)}
+
+Per ottenere le parole rappresentative di ogni topic, BERTopic unisce tutti i documenti
+di un cluster in un unico ``meta-documento'' e calcola:
+\formula{
+  c\text{-TF-IDF}_{t,c} = \frac{f_{t,c}}{\sum_{t'} f_{t',c}}
+  \times \log\left(1 + \frac{A}{f_t}\right)
+}
+dove $f_{t,c}$ è la frequenza di $t$ nel cluster $c$, $f_t$ è la frequenza totale di $t$
+nel corpus, e $A$ è il numero medio di parole per classe.
+
+\subsection{Valutazione del modello}
+
+Metriche comuni:
+\begin{itemize}
+  \item \textbf{Coherence score}: misura la coerenza semantica dei topic.
+  \item \textbf{Diversity score}: misura quanto i topic siano distinti tra loro.
+  \item \textbf{Ispezione manuale}: lettura delle parole chiave e dei documenti
+        rappresentativi di ciascun topic.
+\end{itemize}
+
+\subsection{Varianti di BERTopic}
+
+\begin{itemize}
+  \item \textbf{Dynamic Topic Modeling}: evoluzione dei topic nel tempo.
+  \item \textbf{Guided Topic Modeling}: incorporazione di seed words.
+  \item \textbf{Zero-shot Topic Modeling}: classificazione senza dati di addestramento.
+  \item \textbf{Online Topic Modeling}: aggiornamento incrementale del modello.
+\end{itemize}
+
+%% ============================================================
+\section{Big Data e Dati Sociali}
+%% ============================================================
+
+\subsection{Cosa sono i Big Data?}
+
+``\textit{Big Data}'' è un termine spesso frainteso: non si riferisce semplicemente a
+grandi quantità di dati, ma a una \textbf{capacità di ricerca, aggregazione e
+incrocio} di insiemi di dati eterogenei \cite[Boyd \& Crawford, 2012]{}.
+
+\medskip
+\noindent Due interpretazioni prevalenti:
+\begin{enumerate}
+  \item \textbf{Strumento potente}: permette di affrontare questioni sociali complesse
+        su larga scala.
+  \item \textbf{Manifestazione preoccupante}: rischi per la privacy, la libertà civile
+        e il controllo governativo/corporativo.
+\end{enumerate}
+
+\noindent Le quattro forze regolatrici dei sistemi sociali (Lessig, 1999):
+\textit{mercato}, \textit{legge}, \textit{norme sociali}, \textit{architettura (codice)}.
+Queste forze sono spesso in conflitto nell'ecosistema dei Big Data.
+
+\subsection{Sei provocazioni sui Big Data (Boyd \& Crawford)}
+
+\subsubsection{1. I Big Data cambiano la definizione di conoscenza}
+
+L'emergere di sistemi computazionali per l'analisi dei dati modifica il modo in cui
+costruiamo conoscenza scientifica e sociale. I tool disponibili hanno limitazioni
+strutturali (es.\ archivi Twitter/Facebook di difficile accesso) che condizionano
+le domande di ricerca.
+
+\subsubsection{2. I claim di obiettività e accuratezza sono fuorvianti}
+
+Tutti i ricercatori interpretano i dati. Le scelte di design (cosa misurare, come pulire
+i dati, quali variabili includere) sono soggettive. I grandi dataset possono contenere
+errori sistematici che si amplificano con la combinazione di fonti diverse.
+
+\subsubsection{3. I Big Data non sono equivalenti ai Big Data}
+
+L'accesso ai dati non è democratico: grandi aziende e governi hanno accesso privilegiato
+che i ricercatori accademici non hanno. I dati disponibili dipendono da scelte commerciali
+e politiche, non dalla rilevanza scientifica.
+
+\subsubsection{4. Molte forme di analisi dei Big Data producono correlazioni, non causalità}
+
+La correlazione statistica tra variabili non implica un nesso causale. I Big Data
+facilitano la scoperta di pattern ma non necessariamente la loro spiegazione causale.
+Occorre rigore metodologico per non trarre conclusioni errate.
+
+\subsubsection{5. Le questioni etiche sono complesse}
+
+\begin{itemize}
+  \item \textbf{Consenso informato}: i dati social sono pubblici, ma non necessariamente
+        ceduti per scopi di ricerca.
+  \item \textbf{Anonimizzazione}: dati apparentemente anonimi possono essere re-identificati.
+  \item \textbf{Discriminazione algoritmica}: modelli addestrati su dati storici possono
+        perpetuare discriminazioni.
+\end{itemize}
+
+\subsubsection{6. Accesso asimmetrico ai Big Data crea nuove disparità}
+
+La divisione tra chi ha e chi non ha accesso ai grandi dataset crea disuguaglianze nella
+produzione di conoscenza e nel potere decisionale.
+
+\subsection{Qualità dei dati sociali}
+
+\begin{itemize}
+  \item \textbf{Completezza}: i dati social coprono solo una porzione della popolazione
+        (sesgo di selezione).
+  \item \textbf{Accuracy}: errori di misurazione, bot, account falsi.
+  \item \textbf{Consistenza}: le piattaforme cambiano le API nel tempo, rendendo difficile
+        la comparazione longitudinale.
+  \item \textbf{Temporalità}: le conversazioni online hanno una vita breve; rilevanza
+        del momento di raccolta.
+\end{itemize}
+
+\subsection{Attributi privati nei dati digitali}
+
+La ricerca di Kosinski et al.\ (2013) dimostrò che i \textit{Facebook likes} permettono
+di prevedere con alta accuratezza attributi privati degli utenti (orientamento sessuale,
+etnia, opinioni politiche, tratti della personalità). Questo solleva questioni etiche
+fondamentali sull'uso dei dati digitali.
+
+%% ============================================================
+\appendix
+\renewcommand{\thesection}{\Alph{section}}
+\section{Formulario riassuntivo}
+%% ============================================================
+
+\begin{center}
+\begin{tabular}{lll}
+  \toprule
+  \textbf{Misura} & \textbf{Formula} & \textbf{Interpretazione} \\
+  \midrule
+  Grado (non or.) & $k_i = \sum_j A_{ji}$ & Numero di vicini \\
+  Grado medio & $\langle k \rangle = 2L/N$ & Connettività media \\
+  Clustering loc. & $C_i = \frac{2L_i}{k_i(k_i-1)}$ & Densità locale \\
+  Clustering medio & $\langle C \rangle = \frac{1}{N}\sum C_i$ & Clustering globale \\
+  Betweenness & $C_B(i) = \sum_{s\neq i \neq t} \frac{\sigma_{st}(i)}{\sigma_{st}}$
+              & Ruolo di intermediario \\
+  Closeness & $C_C(i) = \frac{N-1}{\sum_{j\neq i}d(i,j)}$ & Efficienza di raggiungimento \\
+  Eigenvector & $\mathbf{A}\mathbf{x} = \lambda\mathbf{x}$ & Importanza dei vicini \\
+  TF-IDF & $\text{TF}\times\log(|D|/\text{df})$ & Rilevanza termine in doc \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+\section{Glossario}
+\begin{description}
+  \item[Arco (edge)] Connessione tra due nodi in un grafo.
+  \item[Betweenness centrality] Misura di centralità basata su cammini più corti.
+  \item[BERTopic] Framework di topic modeling basato su BERT, UMAP e HDBSCAN.
+  \item[BoW] Bag of Words: rappresentazione vettoriale sparsa dei documenti.
+  \item[Chiusura triadica] Tendenza a formare triangoli in reti sociali.
+  \item[Clustering coefficient] Misura della densità di connessioni tra vicini.
+  \item[Componente connessa] Sottografo massimale in cui ogni coppia di nodi è raggiungibile.
+  \item[Diametro] Massima distanza geodesica in un grafo.
+  \item[Grado (degree)] Numero di archi incidenti su un nodo.
+  \item[Grafo] Struttura matematica composta da nodi e archi.
+  \item[HDBSCAN] Hierarchical Density-Based Spatial Clustering.
+  \item[Homophily] Tendenza a legarsi con chi è simile a noi.
+  \item[igraph] Libreria R/Python per analisi di reti.
+  \item[Matrice di adiacenza] Rappresentazione matriciale di un grafo.
+  \item[Nodo (vertex)] Elemento base di un grafo.
+  \item[Omofilia] Vedi Homophily.
+  \item[Ponte locale] Arco che collega nodi senza amici in comune.
+  \item[Scale-free] Rete con distribuzione di grado a power-law.
+  \item[Sentiment analysis] Analisi automatica della valenza emotiva dei testi.
+  \item[Small world] Rete con diametro piccolo e alto clustering.
+  \item[TF-IDF] Term Frequency–Inverse Document Frequency.
+  \item[Topic modeling] Scoperta automatica di temi latenti nei testi.
+  \item[UMAP] Uniform Manifold Approximation and Projection.
+\end{description}
+
+\end{document}
