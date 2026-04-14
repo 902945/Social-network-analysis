@@ -210,6 +210,11 @@ Dimostrò che un cammino euleriano (che attraversa ogni arco una sola volta) \em
 e solo se il grafo ha \textbf{al più due nodi di grado dispari}.
 Nel grafo di Königsberg tutti e quattro i nodi hanno grado dispari → nessun cammino ammissibile.
 
+\textbf{L'ottavo ponte (1875).} Nel 1875 gli abitanti di Königsberg costruirono un nuovo ponte
+tra i nodi B e C. Questo ridusse a uno solo il numero di nodi con grado dispari, rendendo
+possibile trovare il cammino euleriano. L'esempio illustra concretamente come una piccola
+modifica alla struttura di un grafo possa cambiarne radicalmente le proprietà.
+
 \medskip
 \noindent\textbf{Lezioni chiave:}
 \begin{enumerate}
@@ -271,22 +276,73 @@ Il numero massimo teorico di archi è:
 Le reti reali sono tipicamente \textbf{sparse}: $|E| \ll |E|_{\max}$.
 Ad esempio, il Karate Club di Zachary: $|V|=34$, $|E|=78$, $|E|_{\max}=561$.
 
+\subsection{Connettività e componenti connesse}
+
+\definition{Componente connessa}{Sottoinsieme massimale di nodi tale che (1) ogni coppia di nodi
+al suo interno è collegata da almeno un cammino, e (2) non esiste un sottoinsieme più grande
+con la stessa proprietà.}
+
+Un grafo con una sola componente connessa si dice \textbf{grafo connesso}; in un grafo
+disconnesso la matrice di adiacenza può essere riscritta in forma a blocchi diagonali.
+
+\textbf{Grafi orientati.} Per i grafi orientati si distingue tra:
+\begin{itemize}
+  \item \textbf{Componente fortemente connessa}: ogni nodo raggiunge tutti gli altri
+        \emph{seguendo la direzione degli archi}.
+  \item \textbf{Componente debolmente connessa}: ogni coppia di nodi è collegata
+        ignorando la direzione degli archi.
+\end{itemize}
+
+\subsection{Componente gigante (\textit{Giant Component})}
+
+Nelle reti reali di grandi dimensioni il grafo non è quasi mai completamente connesso,
+ma esiste tipicamente una sola \textbf{componente gigante}: una componente connessa che
+contiene una frazione significativa di tutti i nodi della rete.
+
+\medskip
+\noindent\textbf{Perché di solito ne esiste solo una?}
+Se esistessero due componenti giganti, sarebbe sufficiente un singolo arco per fonderle
+in una componente ancora più grande. In reti sociali reali tale arco si forma quasi certamente,
+quindi le due componenti collassano in una.
+
+\medskip
+\noindent\textbf{Rilevanza pratica.}
+La presenza di una grande componente è cruciale per la diffusione di fenomeni (malattie,
+informazioni, comportamenti): un individuo con un solo contatto diretto può tuttavia fare
+parte di una componente che raggiunte la maggioranza della popolazione, percorrendo
+cammini di trasmissione indiretti.
+
+\medskip
+\noindent\textbf{Lista di adiacenza.}
+Per memorizzare reti di grandi dimensioni (sparse) è conveniente usare una
+\textbf{lista di adiacenza} anziché la matrice di adiacenza completa: si memorizzano
+solo gli archi esistenti, riducendo il costo di memoria da $O(N^2)$ a $O(N+L)$.
+
 \subsection{Cammini, distanza e diametro}
 
 \definition{Cammino}{Sequenza di archi $(v_0,v_1),(v_1,v_2),\ldots,(v_{k-1},v_k)$.}
 \definition{Distanza geodesica}{$d(u,v)$ è la lunghezza del cammino più breve tra $u$ e $v$.}
-\definition{Diametro}{Il diametro di una rete è $\max_{u,v} d(u,v)$.}
+\definition{Diametro}{Il diametro di una rete è $d_{\max} = \max_{u,v} d(u,v)$, ovvero la
+massima distanza geodesica registrata tra qualsiasi coppia di nodi.}
+\definition{Lunghezza media del percorso}{$\langle d \rangle = \frac{1}{N(N-1)}\sum_{i\neq j}d(i,j)$
+è la distanza media tra tutte le coppie di nodi (calcolata solo all'interno della stessa
+componente connessa).}
 
 \subsection{Il Piccolo Mondo (\textit{Small World})}
 
 L'esperimento di Milgram (1967) suggerì che la distanza media tra due individui negli USA
-fosse circa \textbf{sei gradi di separazione}. Le reti reali mostrano:
+fosse circa \textbf{sei gradi di separazione}. Un'analisi successiva su Microsoft Messenger
+(circa 240 milioni di utenti) stimò una lunghezza media del percorso $\langle d \rangle \approx 6.6$
+e una mediana di 7. Le reti reali mostrano tipicamente:
 \begin{enumerate}
-  \item \textbf{Diametro piccolo}: la distanza media cresce come $\log N$.
+  \item \textbf{$\langle d \rangle$ piccola}: la lunghezza media del percorso cresce come $\log N$,
+        molto più lentamente della dimensione della rete.
   \item \textbf{Alto coefficiente di clustering}: i vicini di un nodo tendono ad essere
-        connessi tra loro.
+        connessi tra loro (molto di più di quanto ci si aspetterebbe in un grafo casuale).
 \end{enumerate}
-Questo è il modello di Watts–Strogatz (1998).
+La coesistenza di questi due fenomeni è catturata dal \textbf{modello di Watts–Strogatz (1998)}:
+partendo da un grafo ad anello regolare, il ricablaggio casuale di una piccola frazione di archi
+abbassa drasticamente $\langle d \rangle$ mantenendo alto il clustering.
 
 %% ============================================================
 \section{Legami Forti e Deboli}
