@@ -483,6 +483,29 @@ Se i legami fossero formati casualmente, la frazione attesa di archi \emph{etero
 Se la frazione osservata di archi eterogenei è \emph{minore} di $2pq$, la rete
 mostra \textbf{omofilia}; se è \emph{maggiore}, mostra \textbf{eterofilia}.
 
+\medskip
+\noindent\textbf{Esempio numerico.}
+Consideriamo una rete scolastica con 9 alunni: 6 maschi ($p = 6/9 = 2/3$) e 3 femmine
+($q = 3/9 = 1/3$). La rete ha 18 archi totali, di cui 5 sono eterogeni (collegano un maschio
+a una femmina). Con il mixing casuale ci aspetteremmo $2pq = 2 \cdot (2/3) \cdot (1/3) = 4/9$
+di archi eterogeni, ovvero $18 \times (4/9) = 8$ archi. Ne osserviamo solo 5 $<$ 8 →
+\textbf{evidenza di omofilia per genere}.
+
+\medskip
+\noindent\textbf{Note metodologiche.}
+\begin{enumerate}
+  \item Il numero atteso $2pq \cdot |E|$ varia per effetto del campionamento; per concludere
+        all'omofilia occorre verificare che lo scarto sia \textit{statisticamente significativo}
+        (es.\ con un test del chi-quadro o mediante permutazioni).
+  \item Se la frazione di archi eterogenei è significativamente \emph{maggiore} di $2pq$,
+        si parla di \textbf{eterofilia} (o omofilia inversa): le persone tendono a legarsi con
+        chi è diverso da loro.
+  \item Il test si estende a caratteristiche con più di due valori: un arco è
+        \textit{eterogeneo} se i suoi estremi hanno valori diversi, e si calcola la proporzione
+        di archi eterogenei attesa dal mixing casuale sulla base della distribuzione dei valori
+        nella rete.
+\end{enumerate}
+
 \subsection{Selezione e Influenza Sociale}
 
 Due meccanismi generano l'omofilia osservata:
@@ -508,10 +531,46 @@ fondamentale per progettare interventi efficaci (es.\ programmi anti-droga).
 
 Possiamo modellare reti che includono sia \textbf{persone} sia \textbf{contesti} (focus group,
 club, classi, eventi) come nodi, connettendo persone ai contesti in cui partecipano.
-Si ottiene una \textbf{rete bipartita}: due tipi di nodi, archi solo tra tipi diversi.
+Feld (1981) chiama questi contesti \textbf{foci}: punti focali di interazione sociale.
+Si ottiene una \textbf{rete bipartita}: due tipi di nodi (persone e foci), archi solo tra tipi diversi.
 
 La \textbf{proiezione} su un tipo di nodi crea archi tra persone che condividono un contesto,
 spiegando così l'emergere dell'omofilia anche senza scelta esplicita di amici simili.
+
+\subsection{Tipi di chiusura nelle reti sociali}
+
+Nelle reti sociali si distinguono tre forme di chiusura che guidano la formazione di nuovi legami:
+
+\begin{itemize}
+  \item \textbf{Chiusura triadica}: B e C diventano amici perché hanno un amico comune A
+        (entrambi sono persone).
+  \item \textbf{Chiusura focale} (\textit{focal closure}): B e C diventano amici perché
+        partecipano a un focus comune A (es.\ stessa classe, stessa associazione).
+  \item \textbf{Chiusura di membership} (\textit{membership closure}): B aderisce a un focus
+        a cui il suo amico A già partecipa (forma di influenza sociale sui foci scelti).
+\end{itemize}
+
+\subsection{Co-evoluzione delle reti sociali e di affiliazione}
+
+Le reti sociali e le reti di affiliazione \textbf{co-evolvono}: la partecipazione a un focus
+crea opportunità di amicizia; le amicizie esistenti influenzano la scelta dei foci futuri.
+Questo meccanismo spiega perché l'omofilia osservata nelle reti sociali emerga in parte
+spontaneamente, anche in assenza di una scelta deliberata di amici simili.
+
+\medskip
+\noindent\textbf{Studio empirico: Kossinets \& Watts.}
+Kossinets e Watts analizzarono una rete di e-mail universitaria seguita nel tempo,
+integrando i dati di comunicazione con gli orari delle lezioni (ogni corso = un focus).
+Misurarono la probabilità giornaliera di formazione di un legame in funzione di:
+\begin{itemize}
+  \item il numero di amici in comune (chiusura triadica): la probabilità cresce in modo
+        superlineare con il numero di amici condivisi.
+  \item il numero di corsi condivisi (chiusura focale): un singolo corso condiviso ha
+        un effetto assoluto simile a un singolo amico in comune, ma l'effetto si satura
+        rapidamente all'aggiunta di ulteriori corsi condivisi.
+\end{itemize}
+Il confronto mostra che chiusura triadica e focale sono meccanismi complementari e
+paragonabili per importanza nella formazione di legami.
 
 %% ============================================================
 \section{Analisi delle Reti con R}
