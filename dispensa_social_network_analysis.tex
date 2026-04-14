@@ -592,18 +592,25 @@ library(igraph)
 # Grafo diretto vuoto
 g <- graph.empty(directed = TRUE)
 
-# Aggiunta di nodi
+# Aggiunta di nodi (famiglia reale)
 g <- g + vertex("Elizabeth II")
 g <- g + vertex("Philip")
 g <- g + vertex("Charles")
 g <- g + vertex("Diana")
 g <- g + vertex("William")
+g <- g + vertex("Harry")
+g <- g + vertex("Catherine")
+g <- g + vertex("George")
 
-# Aggiunta di archi
+# Aggiunta di archi (relazioni genitore -> figlio)
 g <- g + edges("Elizabeth II", "Charles")
 g <- g + edges("Philip",       "Charles")
 g <- g + edges("Charles",      "William")
 g <- g + edges("Diana",        "William")
+g <- g + edges("Charles",      "Harry")
+g <- g + edges("Diana",        "Harry")
+g <- g + edges("William",      "George")
+g <- g + edges("Catherine",    "George")
 
 plot.igraph(g)
 \end{lstlisting}
@@ -1001,14 +1008,21 @@ Ogni documento è rappresentato dalla frequenza delle sue parole (vettore sparso
 Ogni parola/frase viene mappata in un vettore denso nello spazio $\mathbb{R}^d$ dove
 la similarità vettoriale riflette la similarità semantica.
 
-Il modello \textbf{BERT} (\textit{Bidirectional Encoder Representations from Transformers})
+Il modello \textbf{BERT} (\textit{Bidirectional Encoder Representations from Transformers}, 2018)
 legge il testo in entrambe le direzioni e produce rappresentazioni contestuali.
-\textbf{Sentence-BERT} (SBERT) usa il \textit{mean pooling} sulle rappresentazioni per
+\textbf{Sentence-BERT} (SBERT, 2019) usa il \textit{mean pooling} sulle rappresentazioni per
 ottenere un embedding a livello di frase.
 \begin{itemize}
   \item[\checkmark] Nessun preprocessing testuale specifico; mantiene il contesto.
-  \item[$\times$] Non interpretabile; limite di lunghezza (~500 token $\approx$ 300 parole).
+  \item[$\times$] Non interpretabile; limite di lunghezza ($\sim$500 token $\approx$ 300 parole);
+        può risentire di bias nel corpus di addestramento.
 \end{itemize}
+
+\textbf{La maledizione della dimensionalità (\textit{Curse of Dimensionality}).}
+Dopo l'embedding, ogni documento è un punto in uno spazio con centinaia di dimensioni ($d \approx 768$
+per BERT). In spazi ad altissima dimensione il concetto di ``distanza'' perde significato: quasi
+tutte le coppie di punti diventano equidistanti, rendendo il clustering inefficace. Per questo
+BERTopic introduce un passo di \textbf{riduzione della dimensionalità} prima del clustering.
 
 \subsection{Il pipeline di BERTopic}
 
@@ -1037,12 +1051,23 @@ UMAP riduce la dimensionalità preservando la struttura locale dei dati:
 Il risultato è una proiezione che preserva i cluster semantici. La qualità dipende dal
 parametro $K$ (numero di vicini considerati).
 
-\subsubsection{HDBSCAN (Hierarchical DBSCAN)}
+\subsubsection{Algoritmi di clustering: da K-Means a HDBSCAN}
 
-HDBSCAN è un algoritmo di clustering basato sulla densità che:
+\textbf{K-Means} è l'algoritmo di clustering più semplice: si scelgono $K$ centroidi,
+si assegna ogni punto al centroide più vicino, si ricalcolano i centroidi, e si ripete fino
+alla convergenza. Limitazione principale: richiede di specificare $K$ a priori e produce
+cluster di forma sferica.
+
+\textbf{DBSCAN} (\textit{Density-Based Spatial Clustering of Applications with Noise})
+supera questi limiti: individua cluster di forma arbitraria sulla base della densità locale
+(parametri: raggio $\varepsilon$ e numero minimo di punti \texttt{minPts}), e classifica i
+punti isolati come \textbf{rumore}. Complessità media $O(n \log n)$.
+
+\textbf{HDBSCAN} (\textit{Hierarchical DBSCAN}) estende DBSCAN:
 \begin{itemize}
   \item non richiede di specificare il numero di cluster \textit{a priori};
-  \item individua cluster di forma arbitraria;
+  \item individua cluster di forma arbitraria e con densità diverse;
+  \item richiede un solo iperparametro principale (dimensione minima del cluster);
   \item etichetta come rumore i punti in regioni a bassa densità.
 \end{itemize}
 
@@ -1057,15 +1082,52 @@ di un cluster in un unico ``meta-documento'' e calcola:
 dove $f_{t,c}$ è la frequenza di $t$ nel cluster $c$, $f_t$ è la frequenza totale di $t$
 nel corpus, e $A$ è il numero medio di parole per classe.
 
+\textbf{Altre rappresentazioni dei topic.}
+BERTopic supporta rappresentazioni alternative alla c-TF-IDF:
+\begin{itemize}
+  \item \textbf{Marginal Maximum Relevance (MMR)}: bilancia rilevanza e diversità delle
+        parole chiave.
+  \item \textbf{Part of Speech (POS)}: filtra le parole chiave per categoria grammaticale.
+  \item \textbf{KeyBERT}: usa gli embedding BERT per trovare le parole più simili
+        semanticamente al topic.
+  \item \textbf{LLM}: sfrutta modelli di linguaggio di grandi dimensioni per generare
+        etichette o riassunti testuali per ciascun topic.
+\end{itemize}
+
 \subsection{Valutazione del modello}
 
-Metriche comuni:
+BERTopic richiede la scelta di diversi iperparametri (embedding model, numero di vicini
+UMAP, dimensione minima del cluster HDBSCAN, lingua per le stopword). La valutazione avviene
+sia quantitativamente sia qualitativamente.
+
+\textbf{Metriche quantitative:}
 \begin{itemize}
-  \item \textbf{Coherence score}: misura la coerenza semantica dei topic.
-  \item \textbf{Diversity score}: misura quanto i topic siano distinti tra loro.
-  \item \textbf{Ispezione manuale}: lettura delle parole chiave e dei documenti
-        rappresentativi di ciascun topic.
+  \item \textbf{DB Cluster Relative Validity (DBCV)}: misura la qualità del clustering
+        tra $-1$ e $1$; valori più alti indicano cluster più coesi e separati. Permette
+        di confrontare diversi run con parametri diversi sullo stesso corpus.
+  \item \textbf{Coherence score}: misura la coerenza semantica dei topic, valutando quanto
+        spesso le parole chiave di un topic co-occorrono nel corpus.
+  \item \textbf{Diversity score} (es.\ Jaccard Topic Diversity): misura quanto i topic siano
+        distinti tra loro calcolando la proporzione di parole chiave uniche sul totale.
 \end{itemize}
+
+\textbf{Ispezione manuale}: la lettura delle parole chiave e dei documenti rappresentativi
+di ciascun topic rimane il metodo più affidabile ma richiede molto tempo.
+
+\subsection{Vantaggi e limiti di BERTopic}
+
+\begin{center}
+\begin{tabular}{p{0.44\textwidth}p{0.44\textwidth}}
+\toprule
+\textbf{Vantaggi} & \textbf{Limiti} \\
+\midrule
+Scalabile a grandi corpus & Richiede GPU per l'embedding \\
+Preserva il contesto semantico & Molti iperparametri da ottimizzare \\
+Flessibile (componenti sostituibili) & Limite di lunghezza dei documenti \\
+Topic interpretabili tramite parole chiave & Possibili bias dal corpus di pre-addestramento \\
+\bottomrule
+\end{tabular}
+\end{center}
 
 \subsection{Varianti di BERTopic}
 
