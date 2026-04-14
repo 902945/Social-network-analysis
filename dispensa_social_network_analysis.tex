@@ -1157,8 +1157,17 @@ incrocio} di insiemi di dati eterogenei \cite[Boyd \& Crawford, 2012]{}.
         e il controllo governativo/corporativo.
 \end{enumerate}
 
-\noindent Le quattro forze regolatrici dei sistemi sociali (Lessig, 1999):
-\textit{mercato}, \textit{legge}, \textit{norme sociali}, \textit{architettura (codice)}.
+\noindent Le \textbf{quattro forze regolatrici} dei sistemi sociali (Lessig, 1999):
+\begin{itemize}
+  \item \textbf{Mercato}: i Big Data rappresentano un'opportunità commerciale enorme.
+  \item \textbf{Legge}: i Big Data sollevano preoccupazioni sulla privacy e la protezione
+        dei dati personali (es.\ GDPR).
+  \item \textbf{Norme sociali}: la personalizzazione algoritmica è vista come utile
+        (informazioni più rilevanti) ma anche come fonte di frammentazione del dibattito
+        pubblico (camere d'eco).
+  \item \textbf{Architettura (codice)}: le piattaforme digitali progettano ambienti che
+        modellano i comportamenti degli utenti, spesso in modo opaco.
+\end{itemize}
 Queste forze sono spesso in conflitto nell'ecosistema dei Big Data.
 
 \subsection{Sei provocazioni sui Big Data (Boyd \& Crawford)}
@@ -1182,7 +1191,25 @@ L'accesso ai dati non è democratico: grandi aziende e governi hanno accesso pri
 che i ricercatori accademici non hanno. I dati disponibili dipendono da scelte commerciali
 e politiche, non dalla rilevanza scientifica.
 
-\subsubsection{4. Molte forme di analisi dei Big Data producono correlazioni, non causalità}
+\subsubsection{4. I Big Data estrapolati dal contesto perdono significato}
+
+I dati social sono ampiamente usati per fare affermazioni sulle reti sociali, ma le relazioni
+rappresentate sui social media non equivalgono necessariamente alle reti personali studiate
+dai sociologi attraverso interviste e osservazioni.
+
+Boyd e Crawford distinguono due tipi di reti sociali nei Big Data:
+\begin{itemize}
+  \item \textbf{Reti articolate} (\textit{articulated networks}): derivate da dichiarazioni
+        esplicite degli utenti (liste di amici/follower). Includono amici intimi, conoscenti,
+        colleghi, celebrity, ecc.
+  \item \textbf{Reti comportamentali} (\textit{behavioral networks}): derivate da pattern
+        di comunicazione e interazione effettiva sulla piattaforma.
+\end{itemize}
+Entrambe hanno valore per i ricercatori, ma non sono equivalenti tra loro né alle reti
+personali reali. Ad esempio, la frequenza dei contatti non indica necessariamente la forza
+del legame, e non ogni connessione corrisponde a un'altra connessione.
+
+\subsubsection{4b. Molte analisi sui Big Data producono correlazioni, non causalità}
 
 La correlazione statistica tra variabili non implica un nesso causale. I Big Data
 facilitano la scoperta di pattern ma non necessariamente la loro spiegazione causale.
@@ -1192,8 +1219,18 @@ Occorre rigore metodologico per non trarre conclusioni errate.
 
 \begin{itemize}
   \item \textbf{Consenso informato}: i dati social sono pubblici, ma non necessariamente
-        ceduti per scopi di ricerca.
-  \item \textbf{Anonimizzazione}: dati apparentemente anonimi possono essere re-identificati.
+        ceduti per scopi di ricerca. Il fatto che un utente abbia pubblicato un contenuto
+        su Facebook non significa che acconsenta al suo uso in una ricerca scientifica.
+  \item \textbf{Anonimizzazione e re-identificazione}: dati apparentemente anonimi possono
+        essere re-identificati combinando attributi. Un caso emblematico è lo studio di
+        Lewis et al.\ (2008), in cui un gruppo di ricercatori di Harvard raccolse i profili
+        Facebook di circa 1.700 studenti e li rese disponibili come dataset di ricerca.
+        Il ricercatore Zimmer mostrò che la re-identificazione era possibile: includendo
+        genere, stato di provenienza, corso di laurea ed etnia, i soggetti diventavano
+        facilmente identificabili (es.\ l'unico studente albanese di un college privato
+        del New England con circa 1.640 matricole). Gli autori dello studio risposero che
+        i dati erano già presenti su Facebook, ma Zimmer controbatté che postare su
+        Facebook non equivale a dare il consenso alla ricerca scientifica.
   \item \textbf{Discriminazione algoritmica}: modelli addestrati su dati storici possono
         perpetuare discriminazioni.
 \end{itemize}
@@ -1203,17 +1240,59 @@ Occorre rigore metodologico per non trarre conclusioni errate.
 La divisione tra chi ha e chi non ha accesso ai grandi dataset crea disuguaglianze nella
 produzione di conoscenza e nel potere decisionale.
 
-\subsection{Qualità dei dati sociali}
+\subsection{Qualità dei dati sociali e tassonomia dei bias (Olteanu et al., 2019)}
 
-\begin{itemize}
-  \item \textbf{Completezza}: i dati social coprono solo una porzione della popolazione
-        (sesgo di selezione).
-  \item \textbf{Accuracy}: errori di misurazione, bot, account falsi.
-  \item \textbf{Consistenza}: le piattaforme cambiano le API nel tempo, rendendo difficile
-        la comparazione longitudinale.
-  \item \textbf{Temporalità}: le conversazioni online hanno una vita breve; rilevanza
-        del momento di raccolta.
-\end{itemize}
+La raccolta e l'analisi dei dati social introduce sistematicamente dei bias che il
+ricercatore deve riconoscere e, per quanto possibile, controllare. Olteanu et al.\ (2019)
+propongono una tassonomia articolata in sei categorie:
+
+\begin{enumerate}
+  \item \textbf{Population biases}: differenze demografiche tra gli utenti di una piattaforma
+        e la popolazione target. Le principali piattaforme social presentano composizioni
+        demografiche sistematicamente diverse dalla popolazione generale (es.\ divari per
+        genere, età, etnia). Assumere che i dati siano rappresentativi della popolazione
+        porta a conclusioni fuorvianti.
+
+  \item \textbf{Behavioral biases}: differenze nel comportamento degli utenti across
+        piattaforme o contesti. Includono:
+        \begin{itemize}
+          \item \textit{Interaction biases}: come gli utenti interagiscono tra loro varia per
+                relazione, demografia e funzionalità della piattaforma.
+          \item \textit{Content consumption biases}: gli utenti tendono a consumare contenuti
+                di persone simili, favorendo la formazione di \textit{echo chambers}.
+          \item \textit{Self-selection e misreport}: gli utenti pubblicano selettivamente
+                (auto-censura, rimozione contenuti) e possono dare auto-report inaccurati.
+        \end{itemize}
+
+  \item \textbf{Content production biases}: differenze lessicali, sintattiche e semantiche
+        nei contenuti prodotti da popolazioni diverse. L'uso della lingua varia tra paesi,
+        gruppi demografici e nel tempo; utenti ``esperti'' producono contenuti diversi da
+        utenti normali.
+
+  \item \textbf{Linking biases}: differenze negli attributi delle reti costruite da
+        connessioni o interazioni degli utenti. Le reti basate su connessioni esplicite
+        (es.\ amici dichiarati) sono strutturalmente diverse da quelle basate su interazioni
+        implicite (es.\ chi risponde a chi). L'omofilia può distorcere sistematicamente
+        le percezioni degli utenti sulla prevalenza di certi attributi nella popolazione.
+
+  \item \textbf{Temporal variations}: variazioni nelle popolazioni, nei comportamenti e
+        nelle piattaforme nel tempo. Includono fenomeni stagionali/periodici, eventi
+        improvvisi (es.\ catastrofi naturali), cambiamenti di funzionalità della piattaforma,
+        e il decadimento dei dataset nel tempo (cancellazione di account, restrizioni API).
+
+  \item \textbf{Functional biases}: bias derivanti dai meccanismi specifici delle
+        piattaforme. Ogni piattaforma ha le proprie affordances (azioni incentivate o
+        disincentivate) e algoritmi proprietari (spesso non documentati) che modellano il
+        comportamento degli utenti e la distribuzione dei contenuti. Ad esempio,
+        ridimensionare la finestra di risposta su Facebook ha portato risposte più brevi,
+        più frequenti e più rapide.
+\end{enumerate}
+
+\textbf{Ridondanza.}
+Un ulteriore problema è la \textbf{ridondanza}: lo stesso contenuto può apparire in
+copie esatte (\textit{duplicati}) o approssimate (\textit{near-duplicates}), distorcendo
+la quantificazione dei fenomeni. La ridondanza può però essere anche un \textit{segnale}
+(es.\ un messaggio ripubblicato molte volte indica viralità).
 
 \subsection{Attributi privati nei dati digitali}
 
