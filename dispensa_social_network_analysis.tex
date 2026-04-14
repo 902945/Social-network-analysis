@@ -407,6 +407,57 @@ un legame (almeno debole) tra B e C.
 se A–B fosse forte e fosse un ponte locale, violerebbero STCP.
 Questo spiega perché i legami deboli portano informazioni nuove.
 
+\subsection{Dimostrazione formale: ponti locali e legami deboli}
+
+\noindent\textbf{Claim.} Se un nodo A soddisfa la STCP ed è coinvolto in almeno due legami
+forti, allora qualsiasi ponte locale a cui A partecipa deve essere un legame debole.
+
+\medskip
+\noindent\textbf{Dimostrazione (per assurdo).}
+\begin{enumerate}
+  \item Supponiamo che A abbia un legame forte con B e che A–B sia un ponte locale.
+  \item Poiché A ha almeno due legami forti, esiste un altro nodo C con A–C forte.
+  \item Poiché A–B è un ponte locale, A e B non hanno amici in comune → B e C non sono
+        connessi.
+  \item Ma A–B forte e A–C forte con B–C assente viola la STCP.
+        Contraddizione. \quad $\square$
+\end{enumerate}
+Quindi \textbf{i legami deboli hanno un duplice ruolo}: sono connessioni superficiali (bassa
+forza) ma al tempo stesso preziosi ponti verso parti distanti della rete
+(``la forza dei legami deboli'' di Granovetter).
+
+\subsection{Validazione empirica: studio Onnela et al. (reti di telefonia mobile)}
+
+Per molti anni le previsioni di Granovetter rimasero difficili da verificare su larga scala.
+Con l'avvento delle comunicazioni digitali, Onnela et al.\ studiarono la rete
+\textit{chi-chiama-chi} di un operatore di telefonia mobile, con milioni di nodi.
+
+\medskip
+\noindent\textbf{Misura continua della forza del legame.}
+Nelle reti reali la dicotomia forte/debole è troppo rigida. La forza di un arco A–B
+viene definita come il tempo totale di conversazione tra A e B; si può poi ordinare
+tutti gli archi per percentile di forza.
+
+\medskip
+\noindent\textbf{Neighborhood overlap.}
+Analogamente, la proprietà di ``ponte locale'' (nessun amico in comune) è rarissima nelle
+reti reali. Si introduce quindi una misura graduale:
+\formula{
+  \text{Neighborhood Overlap}(A,B) =
+  \frac{|\mathcal{N}(A) \cap \mathcal{N}(B)|}{|\mathcal{N}(A) \cup \mathcal{N}(B)|}
+}
+dove $\mathcal{N}(X)$ è l'insieme dei vicini di $X$ (escluso il nodo stesso).
+\begin{itemize}
+  \item Overlap $= 0$: A e B non hanno vicini in comune → arco è un ponte locale.
+  \item Overlap piccolo: arco è ``quasi'' un ponte locale.
+  \item Overlap grande: arco è immerso in un gruppo fitto.
+\end{itemize}
+
+\noindent\textbf{Risultato.} Lo studio di Onnela et al.\ confermò la previsione di Granovetter:
+all'aumentare della forza del legame, l'overlap di vicinato cresce sistematicamente. In
+altre parole, i legami deboli tendono ad avere overlap basso e a fungere da ponti tra
+comunità distinte, mentre i legami forti collegano nodi con molti amici in comune.
+
 %% ============================================================
 \section{Contesti Sociali e Omofilia}
 %% ============================================================
@@ -651,8 +702,40 @@ cor(betweenCent, eigenCent)   # correlazione tra le due misure
 
 \subsection{Comunità: algoritmo di Girvan–Newman}
 
-L'algoritmo di \textbf{Girvan–Newman} individua comunità rimuovendo iterativamente gli archi
-con betweenness più alta (gli archi ``ponti'' tra comunità).
+\textbf{Partizionamento dei grafi.}
+L'obiettivo è suddividere un grafo in \textbf{regioni dense} (comunità) con connessioni
+sparse tra di esse. Esistono due famiglie principali di metodi:
+\begin{itemize}
+  \item \textbf{Metodi divisivi} (top-down): identificano e rimuovono gli archi di
+        collegamento tra comunità, a partire dall'intero grafo.
+  \item \textbf{Metodi agglomerativi} (bottom-up): partono dai singoli nodi e li uniscono
+        progressivamente nelle stesse comunità sulla base di criteri di similarità.
+\end{itemize}
+
+\textbf{Betweenness degli archi (\textit{Edge Betweenness}).}
+Per selezionare quale arco rimuovere nei metodi divisivi si usa la
+\textbf{betweenness degli archi}: la quantità totale di flusso che passa per quell'arco.
+Formalmente, si suppone che per ogni coppia di nodi $(s,t)$ esista un'unità di flusso che
+si distribuisce equamente sui cammini più corti da $s$ a $t$; la betweenness dell'arco
+$(u,v)$ è la somma di questi flussi su tutte le coppie.
+\formula{
+  C_B(u,v) = \sum_{s \neq t} \frac{\sigma_{st}(u,v)}{\sigma_{st}}
+}
+Gli archi con alta betweenness sono ``ponti'' tra comunità; i nodi con alta betweenness
+(node betweenness) \textbf{occupano buchi strutturali} (\textit{structural holes}) e
+fungono da intermediari di informazione.
+
+\textbf{Il metodo di Girvan–Newman} è un metodo divisivo basato sulla betweenness degli archi:
+\begin{enumerate}
+  \item Calcola la betweenness di tutti gli archi.
+  \item Rimuove l'arco (o gli archi) con betweenness massima.
+  \item Ricalcola la betweenness di tutti gli archi rimasti (la rimozione altera i cammini
+        più corti).
+  \item Ripete finché non rimangono archi.
+\end{enumerate}
+Il metodo è efficace su reti di dimensioni moderate (qualche migliaio di nodi); per reti
+più grandi il ricalcolo iterativo della betweenness diventa computazionalmente costoso,
+rendendo preferibili metodi agglomerativi o approssimazioni.
 
 \begin{lstlisting}[language=R]
 # Rilevamento comunita' tramite edge betweenness
