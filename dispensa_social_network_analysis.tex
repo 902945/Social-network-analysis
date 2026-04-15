@@ -1,8 +1,8 @@
 %% ============================================================
-%%  Dispensa --- CT0540 Social Network Analysis
+%%  Dispensa — CT0540 Social Network Analysis
 %%  Ca' Foscari University of Venice
 %%  Prof. Fabiana Zollo
-%%  A.A. 2025--2026
+%%  A.A. 2025–2026
 %% ============================================================
 \documentclass[12pt,a4paper]{article}
 
@@ -72,17 +72,17 @@
 
 %% ---- hyperlinks & PDF metadata ----
 \usepackage[hidelinks,
-            pdftitle={Dispensa CT0540 -- Social Network Analysis},
+            pdftitle={Dispensa CT0540 – Social Network Analysis},
             pdfauthor={Prof. Fabiana Zollo},
             pdfsubject={Social Network Analysis},
-            pdfkeywords={reti sociali, teoria dei grafi, centralita, BERTopic, R}
+            pdfkeywords={reti sociali, teoria dei grafi, centralità, BERTopic, R}
             ]{hyperref}
 
 %% ---- header / footer ----
 \usepackage{fancyhdr}
 \pagestyle{fancy}
 \fancyhf{}
-\fancyhead[L]{\small\textit{CT0540 -- Social Network Analysis}}
+\fancyhead[L]{\small\textit{CT0540 – Social Network Analysis}}
 \fancyhead[R]{\small\textit{Ca' Foscari University of Venice}}
 \fancyfoot[C]{\thepage}
 \renewcommand{\headrulewidth}{0.4pt}
@@ -108,28 +108,39 @@
 %% ============================================================
 \begin{document}
 
-%% ---- title page ----
+%% ---- Title page ----
 \begin{titlepage}
   \centering
   \vspace*{2cm}
-  {\Large\bfseries Universit\`a Ca' Foscari Venezia\\[0.4em]
-   Dipartimento di Scienze Ambientali, Informatica e Statistica\\[2em]}
-  {\huge\bfseries\color{blue!70!black} Social Network Analysis\\[0.5em]}
-  {\large CT0540 --- Dispensa del Corso\\[2em]}
-  {\large Prof.ssa Fabiana Zollo\\[0.5em]}
-  {\normalsize Anno Accademico 2025--2026\\[4em]}
-  \hrule
-  \vspace{1em}
-  {\small Questa dispensa raccoglie i materiali del corso CT0540 \emph{Social Network Analysis}
-  tenuto presso il Dipartimento di Scienze Ambientali, Informatica e Statistica
-  dell'Universit\`a Ca' Foscari di Venezia. Il testo \`e organizzato in dieci capitoli
-  che coprono progressivamente i fondamenti teorici, i metodi computazionali e le
-  applicazioni empiriche dell'analisi delle reti sociali.}
+
+  {\Huge\bfseries Dispensa di\\[0.4em] Social Network Analysis\par}
+  \vspace{0.5cm}
+  {\large Corso CT0540\par}
+  \vspace{1.5cm}
+  \rule{10cm}{1pt}\par
+  \vspace{1cm}
+  {\large Prof.ssa \textbf{Fabiana Zollo}\par}
+  \vspace{0.3cm}
+  {\normalsize Dipartimento di Scienze Ambientali, Informatica e Statistica\par}
+  {\normalsize Università Ca' Foscari di Venezia\par}
+  \vspace{1.5cm}
+  {\normalsize Anno Accademico 2025–2026\par}
+  \vspace{2cm}
+
+  \begin{minipage}{0.85\textwidth}
+    \small\itshape
+    Questa dispensa sintetizza i materiali didattici del corso CT0540 (Social Network Analysis)
+    tenuto presso l'Università Ca' Foscari di Venezia. I contenuti sono tratti dalle slide,
+    dai notebook e dagli script R utilizzati durante le lezioni.
+    Testi di riferimento principali: Easley \& Kleinberg, \textit{Networks, Crowds, and Markets}
+    (Cambridge, 2012); Barabási, \textit{Network Science} (Cambridge, 2016).
+  \end{minipage}
+
   \vfill
-  {\footnotesize \textit{Versione aggiornata all'Anno Accademico 2025--2026.
-  Tutti i diritti riservati.}}
+  {\small\today}
 \end{titlepage}
 
+%% ---- Table of Contents ----
 \tableofcontents
 \newpage
 
@@ -139,239 +150,1325 @@
 
 \subsection{Il corso CT0540}
 
-Questo corso si propone di introdurre gli studenti all'analisi delle reti sociali (\emph{Social Network Analysis}, SNA), una disciplina che negli ultimi due decenni ha conosciuto uno sviluppo straordinario grazie alla convergenza di tre fattori: la disponibilit\`a senza precedenti di dati digitali sulle interazioni umane, la crescente potenza di calcolo dei computer moderni, e il maturarsi di una teoria matematica ricca e rigorosa delle reti. Il corso affronta sia i fondamenti teorici --- mutuati dalla matematica, dalla sociologia e dalla fisica --- sia gli strumenti computazionali necessari per analizzare reti reali di grandi dimensioni, con particolare enfasi sull'utilizzo del linguaggio di programmazione R e del pacchetto \texttt{igraph}.
+Il corso \textbf{CT0540 – Social Network Analysis} introduce lo studio delle reti complesse
+con un'enfasi sulle reti sociali. Gli argomenti spaziano dalla teoria matematica dei grafi
+alle applicazioni pratiche con strumenti come R, fino all'analisi del testo e al topic modeling.
 
-Il percorso si articola in dieci capitoli: si parte dalla definizione stessa di rete sociale e dalla sua storia intellettuale, si passa attraverso la teoria dei grafi e le sue misure fondamentali, si esaminano i meccanismi sociali che governano la formazione dei legami (omofilia, chiusura triadica, ruolo dei legami deboli), si introduce l'analisi computazionale con R, si studiano le reti di citazioni, la visualizzazione dei dati, l'analisi testuale, il topic modeling con BERTopic e, infine, le sfide metodologiche poste dai Big Data. Ogni capitolo alterna esposizione teorica, formalizzazione matematica ed esempi pratici, con l'obiettivo di rendere i concetti accessibili senza sacrificarne il rigore.
+Durata: 30 ore di lezioni frontali. Orari: mercoledì 15:45–17:15 (Lab 5) e venerdì 8:45–10:15.
+
+\subsection{Sistemi complessi e reti}
+
+Prima di definire formalmente le reti sociali, è utile collocarle in un contesto più ampio:
+quello dei \textbf{sistemi complessi}. Un sistema complesso è un sistema composto da molte
+parti interconnesse, la cui disposizione delle connessioni è complicata, e che presenta
+\emph{proprietà emergenti}: caratteristiche del sistema nel suo insieme che non si possono
+inferire semplicemente sommando le proprietà dei singoli componenti.
+
+La celebre citazione di Aristotele riassume l'idea: \textit{``Il tutto è più della somma delle sue parti.''}
+In pratica, due neuroni separati non ``pensano''; migliardi di neuroni connessi in modo specifico
+producono la coscienza. Allo stesso modo, due persone isolate non formano una ``società''; milioni
+di relazioni intrecciate generano fenomeni come le mode, le crisi finanziarie, le epidemie.
+
+Esempi di sistemi complessi con struttura a rete:
+\begin{itemize}
+  \item \textbf{Cervello umano}: circa $9 \times 10^{10}$ neuroni connessi da sinapsi;
+        la struttura di queste connessioni determina funzioni cognitive e comportamenti.
+  \item \textbf{Reti genetiche}: geni e proteine si regolano a vicenda; capire queste
+        interazioni è la chiave per la medicina personalizzata.
+  \item \textbf{Internet}: milioni di router e computer connessi; un guasto localizzato
+        può propagarsi a cascata.
+  \item \textbf{Economia globale}: imprese, banche e mercati formano una rete finanziaria;
+        il fallimento di una banca può innescare una crisi mondiale.
+  \item \textbf{Reti sociali}: persone e organizzazioni connesse da relazioni; un'idea o
+        una malattia si diffondono seguendo questi legami.
+\end{itemize}
+
+\medskip
+\noindent\textbf{La Network Science.}
+La \textbf{Network Science} (scienza delle reti) è la disciplina accademica che studia
+le reti complesse. È \emph{interdisciplinare} per natura: combina la teoria dei grafi
+dalla matematica, la meccanica statistica dalla fisica, il data mining e la visualizzazione
+dall'informatica, la modellazione statistica e la struttura sociale dalla sociologia.
+Una scoperta fondamentale è che reti di domini completamente diversi (biologia, tecnologia,
+società) mostrano proprietà strutturali simili, perché sono governate dagli stessi
+principi organizzativi (Barabási, 2016).
 
 \subsection{Cosa sono le reti sociali?}
 
-La vita sociale umana \`e intessuta di relazioni: amicizie, collaborazioni professionali, legami familiari, scambi di informazioni, transazioni economiche. Queste relazioni non esistono in isolamento ma formano strutture complesse che influenzano profondamente il comportamento individuale e collettivo. Una \emph{rete sociale} \`e precisamente la rappresentazione formale di queste strutture: un insieme di \emph{attori} (individui, organizzazioni, paesi, pagine web) collegati da \emph{relazioni} di vario tipo.
-
-La domanda fondamentale della SNA non \`e semplicemente ``chi \`e connesso a chi?'' ma piuttosto ``in che modo la struttura delle connessioni influenza i comportamenti, le opinioni, la diffusione delle informazioni, la salute, il successo professionale?''. Questa domanda ha implicazioni profonde: se vogliamo capire come si diffonde un virus, come si diffonde una notizia falsa, come si formano le bolle informative sui social media, o come le opportunit\`a di lavoro vengono comunicate, dobbiamo capire la struttura della rete in cui questi processi avvengono.
-
-\definition{Rete Sociale}{Una rete sociale \`e una coppia $G = (V, E)$ dove $V$ \`e un insieme di \emph{nodi} (o vertici) che rappresentano gli attori sociali, ed $E \subseteq V \times V$ \`e un insieme di \emph{archi} (o legami) che rappresentano le relazioni tra gli attori.}
-
-\noindent Questa definizione matematica essenziale -- che approfondiremo nel capitolo dedicato alla teoria dei grafi -- cattura l'idea fondamentale: la struttura della rete \`e separabile dagli attributi individuali degli attori. Un individuo pu\`o essere ricco o povero, istruito o meno, maschio o femmina; ma la sua posizione nella rete -- quante connessioni ha, quanto \`e centrale, quanto \`e lontano dagli altri -- \`e una propriet\`a strutturale che dipende dall'intera topologia della rete, non solo dalle sue caratteristiche individuali.
-
-\subsection{Sistemi Complessi}
-
-Per comprendere appieno perch\'e le reti siano uno strumento cos\`i potente, occorre collocarle nel contesto pi\`u ampio dei \emph{sistemi complessi}. Aristotele scrisse nel IV secolo a.C. che ``il tutto \`e maggiore della somma delle parti'' (\emph{Metaphysica}, 1045a 8-10), e questa intuizione straordinariamente moderna cattura l'essenza dei sistemi complessi: sistemi in cui il comportamento collettivo non pu\`o essere previsto semplicemente sommando i comportamenti individuali dei componenti.
-
-Consideriamo tre esempi emblematici. Il cervello umano contiene circa 86 miliardi di neuroni, ciascuno dei quali -- preso singolarmente -- \`e in grado di svolgere operazioni elementari di trasmissione del segnale elettrochimico. Eppure dall'interazione di questi miliardi di neuroni emergono propriet\`a straordinarie: la coscienza, la creativit\`a, la memoria, le emozioni. Nessuno di questi fenomeni \`e localizzato in un singolo neurone; sono \emph{propriet\`a emergenti} della rete neurale. Analogamente, il genoma umano conta circa 25.000 geni, che interagiscono attraverso reti di regolazione genetica di straordinaria complessit\`a: la funzione di un gene dipende spesso dall'espressione o soppressione di decine di altri geni. Infine, l'economia mondiale \`e composta da miliardi di individui e milioni di imprese che interagiscono attraverso scambi commerciali, flussi finanziari e catene di approvvigionamento: le crisi economiche sistemiche, come quella del 2008, emergono da queste interazioni in modi che nessun singolo agente poteva prevedere.
-
-Le reti forniscono il \emph{linguaggio naturale} per descrivere i sistemi complessi. Invece di concentrarsi sulle propriet\`a individuali dei componenti, l'analisi delle reti si concentra sulla topologia delle connessioni, catturando precisamente ci\`o che fa s\`i che il tutto sia diverso dalla somma delle parti. Il concetto chiave che rende questo approccio cos\`i potente \`e quello di \textbf{universalit\`a}: reti provenienti da domini completamente diversi --- reti sociali, reti biologiche, reti tecnologiche, reti economiche --- condividono propriet\`a strutturali sorprendentemente simili. La distribuzione di grado che segue una legge di potenza (\emph{power-law}), la propriet\`a del piccolo mondo (\emph{small world}), la struttura di comunit\`a (\emph{community structure}) appaiono sistematicamente in reti tra loro molto diverse. Questa universalit\`a suggerisce che esistono principi organizzativi profondi e comuni a tutti i sistemi complessi.
-
-\subsection{Network Science come disciplina interdisciplinare}
-
-La \emph{network science} \`e una disciplina emergente che studia le propriet\`a e i meccanismi universali delle reti complesse. Come argomenta Albert-L\'aszl\'o Barab\'asi (Barab\'asi, 2016), la network science \`e nata come disciplina autonoma all'inizio degli anni 2000, a partire da due articoli fondamentali: il lavoro di Duncan Watts e Steven Strogatz su \emph{Nature} (1998) sui grafi piccolo-mondo, e il lavoro di Barab\'asi e Reka Albert su \emph{Science} (1999) sulle reti scale-free. Prima di questi lavori, le reti venivano studiate in modo separato e disciplinare: la sociologia aveva sviluppato la social network analysis, la matematica la teoria dei grafi, l'informatica la teoria dei grafi algoritmici, la biologia la genomica e le reti metaboliche. La network science ha unificato questi approcci, riconoscendo che le propriet\`a strutturali fondamentali delle reti emergono in tutti questi domini.
-
-Questa interdisciplinarit\`a non \`e solo accademica: \`e una necessit\`a pratica. Per studiare, ad esempio, la diffusione di un'epidemia su una rete di contatti umani, occorre integrare la biologia dell'agente patogeno, la sociologia dei comportamenti umani, la matematica dei processi di diffusione su reti, e l'informatica per gestire dataset di milioni di individui. Nessuna di queste discipline, presa isolatamente, sarebbe sufficiente. La network science offre un quadro comune che permette a ricercatori provenienti da background diversi di comunicare e collaborare.
-
-\subsection{Moreno e i sociogrammi (1934)}
-
-La storia dell'analisi delle reti sociali affonda le sue radici nell'opera pionieristica di Jacob Levy Moreno (1889--1974), psichiatra e sociologo romeno naturalizzato americano. Nel 1934, Moreno pubblica \emph{Who Shall Survive?}, un'opera monumentale in cui introduce la \emph{sociometria}: la misurazione quantitativa delle relazioni interpersonali all'interno di gruppi sociali. L'idea di Moreno era rivoluzionaria per l'epoca: invece di studiare la psicologia individuale in isolamento, era necessario mappare la struttura delle relazioni interpersonali per comprendere il comportamento del gruppo.
-
-Moreno condusse uno dei primi studi sistematici di rete sociale in una scuola di Hudson, nello stato di New York, dove chiese agli studenti di indicare accanto a quale compagno avrebbero preferito sedersi. Con queste informazioni, disegn\`o i primi \emph{sociogrammi}: diagrammi in cui gli studenti sono rappresentati come nodi e le preferenze dichiarate come archi orientati da chi preferisce verso chi \`e preferito. Questi diagrammi rivelarono immediatamente strutture sociali invisibili all'occhio nudo: nodi isolati (bambini che nessuno sceglieva e che non sceglievano nessuno), nodi molto popolari (bambini scelti da molti), preferenze reciproche (coppie che si sceglievano a vicenda), e catene di preferenze indirette.
-
-I sociogrammi di Moreno rappresentano il \emph{primo esempio documentato di analisi delle reti sociali}. Il suo contributo \`e fondamentale per almeno tre ragioni. In primo luogo, Moreno ha dimostrato che le relazioni interpersonali hanno una struttura oggettiva che pu\`o essere misurata e rappresentata. In secondo luogo, ha mostrato che questa struttura ha conseguenze reali: i bambini isolati nel sociogramma erano spesso quelli con maggiori difficolt\`a di adattamento scolastico e sociale. In terzo luogo, ha fornito uno strumento grafico --- il sociogramma --- che rimane, nella sua essenza, la rappresentazione standard delle reti sociali ancora oggi.
-
-\subsection{Il Club di Karate di Zachary (1977)}
-
-Uno dei dataset pi\`u famosi e pi\`u citati nella letteratura sulla SNA \`e quello del Club di Karate di Wayne Zachary (1977). Zachary era un antropologo che studi\`o per tre anni (1970--1972) un club di karate di una universit\`a americana. Durante questo periodo, sorse un conflitto tra il maestro di karate (John A.) e il presidente del club (Hi). Il conflitto portava alla rottura del club in due fazioni: una attorno al maestro, l'altra attorno al presidente.
-
-La cosa straordinaria \`e ci\`o che Zachary fece: mapp\`o sistematicamente tutte le interazioni sociali tra i 34 membri del club \emph{al di fuori} delle sessioni di allenamento ufficiali (conversazioni, attivit\`a condivise, amicizie al di fuori del dojo). Quando la rottura avvenne effettivamente, Zachary verific\`o che la struttura della rete -- costruita prima della rottura -- \emph{prevedeva} con straordinaria accuratezza quale fazione ciascun membro avrebbe scelto. Solo un membro su trentaquattro fu classificato in modo errato: l'individuo era strutturalmente al confine tra le due fazioni, e la sua scelta fu quindi genuinamente ambigua.
-
-Questo risultato ha implicazioni profonde: la struttura delle relazioni sociali contiene informazioni predittive sulla dinamica futura del gruppo. Il dataset di Zachary -- 34 nodi e 78 archi -- \`e diventato il \emph{benchmark standard} per testare algoritmi di rilevamento di comunit\`a nelle reti: qualsiasi nuovo algoritmo di community detection viene tipicamente validato verificando che riesca a trovare le due comunit\`a del club di karate. La sua semplicità (dimensioni ridotte, struttura chiara) e la sua rilevanza sociologica (una vera divisione sociale documentata) lo rendono un caso di studio ideale.
-
-\subsection{Chains of Affection (Bearman et al., 2004)}
-
-Nel 2004, Peter Bearman, James Moody e Katherine Stovel pubblicano su \emph{American Journal of Sociology} uno studio destinato a lasciare una traccia profonda nella letteratura sulla SNA e sulla salute pubblica (Bearman, Moody \& Stovel, 2004). Lo studio mappc\`o la rete delle relazioni romantiche e sessuali tra gli studenti di una scuola superiore americana di medie dimensioni, che gli autori chiamarono Jefferson High, situata in una citt\`a di circa 30.000 abitanti nel Midwest americano.
-
-I dati furono raccolti attraverso interviste approfondite con 573 studenti, che dichiararono i loro partner negli ultimi diciotto mesi. Il risultato fu sorprendente: invece delle dense strutture a cluster che ci si sarebbe aspettati (molte coppie separate, con pochi ponti), la rete presentava una struttura a \emph{spanning tree} -- un lungo percorso che attraversava l'intera rete, toccando quasi met\`a dei partecipanti. Questa struttura, che gli autori chiamarono ``catena di affetti'' (\emph{chain of affection}), aveva implicazioni drammatiche per la trasmissione delle malattie sessualmente trasmissibili: una persona infetta a un'estremit\`a della catena poteva potenzialmente trasmettere l'infezione a centinaia di altre persone attraverso percorsi relativamente brevi, anche se non aveva mai avuto contatti diretti con loro.
-
-Lo studio di Bearman e colleghi \`e un esempio paradigmatico di come la struttura della rete -- non solo i comportamenti individuali -- determini i rischi collettivi. La conclusione pratica \`e che gli interventi di salute pubblica devono tenere conto della topologia della rete di trasmissione, non solo del numero di partner individuali.
-
-\subsection{Computational Social Science (Lazer et al., 2009)}
-
-Nel febbraio 2009, un gruppo di ricercatori guidato da David Lazer pubblica su \emph{Science} un articolo intitolato ``Computational Social Science'' (Lazer et al., 2009), che propone formalmente l'esistenza di una nuova disciplina scientifica nata dall'incontro tra le scienze sociali e l'informatica. L'argomento centrale \`e che la proliferazione di \emph{tracce digitali} -- email, telefonate, dati GPS, post sui social media, transazioni economiche -- stia aprendo possibilit\`a senza precedenti per lo studio del comportamento umano a scale e con risoluzioni temporali mai viste prima.
-
-Le scienze sociali tradizionali si basavano su metodi come sondaggi, esperimenti di laboratorio e osservazione etnografica, ciascuno dei quali ha limitazioni significative: i sondaggi sono costosi, rari e soggetti a bias di risposta; gli esperimenti di laboratorio sono artificiali e coinvolgono campioni piccoli; l'etnografia \`e profonda ma non scalabile. Le tracce digitali, al contrario, sono generate naturalmente dai comportamenti quotidiani di milioni di persone, sono continue nel tempo, e hanno una granularit\`a straordinaria: possiamo sapere non solo che una persona \`e andata al lavoro, ma esattamente quale percorso ha preso, con chi ha interagito, quali messaggi ha scritto.
-
-Questo cambiamento ha trasformato profondamente la ricerca sulle reti sociali. Dataset come quelli dei social media (Twitter, Facebook, Instagram), delle piattaforme di messaggistica (WhatsApp, Telegram), delle reti di collaborazione scientifica (co-authorship networks) o delle reti di citazioni accademiche hanno permesso di studiare fenomeni sociali a scale che sarebbero state impensabili anche solo vent'anni fa. Allo stesso tempo, questa abbondanza di dati porta con s\`e nuove sfide metodologiche ed etiche, che verranno discusse in dettaglio nel capitolo dedicato ai Big Data.
-
-\subsection{Il numero di Dunbar ($\sim 150$)}
-
-Quante relazioni sociali stabili pu\`o mantenere un essere umano? Questa domanda, che pu\`o sembrare banale, ha una risposta sorprendentemente precisa grazie alla ricerca dell'antropologo Robin Dunbar. Negli anni '90, Dunbar studi\`o la dimensione del neocorteccia --- la parte evolutivamente pi\`u recente del cervello, associata alle funzioni cognitive superiori --- in diverse specie di primati, e la mise in relazione con la dimensione media dei loro gruppi sociali. Trov\`o una correlazione sorprendentemente robusta: i primati con neocorteccia pi\`u grande vivono in gruppi sociali pi\`u grandi. Estrapolando questa relazione alla dimensione del neocorteccia umana, Dunbar calcol\`o che gli esseri umani dovrebbero essere in grado di mantenere relazioni sociali stabili con circa 150 individui (Dunbar, 1992).
-
-Questo numero, noto come \emph{numero di Dunbar}, ha trovato conferme empiriche in ambiti molto diversi: la dimensione media dei villaggi neolitici, dei reggimenti militari in tutte le epoche storiche, delle unit\`a operative delle aziende. La spiegazione evolutiva \`e che mantenere una relazione sociale stabile richiede un investimento cognitivo significativo --- ricordare chi \`e la persona, quale \`e la storia della relazione, quali sono le sue preferenze e i suoi stati emotivi --- e che la capacit\`a cognitiva disponibile pone un limite naturale.
-
-La verifica del numero di Dunbar nell'era dei social media \`e stata condotta da Goncalves e colleghi (Goncalves, Perra \& Flammini, 2011), che hanno analizzato i dati di 1,7 milioni di utenti Twitter. Nonostante molti utenti abbiano migliaia di follower, gli autori hanno trovato che ciascun utente interagisce attivamente --- cio\`e scambia messaggi reciproci in modo regolare --- con un numero di persone compreso tra 100 e 200, con una media vicina a 150. Questo suggerisce che i social media non hanno eliminato il limite cognitivo del numero di Dunbar: hanno semplicemente spostato il \emph{tipo} di relazioni che possiamo avere, permettendo relazioni pi\`u deboli e superficiali con un numero molto maggiore di persone, ma senza aumentare il numero di relazioni davvero significative.
-
-\subsection{Information Networks}
-
-Le reti di informazione sono reti in cui i nodi rappresentano risorse informative piuttosto che attori sociali, e i legami rappresentano riferimenti, citazioni, o link tra queste risorse. Il World Wide Web \`e forse la rete di informazione pi\`u grande mai creata: miliardi di pagine web collegate da hyperlink orientati (da una pagina verso le pagine a cui rimanda). Le reti di citazioni accademiche sono un altro esempio fondamentale: gli articoli scientifici sono i nodi, e i riferimenti bibliografici sono gli archi orientati che puntano dalla pubblicazione che cita a quella citata.
-
-Lo studio della blogosfera americana prima delle elezioni presidenziali del 2004 condotto da Adamic e Glance (Adamic \& Glance, 2005) \`e un lavoro seminale nell'analisi delle reti di informazione politica. Gli autori raccolsero i dati di oltre 1.400 blog politici americani, classificandoli come liberali o conservatori sulla base dei loro contenuti, e mapparono i link reciproci tra di essi. Il risultato fu una polarizzazione politica netta e sorprendente: i blog liberali linkavano principalmente altri blog liberali, e i blog conservatori linkavano principalmente altri blog conservatori. Le due comunit\`a erano quasi completamente separate, con pochissimi ponti tra loro. Questo fenomeno, che Adamic e Glance definirono \emph{echo chamber} --- camera d'eco --- si \`e rivelato un precursore di dinamiche che oggi conosciamo bene sui social media.
-
-Il concetto di echo chamber nel dibattito politico su Facebook \`e stato studiato empiricamente da Del Vicario, Zollo e colleghi (Del Vicario, Zollo et al., 2017), in uno studio sul dibattito attorno alla Brexit sulla piattaforma Facebook. Lo studio ha mostrato che gli utenti tendevano a consumare e a condividere informazioni allineate con le proprie opinioni preesistenti, formando comunit\`a di utenti che si esponevano prevalentemente a prospettive omogenee. Questo meccanismo -- che combina la selezione attiva delle fonti da parte degli utenti con la personalizzazione algoritmica dei feed --- amplifica la polarizzazione politica e rende pi\`u difficile il dialogo tra posizioni diverse.
+Una \textbf{rete sociale} è un insieme di attori (individui, organizzazioni, pagine web, \ldots)
+e delle relazioni che li connettono. In termini matematici, come vedremo in dettaglio nel
+prossimo capitolo, si tratta di un \emph{grafo}: i nodi rappresentano gli attori e gli archi
+rappresentano le relazioni. L'analisi di tali reti consente di studiare:
+\begin{itemize}
+  \item come scorrono le informazioni attraverso la società;
+  \item i meccanismi di formazione e dissoluzione dei legami;
+  \item le strutture di potere e influenza;
+  \item fenomeni come la diffusione di notizie false (\textit{misinformation}) o di comportamenti.
+\end{itemize}
 
 \subsection{Tipi di reti}
 
-Le reti possono essere classificate in diversi modi a seconda della natura dei nodi e degli archi. Una prima distinzione fondamentale riguarda la \emph{direzione} degli archi: una rete \`e \emph{orientata} (o \emph{diretta}) quando gli archi hanno una direzione (da $u$ a $v$ non \`e lo stesso che da $v$ a $u$), e \emph{non orientata} quando i legami sono simmetrici. Le amicizie su Facebook sono tipicamente non orientate (se A \`e amico di B, allora B \`e amico di A), mentre i ``follower'' su Twitter sono orientati (A pu\`o seguire B senza che B segua A).
-
-Una seconda distinzione riguarda la presenza di \emph{pesi} sugli archi: una rete \`e \emph{pesata} quando i legami hanno intensit\`a diverse (ad esempio, due persone che si telefonano cento volte al mese hanno un legame pi\`u forte di due persone che si telefonano una volta). Una rete \`e \emph{non pesata} (o binaria) quando i legami indicano semplicemente la presenza o assenza di una relazione.
-
-Oltre alle reti sociali in senso stretto, \`e utile distinguere le \emph{reti di informazione} (come il Web e le reti di citazioni), le \emph{reti tecnologiche} (come Internet, le reti elettriche, le reti di trasporto), le \emph{reti biologiche} (reti di proteine, reti metaboliche, reti neurali) e le \emph{reti economiche} (reti di scambi commerciali, reti interbancarie). Come vedremo nel corso, queste reti condividono molte propriet\`a strutturali fondamentali nonostante la loro diversit\`a apparente.
+\begin{itemize}
+  \item \textbf{Reti di comunicazione}: nodi = dispositivi/persone, archi = canali di comunicazione
+        (es.\ ARPANET, Internet).
+  \item \textbf{Reti di informazione}: nodi = risorse informative (pagine web, articoli),
+        archi = collegamenti logici (hyperlink, citazioni).
+  \item \textbf{Reti sociali}: nodi = persone o gruppi, archi = interazioni sociali
+        (amicizia, collaborazione, follower).
+  \item \textbf{Reti biologiche}: reti di interazione tra proteine, reti neurali, ecc.
+\end{itemize}
 
 \subsection{Testi di riferimento}
 
-I testi fondamentali a cui questo corso fa riferimento sono i seguenti. Per i fondamenti della network science: Barab\'asi, A.-L. (2016), \emph{Network Science}, Cambridge University Press (disponibile gratuitamente online). Per la SNA classica: Easley, D. \& Kleinberg, J. (2010), \emph{Networks, Crowds, and Markets}, Cambridge University Press. Per l'implementazione computazionale: Ognyanova, K. (materiali del corso, disponibili online). Per il topic modeling: Grootendorst, M. (2022), ``BERTopic: Neural topic modeling with a class-based TF-IDF procedure'', \emph{arXiv:2203.05794}. Per i Big Data: Boyd, D. \& Crawford, K. (2012), ``Critical Questions for Big Data'', \emph{Information, Communication \& Society}.
+\begin{itemize}
+  \item D.~Easley \& J.~Kleinberg, \textit{Networks, Crowds, and Markets}, Cambridge
+        University Press, 2012. (Bozza pre-pubblicazione liberamente disponibile online.)
+  \item A.-L.~Barabási, \textit{Network Science}, Cambridge University Press, 2016.
+\end{itemize}
+
+\subsection{I sociogrammi di Moreno: il primo esempio di SNA}
+
+Il primo esempio riconosciuto di \textbf{Social Network Analysis} risale al 1934, con il
+lavoro del sociologo Jacob Levy Moreno. Moreno mappò le \emph{affinità sociali} di gruppi
+di individui — in particolare i bambini di una classe scolastica — chiedendo a ciascuno con
+chi avrebbe preferito stare seduto. I risultati, che lui chiamò \textbf{sociogrammi},
+visualizzavano le relazioni di preferenza come frecce tra i nodi.
+
+Dai sociogrammi emergevano fenomeni interessanti: la proporzione di legami tra bambini di
+sesso diverso diminuiva nel tempo; si formavano strutture comunitarie che poi si dissolvevano;
+alcuni bambini erano molto popolari (ricevevano molte frecce) mentre altri erano isolati.
+Questo lavoro pionieristico mostra come una semplice rete possa rivelare la struttura
+sociale sottostante di un gruppo.
+
+\subsection{Il Club di Karate di Zachary}
+
+Un esempio classico e molto citato nella letteratura sulle reti sociali è il
+\textbf{Club di Karate di Zachary} (Zachary, 1977). Il sociologo Wayne Zachary
+osservò per due anni i 34 membri di un club universitario di karate.
+Durante lo studio si sviluppò un conflitto tra il presidente del club (nodo 34) e
+l'istruttore (nodo 1), che portò alla rottura del gruppo: l'istruttore lasciò e
+fondò un nuovo club, portando con sé circa metà dei membri.
+
+Zachary costruì una rete delle amicizie tra i membri (usando diverse misure per stimare
+la forza dei legami) e scoprì una proprietà straordinaria: \textbf{l'istruttore e il
+presidente non erano amici}, e la maggior parte dei membri era amica dell'uno o dell'altro
+ma non di entrambi. Il metodo di Girvan e Newman (2002), applicato retrospettivamente a
+questa rete, riuscì a predire quasi perfettamente la divisione del club (solo un membro
+fu classificato erroneamente), dimostrando che la struttura della rete di amicizie era
+già un indicatore della divisione che si sarebbe verificata.
+
+\medskip
+Dimensioni della rete: $|V| = 34$ nodi, $|E| = 78$ archi.
+
+\subsection{Computational Social Science}
+
+La sociologia ha sviluppato intuizioni fondamentali sulla struttura delle reti sociali, ma
+la sua metodologia era necessariamente vincolata alle scale in cui la raccolta dati era
+possibile: esperimenti di laboratorio, focus group, sondaggi su campioni limitati.
+
+La \textbf{Computational Social Science} (Lazer et al., 2009, \textit{Science}) è una
+disciplina emergente che sfrutta la disponibilità di dati digitali su larga scala per
+formulare e validare teorie sulle reti sociali. I dati di comunicazione digitale (e-mail,
+social media, telefonate) permettono di osservare reti di milioni di individui nel tempo,
+rendendo possibili studi impensabili con i metodi tradizionali.
+
+\subsection{Il numero di Dunbar}
+
+Quanto è grande una tipica rete sociale? Il primatologo e antropologo Robin Dunbar, studiando
+le reti sociali dei primati, ipotizzò l'esistenza di limiti cognitivi alla dimensione della
+propria rete sociale: la capacità di elaborazione della neocorteccia pone un limite al numero
+di individui con cui si può mantenere una relazione stabile. Dunbar stimò che
+\textbf{il numero tipico di relazioni stabili per un essere umano sia circa 150}
+(\emph{Dunbar's number}).
+
+Questa ipotesi è stata validata su dati reali: uno studio sullo scambio di biglietti di
+auguri natalizi trovò che la rete media era di 153,5 contatti. Gonçalves, Perra e Vespignani
+(2011) la validarono su Twitter, analizzando 1,7 milioni di utenti su un periodo di sei mesi:
+gli utenti mantenevano un numero massimo di \textbf{100--200 relazioni stabili}, confermando
+i limiti cognitivi previsti da Dunbar anche nel mondo online.
+
+\subsection{Reti di informazione online}
+
+Le reti di informazione (pagine web, blog, articoli) hanno una struttura fondamentalmente
+reticolare. Lo studio dei link tra queste risorse consente di capire come sono raggruppate
+le comunità di contenuti e quali risorse sono le più autorevoli.
+
+Un esempio emblematico è lo studio di Adamic e Glance (2005), che misurò il grado di
+interazione tra blog politici liberali e conservativi prima delle elezioni presidenziali USA
+del 2004. Analizzando 1.494 blog, trovarono che la rete mostrava due cluster ben separati,
+con i blog conservativi che si citavano tra loro in modo più fitto rispetto ai liberali.
+Questo rivela come la struttura di rete possa rivelare la \emph{polarizzazione} del
+discorso politico.
+
+Sulla stessa linea, uno studio di Del Vicario, Zollo et al.\ (2017) analizzò il dibattito
+sulla Brexit su Facebook, costruendo una rete di oltre un milione di utenti collegati
+in base alle interazioni con i contenuti delle principali testate giornalistiche britanniche.
+La struttura a rete rivelò la polarizzazione dell'opinione pubblica prima del referendum.
 
 \subsection{Ricerca e progetti del gruppo}
 
-Il gruppo di ricerca della Prof.ssa Zollo si occupa di analisi computazionale dei fenomeni di disinformazione, polarizzazione e dinamiche di opinione sui social media. Tra i contributi pi\`u rilevanti: Del Vicario et al. (2016) hanno studiato la diffusione di notizie vere e false su Facebook, mostrando che le \emph{echo chambers} favoriscono la propagazione della disinformazione; Zollo et al. (2017) hanno analizzato come gli utenti reagiscono alle smentite (\emph{debunking}) e come le reazioni differiscano tra comunit\`a con credenze diverse; Pi\~nero et al. (2023) hanno applicato tecniche di NLP avanzate per la rilevazione automatica della disinformazione multilingue. Questi contributi si inseriscono nel contesto pi\`u ampio della Computational Social Science, che vedremo in dettaglio nel capitolo sui Big Data.
-
+La Prof.ssa Zollo guida il \textit{Laboratory of Data Science for Society} di Ca' Foscari
+e coordina diversi progetti europei legati alle reti sociali digitali:
+IRIS (ecosistemi informativi sani), EUMEPLAT (identità europea nei media),
+IMSyPP (hate speech), QUEST (comunicazione scientifica).
 
 %% ============================================================
 \section{Teoria dei Grafi}
 %% ============================================================
 
-\subsection{I ponti di K\"{o}nigsberg}
+\subsection{Il problema dei ponti di Königsberg}
 
-La teoria dei grafi nasce ufficialmente nel 1736 con un articolo di Leonhard Euler intitolato ``Solutio problematis ad geometriam situs pertinentis'' (\emph{Commentarii Academiae Scientiarum Imperialis Petropolitanae}, 1736). Il problema che Euler risolse --- o meglio, dimostr\`o essere irrisolvibile --- era quello dei sette ponti di K\"onigsberg: \`e possibile percorrere tutti e sette i ponti che attraversano il fiume Pregel nella citt\`a di K\"onigsberg (oggi Kaliningrad) passando su ciascuno esattamente una volta? I cittadini di K\"onigsberg ci avevano provato per anni senza riuscirci, e Euler dimostr\`o formalmente che era impossibile.
+Nel 1735, Königsberg (Prussia Orientale) era attraversata dal fiume Pregel e disponeva di
+\textbf{sette ponti}. Il quesito classico era: è possibile compiere una passeggiata che attraversi
+ciascun ponte esattamente una volta?
 
-Il contributo geniale di Euler fu di astrazione: invece di ragionare sulla geografia fisica della citt\`a, rappresent\`o il problema come un \emph{grafo} in cui le masse di terra (due isole e le due rive del fiume) sono nodi e i ponti sono archi. Il problema diventa cos\`i: \`e possibile trovare un percorso nel grafo che attraversi ogni arco esattamente una volta (oggi chiamato \emph{cammino euleriano})? Euler dimostr\`o che un tale percorso esiste se e solo se il grafo ha esattamente zero o due nodi con grado dispari. Nel caso di K\"onigsberg, tutti e quattro i nodi avevano grado dispari (tre ponti ciascuno), quindi il percorso era impossibile.
+\textbf{Soluzione di Eulero (1736).} Euler modellò il problema con un grafo: quattro nodi
+(A, B, C, D) corrispondenti ai lembi di terra e sette archi corrispondenti ai ponti.
+Dimostrò che un cammino euleriano (che attraversa ogni arco una sola volta) \emph{esiste} se
+e solo se il grafo ha \textbf{al più due nodi di grado dispari}.
+Nel grafo di Königsberg tutti e quattro i nodi hanno grado dispari → nessun cammino ammissibile.
 
-Questa soluzione ha un significato che va ben oltre il problema specifico: Euler ha mostrato che alcune propriet\`a della rete (la distribuzione dei gradi) determinano fenomeni macroscopici (la possibilit\`a o meno di un percorso euleriano) indipendentemente da tutti gli altri dettagli della struttura. Questo principio --- le propriet\`a topologiche della rete hanno conseguenze globali --- \`e al cuore di tutta la moderna teoria delle reti.
+\textbf{L'ottavo ponte (1875).} Nel 1875 gli abitanti di Königsberg costruirono un nuovo ponte
+tra i nodi B e C. Questo ridusse a uno solo il numero di nodi con grado dispari, rendendo
+possibile trovare il cammino euleriano. L'esempio illustra concretamente come una piccola
+modifica alla struttura di un grafo possa cambiarne radicalmente le proprietà.
+
+\medskip
+\noindent\textbf{Lezioni chiave:}
+\begin{enumerate}
+  \item Alcuni problemi diventano più semplici se rappresentati come grafi.
+  \item I grafi possiedono proprietà intrinseche che limitano o amplificano i comportamenti
+        della rete.
+\end{enumerate}
 
 \subsection{Definizioni fondamentali}
 
-Prima di procedere con misure pi\`u avanzate, \`e necessario stabilire con precisione il vocabolario di base della teoria dei grafi. Queste definizioni non sono mere formalit\`a accademiche: ciascuna cattura un aspetto distinto della struttura di una rete, e la precisione terminologica \`e essenziale per evitare ambiguit\`a nell'interpretazione dei risultati.
+\definition{Grafo}{Un grafo $G=(V,E)$ è definito da un insieme di nodi (o vertici) $V$ e
+un insieme di archi $E \subseteq V \times V$.}
 
-\definition{Grafo}{Un grafo $G = (V, E)$ \`e una coppia ordinata composta da un insieme $V$ di \emph{vertici} (o \emph{nodi}) e un insieme $E$ di \emph{archi} (o \emph{spigoli}), dove ogni arco \`e una coppia non ordinata $\{u, v\}$ di vertici distinti. Indichiamo con $n = |V|$ il numero di nodi e con $m = |E|$ il numero di archi.}
+\definition{Grafo non orientato}{Gli archi non hanno direzione: $(u,v) \equiv (v,u)$.}
 
-\noindent La distinzione tra grafi orientati e non orientati \`e cruciale in molte applicazioni. In un grafo non orientato, il legame tra $u$ e $v$ \`e lo stesso del legame tra $v$ e $u$: le amicizie, le collaborazioni, la prossimit\`a fisica sono esempi di relazioni simmetriche. In un grafo orientato (\emph{digrafo}), invece, ogni arco ha una direzione: il ``seguire'' su Twitter, il ``citare'' in un articolo scientifico, il ``trasferire denaro'' in una transazione finanziaria sono esempi di relazioni asimmetriche.
+\definition{Grafo orientato (digrafo)}{Gli archi hanno una direzione: $(u,v) \neq (v,u)$.}
 
-\definition{Grafo Orientato}{Un grafo orientato (o \emph{digrafo}) \`e una coppia $G = (V, E)$ dove gli archi in $E$ sono coppie \emph{ordinate} $(u, v)$ con $u \neq v$. L'arco $(u, v)$ va da $u$ (sorgente) a $v$ (destinazione), ed \`e distinto dall'arco $(v, u)$.}
-
-\definition{Grafo Pesato}{Un grafo pesato \`e un grafo $G = (V, E, w)$ in cui ad ogni arco $(u, v) \in E$ \`e associato un \emph{peso} $w(u,v) \in \mathbb{R}$, che pu\`o rappresentare la forza del legame, la frequenza di interazione, la distanza fisica, o qualsiasi altra quantit\`a rilevante per il fenomeno studiato.}
-
-\definition{Adiacenza}{Due nodi $u$ e $v$ si dicono \emph{adiacenti} (o \emph{vicini}) se esiste un arco che li connette. L'insieme di tutti i vicini di un nodo $v$ si chiama \emph{vicinato} di $v$ e si denota $N(v) = \{u \in V : \{u,v\} \in E\}$.}
+\definition{Rete pesata}{Ogni arco $(i,j)$ ha un peso $w_{ij} \in \mathbb{R}$.}
 
 \subsection{Grado e distribuzione di grado}
 
-Prima di addentrarci nelle misure pi\`u sofisticate, \`e necessario partire dal concetto pi\`u semplice: il \textbf{grado} di un nodo. Immaginate di trovarvi a una festa: il vostro grado corrisponderebbe al numero di persone con cui avete scambiato almeno un saluto. In termini formali, il grado $k_i$ di un nodo $i$ \`e il numero di archi che collegano $i$ agli altri nodi della rete.
+Il \textbf{grado} $k_i$ di un nodo $i$ è il numero di archi che lo collegano ad altri nodi.
 
-\definition{Grado}{Il \emph{grado} $k_i$ di un nodo $i$ in un grafo non orientato \`e definito come il numero di archi incidenti su $i$:
-$k_i = |\{j \in V : \{i,j\} \in E\}| = |N(i)|$.}
+\textbf{Reti non orientate.}
+\formula{L = \frac{1}{2}\sum_{i=1}^{N} k_i \qquad \langle k \rangle = \frac{1}{N}\sum_{i=1}^{N} k_i = \frac{2L}{N}}
 
-\noindent Una relazione fondamentale lega la somma dei gradi al numero di archi. Poich\'e ogni arco contribuisce esattamente due al conteggio totale dei gradi (uno per ciascuno dei due nodi estremi), abbiamo:
+\textbf{Reti orientate.} Si distinguono grado entrante $k_i^{in}$ e uscente $k_i^{out}$:
+\formula{k_i = k_i^{in} + k_i^{out} \qquad
+  \langle k^{in} \rangle = \frac{L}{N} = \langle k^{out} \rangle}
 
-\formula{\sum_{i \in V} k_i = 2m}
-
-\noindent dove $m = |E|$ \`e il numero totale di archi. Questa identit\`a, nota come \emph{lemma delle strette di mano}, ha un'interpretazione intuitiva immediata: ogni legame contribuisce al grado di entrambi i nodi che connette, quindi la somma dei gradi conta ogni legame due volte. Da questa relazione si ricava immediatamente che il grado medio di un nodo \`e:
-
-\formula{\langle k \rangle = \frac{1}{n} \sum_{i \in V} k_i = \frac{2m}{n}}
-
-\noindent dove $n$ \`e il numero totale di nodi. Questa formula ci dice che il grado medio dipende dal rapporto tra il numero di archi e il numero di nodi: una rete densa (con molti archi rispetto ai nodi) ha grado medio alto, una rete sparsa ha grado medio basso.
-
-Nei grafi orientati, si distinguono due tipi di grado. Il \emph{grado entrante} (\emph{in-degree}) $k_i^{\text{in}}$ di un nodo $i$ \`e il numero di archi che arrivano su $i$, cio\`e il numero di nodi che puntano verso $i$. Il \emph{grado uscente} (\emph{out-degree}) $k_i^{\text{out}}$ \`e il numero di archi che partono da $i$, cio\`e il numero di nodi verso cui $i$ punta. Per un grafo orientato vale:
-
-\formula{\sum_{i \in V} k_i^{\text{in}} = \sum_{i \in V} k_i^{\text{out}} = m}
-
-\noindent Questa identit\`a riflette il fatto che ogni arco orientato ha esattamente una sorgente (contribuisce a un grado uscente) e una destinazione (contribuisce a un grado entrante).
-
-La \emph{distribuzione di grado} $P(k)$ di una rete descrive la probabilit\`a che un nodo scelto a caso abbia grado $k$. \`E la quantit\`a statistica pi\`u fondamentale per caratterizzare la struttura di una rete. Per le reti reali di grande interesse (Internet, Web, reti di collaborazione scientifica, reti biologiche), la distribuzione di grado segue approssimativamente una \emph{legge di potenza}:
-
-\formula{P(k) \sim k^{-\gamma}}
-
-\noindent dove $\gamma$ \`e un esponente che tipicamente cade nell'intervallo $2 < \gamma < 3$ per le reti reali. Le reti con distribuzione di grado a legge di potenza vengono dette \emph{scale-free} (prive di scala) perch\'e non hanno una scala caratteristica del grado: non esiste un ``grado tipico'' come avviene invece in una distribuzione gaussiana. Le reti scale-free sono caratterizzate da una piccola minoranza di nodi con grado elevatissimo (gli \emph{hub}) e una grande maggioranza di nodi con grado basso. Questo tipo di distribuzione ha implicazioni profonde per la robustezza delle reti (le reti scale-free sono robuste a guasti casuali ma vulnerabili ad attacchi mirati agli hub) e per la diffusione di epidemie e informazioni.
+\textbf{Distribuzione di grado.}
+\formula{p_k = \frac{N_k}{N}}
+dove $N_k$ è il numero di nodi con grado $k$. Le reti reali spesso mostrano distribuzioni
+a \textit{power-law} $p_k \sim k^{-\gamma}$ (reti \emph{scale-free}).
 
 \subsection{Matrice di adiacenza}
 
-Per poter lavorare computazionalmente con un grafo, \`e necessario rappresentarlo in modo che un computer possa manipolarlo. La rappresentazione pi\`u naturale e pi\`u usata nell'algebra lineare \`e la \emph{matrice di adiacenza}.
+Per una rete di $N$ nodi, la matrice di adiacenza $A \in \{0,1\}^{N \times N}$ è definita da:
+\[
+  A_{ij} = \begin{cases} 1 & \text{se esiste un arco da } j \text{ a } i \\ 0 & \text{altrimenti} \end{cases}
+\]
 
-\definition{Matrice di Adiacenza}{La matrice di adiacenza di un grafo $G = (V, E)$ con $n$ nodi \`e una matrice $A \in \{0,1\}^{n \times n}$ definita da:
-$A_{ij} = 1$ se $\{i,j\} \in E$ (esiste un arco tra $i$ e $j$), e $A_{ij} = 0$ altrimenti.}
+Proprietà:
+\begin{itemize}
+  \item $G$ non orientato $\Leftrightarrow$ $A$ simmetrica.
+  \item $G$ ha un self-loop $\Leftrightarrow$ $A_{ii} \neq 0$.
+  \item $G$ completo $\Leftrightarrow$ $A_{ij} \neq 0$ $\forall i \neq j$.
+\end{itemize}
 
-\noindent Per un grafo non orientato, la matrice di adiacenza \`e simmetrica: $A_{ij} = A_{ji}$ per ogni coppia $(i,j)$. Per un grafo orientato, $A_{ij} = 1$ indica l'esistenza dell'arco orientato da $i$ verso $j$, e la matrice non \`e necessariamente simmetrica.
+Il grado di un nodo si ricava direttamente dalla matrice:
+\[
+  k_i = \sum_{j=1}^{N} A_{ji} = \sum_{j=1}^{N} A_{ij} \quad (\text{non orientato})
+\]
 
-Una propriet\`a elegante della matrice di adiacenza \`e che le sue potenze hanno un'interpretazione reteologica precisa. La potenza $A^k$ \`e la matrice il cui elemento $(i,j)$ conta il numero di cammini di lunghezza esattamente $k$ da $i$ a $j$. In particolare, $(A^2)_{ij} = \sum_{\ell} A_{i\ell} A_{\ell j}$ conta il numero di nodi che sono vicini sia di $i$ che di $j$ --- cio\`e il numero di vicini comuni tra $i$ e $j$.
+\subsection{Reti sparse}
 
-La matrice di adiacenza permette anche di calcolare facilmente il grado di ogni nodo: il grado di $i$ \`e semplicemente la somma degli elementi della riga $i$ (o della colonna $i$, per grafi non orientati):
+Il numero massimo teorico di archi è:
+\formula{|E|_{\max} = \binom{N}{2} = \frac{N(N-1)}{2}}
+Le reti reali sono tipicamente \textbf{sparse}: $|E| \ll |E|_{\max}$.
+Ad esempio, il Karate Club di Zachary: $|V|=34$, $|E|=78$, $|E|_{\max}=561$.
 
-\formula{k_i = \sum_{j=1}^{n} A_{ij}}
+\subsection{Connettività e componenti connesse}
 
-\noindent Tuttavia, per reti molto grandi, la matrice di adiacenza diventa impraticabile: una rete con $n$ nodi richiede $n^2$ celle di memoria, e per $n = 10^6$ questo corrisponde a $10^{12}$ celle --- impensabile con hardware standard. Per questo motivo, le reti reali grandi vengono quasi sempre rappresentate tramite \emph{liste di adiacenza}.
+\definition{Componente connessa}{Sottoinsieme massimale di nodi tale che (1) ogni coppia di nodi
+al suo interno è collegata da almeno un cammino, e (2) non esiste un sottoinsieme più grande
+con la stessa proprietà.}
 
-\subsection{Liste di adiacenza}
+Un grafo con una sola componente connessa si dice \textbf{grafo connesso}; in un grafo
+disconnesso la matrice di adiacenza può essere riscritta in forma a blocchi diagonali.
 
-Una lista di adiacenza \`e una struttura dati in cui, per ogni nodo $i$, si memorizza esplicitamente solo l'insieme dei suoi vicini $N(i)$. Il costo di memoria totale \`e $O(n + m)$, dove $n$ \`e il numero di nodi e $m$ il numero di archi. Per reti sparse (dove $m \ll n^2$), questo \`e enormemente pi\`u efficiente della matrice di adiacenza.
+\textbf{Grafi orientati.} Per i grafi orientati si distingue tra:
+\begin{itemize}
+  \item \textbf{Componente fortemente connessa}: ogni nodo raggiunge tutti gli altri
+        \emph{seguendo la direzione degli archi}.
+  \item \textbf{Componente debolmente connessa}: ogni coppia di nodi è collegata
+        ignorando la direzione degli archi.
+\end{itemize}
 
-La scelta tra matrice di adiacenza e lista di adiacenza dipende dal tipo di operazioni che dobbiamo eseguire. La matrice di adiacenza permette di verificare in $O(1)$ se esiste un arco tra due nodi specifici, ma richiede $O(n^2)$ di spazio. La lista di adiacenza richiede $O(\deg(i))$ per verificare se esiste un arco da $i$ a $j$, ma usa solo $O(n + m)$ di spazio e \`e molto pi\`u efficiente per operazioni che devono scorrere tutti i vicini di un nodo (come il calcolo del grado, la BFS, la DFS).
+\subsection{Componente gigante (\textit{Giant Component})}
 
-\subsection{Reti sparse e dense}
+Nelle reti reali di grandi dimensioni il grafo non è quasi mai completamente connesso,
+ma esiste tipicamente una sola \textbf{componente gigante}: una componente connessa che
+contiene una frazione significativa di tutti i nodi della rete.
 
-Una rete si dice \emph{sparsa} quando il numero di archi $m$ \`e molto inferiore al numero massimo possibile di archi $\binom{n}{2} = \frac{n(n-1)}{2}$ per grafi non orientati. La \emph{densit\`a} di un grafo \`e definita come:
+\medskip
+\noindent\textbf{Perché di solito ne esiste solo una?}
+Se esistessero due componenti giganti, sarebbe sufficiente un singolo arco per fonderle
+in una componente ancora più grande. In reti sociali reali tale arco si forma quasi certamente,
+quindi le due componenti collassano in una.
 
-\formula{\delta = \frac{2m}{n(n-1)}}
+\medskip
+\noindent\textbf{Rilevanza pratica.}
+La presenza di una grande componente è cruciale per la diffusione di fenomeni (malattie,
+informazioni, comportamenti): un individuo con un solo contatto diretto può tuttavia fare
+parte di una componente che raggiunte la maggioranza della popolazione, percorrendo
+cammini di trasmissione indiretti.
 
-\noindent Per un grafo completo (dove ogni coppia di nodi \`e connessa), $\delta = 1$. Per le reti reali, la densit\`a \`e tipicamente molto bassa: la rete dei paper scientifici di un campo ha densit\`a dell'ordine di $10^{-4}$ o inferiore, il Web ha densit\`a dell'ordine di $10^{-9}$ o inferiore. Le reti sparse hanno propriet\`a strutturali molto diverse dalle reti dense, e gli algoritmi efficienti per le reti reali grandi devono sfruttare la sparsit\`a.
-
-\subsection{Connettivit\`a e componenti connesse}
-
-Un aspetto fondamentale della struttura di una rete \`e la sua \emph{connettivit\`a}: \`e possibile raggiungere ogni nodo partendo da ogni altro nodo?
-
-\definition{Componente Connessa}{Una \emph{componente connessa} di un grafo non orientato \`e un insieme massimale di nodi tali che esiste un cammino tra ogni coppia di nodi dell'insieme.}
-
-\noindent Per i grafi orientati, si distinguono le \emph{componenti fortemente connesse} (in cui si pu\`o raggiungere ogni nodo da ogni altro nodo seguendo gli archi nella loro direzione) e le \emph{componenti debolmente connesse} (in cui si pu\`o raggiungere ogni nodo da ogni altro ignorando la direzione degli archi).
-
-\subsection{La componente gigante}
-
-Nelle reti reali di grandi dimensioni, si osserva tipicamente la presenza di una \emph{componente gigante}: una singola componente connessa che contiene una frazione macroscopica (spesso il 50--90\%) di tutti i nodi della rete, mentre le restanti componenti sono piccole (di dimensione $O(\log n)$ o costante). La presenza della componente gigante \`e un fenomeno di transizione di fase: nel modello di Erd\H{o}s-R\'enyi (rete casuale in cui ogni coppia di nodi \`e connessa indipendentemente con probabilit\`a $p$), la componente gigante appare bruscamente quando il grado medio supera 1, cio\`e quando $\langle k \rangle = pn > 1$.
-
-Questa transizione ha un'interpretazione intuitiva: se ogni nodo ha in media meno di un vicino, la rete \`e frammentata in molte piccole isole disconnesse. Ma non appena il grado medio supera 1, queste isole si fondono in una componente gigante che attraversa l'intera rete. La stessa dinamica si osserva nella diffusione di epidemie: se il numero di riproduzione di base $R_0 > 1$, l'epidemia si diffonde nell'intera popolazione; se $R_0 < 1$, si spegne spontaneamente.
+\medskip
+\noindent\textbf{Lista di adiacenza.}
+Per memorizzare reti di grandi dimensioni (sparse) è conveniente usare una
+\textbf{lista di adiacenza} anziché la matrice di adiacenza completa: si memorizzano
+solo gli archi esistenti, riducendo il costo di memoria da $O(N^2)$ a $O(N+L)$.
 
 \subsection{Cammini, distanza e diametro}
 
-\definition{Cammino}{Un \emph{cammino} in un grafo $G = (V, E)$ \`e una sequenza di nodi $v_0, v_1, v_2, \ldots, v_\ell$ tale che per ogni $i \in \{0, 1, \ldots, \ell-1\}$ esiste un arco $\{v_i, v_{i+1}\} \in E$. La \emph{lunghezza} del cammino \`e il numero di archi attraversati, cio\`e $\ell$.}
+\definition{Cammino}{Sequenza di archi $(v_0,v_1),(v_1,v_2),\ldots,(v_{k-1},v_k)$.}
+\definition{Distanza geodesica}{$d(u,v)$ è la lunghezza del cammino più breve tra $u$ e $v$.}
+\definition{Diametro}{Il diametro di una rete è $d_{\max} = \max_{u,v} d(u,v)$, ovvero la
+massima distanza geodesica registrata tra qualsiasi coppia di nodi.}
+\definition{Lunghezza media del percorso}{$\langle d \rangle = \frac{1}{N(N-1)}\sum_{i\neq j}d(i,j)$
+è la distanza media tra tutte le coppie di nodi (calcolata solo all'interno della stessa
+componente connessa).}
 
-\definition{Distanza Geodesica}{La \emph{distanza geodesica} $d(u, v)$ tra due nodi $u$ e $v$ \`e la lunghezza del cammino pi\`u breve (o \emph{geodetico}) che collega $u$ a $v$. Se non esiste alcun cammino, si pone $d(u,v) = \infty$.}
+\subsection{Il Piccolo Mondo (\textit{Small World})}
 
-\noindent La lunghezza media del percorso (\emph{average path length}) di una rete \`e:
+L'esperimento di Milgram (1967) suggerì che la distanza media tra due individui negli USA
+fosse circa \textbf{sei gradi di separazione}. Un'analisi successiva su Microsoft Messenger
+(circa 240 milioni di utenti) stimò una lunghezza media del percorso $\langle d \rangle \approx 6.6$
+e una mediana di 7. Le reti reali mostrano tipicamente:
+\begin{enumerate}
+  \item \textbf{$\langle d \rangle$ piccola}: la lunghezza media del percorso cresce come $\log N$,
+        molto più lentamente della dimensione della rete.
+  \item \textbf{Alto coefficiente di clustering}: i vicini di un nodo tendono ad essere
+        connessi tra loro (molto di più di quanto ci si aspetterebbe in un grafo casuale).
+\end{enumerate}
+La coesistenza di questi due fenomeni è catturata dal \textbf{modello di Watts–Strogatz (1998)}:
+partendo da un grafo ad anello regolare, il ricablaggio casuale di una piccola frazione di archi
+abbassa drasticamente $\langle d \rangle$ mantenendo alto il clustering.
 
-\formula{\bar{L} = \frac{1}{n(n-1)} \sum_{i \neq j} d(i,j)}
+%% ============================================================
+\section{Legami Forti e Deboli}
+%% ============================================================
 
-\noindent Questa quantit\`a misura la ``distanza tipica'' tra due nodi scelti a caso nella rete: \`e una misura globale della coesione della rete. Il \emph{diametro} $D$ di una rete \`e la massima distanza geodesica tra qualsiasi coppia di nodi:
+\subsection{L'ipotesi di Granovetter}
 
-\formula{D = \max_{i,j \in V} d(i,j)}
+Negli anni '60, il sociologo Mark Granovetter condusse interviste con persone che avevano
+cambiato lavoro. Scoprì che molti avevano appreso dell'opportunità tramite
+\textbf{conoscenti}, non amici intimi.
 
-\noindent Il diametro misura la ``larghezza'' della rete: il caso peggiore. Una rete con diametro piccolo \`e ``compatta'': da qualsiasi nodo si riesce a raggiungere qualsiasi altro in pochi passi.
+Granovetter formulò l'ipotesi della \textbf{``forza dei legami deboli''}: i legami deboli
+(con conoscenti distanti) fungono da \emph{ponti} tra porzioni diverse della rete,
+trasmettendo informazioni nuove non disponibili nel proprio gruppo stretto.
 
-\subsection{Il Piccolo Mondo: Milgram, Watts e Strogatz}
+\subsection{Chiusura Triadica}
 
-Il fenomeno del ``piccolo mondo'' (small world) \`e uno dei risultati pi\`u sorprendenti e controintuitivi dell'analisi delle reti. L'intuizione comune porterebbe a pensare che in una rete di 7 miliardi di persone, la distanza media tra due individui qualsiasi sia enorme. Stanley Milgram, psicologo sociale di Harvard, test\`o sperimentalmente questa intuizione nel 1967. Chiese a persone in Nebraska e Kansas di far arrivare una lettera a un bersaglio a Boston, passando la lettera a un conoscente che si pensava fosse pi\`u vicino al bersaglio. Il risultato fu straordinario: le catene che arrivarono a destinazione avevano in media circa 5--6 passaggi, da cui l'espressione ``sei gradi di separazione''.
+\definition{Chiusura triadica}{Se A è amico di B e di C, allora esiste una probabilità
+elevata che B e C diventino amici nel tempo.}
 
-Molti decenni dopo, Duncan Watts e Steven Strogatz (Watts \& Strogatz, 1998) formalizzarono matematicamente il fenomeno del piccolo mondo. Essi dimostrarono che molte reti reali soddisfano contemporaneamente due propriet\`a che a prima vista sembrano incompatibili: una \emph{distanza media corta} (come i grafi casuali di Erd\H{o}s-R\'enyi) e un \emph{elevato coefficiente di clustering} (come i grafi regolari, dove i vicini dei vicini tendono a essere vicini). I grafi casuali hanno distanza media corta ma clustering basso; i grafi regolari hanno clustering alto ma distanza media lunga. Le reti reali --- e il modello di Watts-Strogatz --- hanno entrambe le propriet\`a.
+\noindent Ragioni della chiusura triadica:
+\begin{enumerate}
+  \item \textbf{Opportunità}: B e C si incontrano attraverso A.
+  \item \textbf{Fiducia}: la conoscenza comune A funge da garante.
+  \item \textbf{Incentivo}: la tensione cognitiva spinge verso equilibrio.
+\end{enumerate}
 
-\definition{Coefficiente di Clustering Globale}{Il \emph{coefficiente di clustering} $C$ di un grafo misura la proporzione di triangoli chiusi rispetto al numero di ``triadi'' aperte (cammini di lunghezza 2). Formalmente:
-$C = \frac{3 \times \text{numero di triangoli}}{\text{numero di triadi aperte}}$}
+\subsection{Coefficiente di Clustering}
 
-\noindent Un'interpretazione pi\`u intuitiva si ottiene dal coefficiente di clustering locale. Il coefficiente di clustering locale $C_i$ di un nodo $i$ misura la proporzione di coppie di vicini di $i$ che sono connesse tra loro:
+Il \textbf{coefficiente di clustering locale} di un nodo $i$ con grado $k_i$ è:
+\formula{C_i = \frac{2L_i}{k_i(k_i-1)}}
+dove $L_i$ è il numero di archi tra i vicini di $i$.
 
-\formula{C_i = \frac{|\{(u,v) : u,v \in N(i),\, \{u,v\} \in E\}|}{k_i(k_i-1)/2}}
+$C_i = 0$: nessuno dei vicini è connesso tra loro.
+$C_i = 1$: tutti i vicini formano un grafo completo.
 
-\noindent Il numeratore conta il numero di archi effettivamente presenti tra i vicini di $i$; il denominatore conta il numero massimo possibile di tali archi (tutte le coppie di vicini). Se $C_i = 1$, tutti i vicini di $i$ sono connessi tra loro (il vicinato di $i$ forma un grafo completo). Se $C_i = 0$, nessuna coppia di vicini di $i$ \`e connessa.
+Il \textbf{coefficiente di clustering medio} di una rete è:
+\formula{\langle C \rangle = \frac{1}{N}\sum_{i=1}^{N} C_i}
 
-\subsection{Reti scale-free e il modello di Barab\'asi-Albert}
+\subsection{Ponti e Ponti Locali}
 
-Come si spiegano le reti scale-free con distribuzione di grado a legge di potenza? Barab\'asi e Albert (Barab\'asi \& Albert, 1999) proposero un meccanismo generativo elegante basato su due ingredienti: la \emph{crescita} (la rete cresce nel tempo, con nuovi nodi che si aggiungono continuamente) e il \emph{preferential attachment} (i nuovi nodi tendono a connettersi preferenzialmente ai nodi gi\`a molto connessi --- ``i ricchi diventano pi\`u ricchi'').
+\definition{Ponte}{Un arco $(A,B)$ è un ponte se la sua rimozione disconnette $A$ e $B$
+(li porta in componenti distinte).}
 
-Pi\`u precisamente, nel modello di Barab\'asi-Albert (BA), ad ogni passo temporale viene aggiunto un nuovo nodo che si connette a $m$ nodi gi\`a presenti nella rete con una probabilit\`a proporzionale al loro grado attuale:
+\definition{Ponte locale}{Un arco $(A,B)$ è un ponte locale se $A$ e $B$ non hanno
+nessun amico in comune. La sua rimozione aumenta la distanza $d(A,B) > 2$.}
 
-\formula{\Pi(k_i) = \frac{k_i}{\sum_j k_j}}
+\noindent\textit{Relazione con la chiusura triadica}: un arco è un ponte locale precisamente
+quando non forma il lato di nessun triangolo. Ponti locali e chiusura triadica sono concetti
+opposti.
 
-\noindent dove $\Pi(k_i)$ \`e la probabilit\`a che il nuovo nodo si connetta al nodo $i$, e $k_i$ \`e il grado attuale di $i$. Questo meccanismo genera, nel limite di reti grandi, una distribuzione di grado a legge di potenza $P(k) \sim k^{-3}$. L'intuizione \`e chiara: i nodi che arrivano prima nella rete hanno il tempo di accumulare pi\`u connessioni, e la loro maggiore connettivit\`a li rende ancora pi\`u attrattivi per i nuovi arrivati. Il risultato \`e una distribuzione estremamente eterogenea con pochi hub dominanti.
+\subsection{La Proprietà di Chiusura Triadica Forte}
 
-Il preferential attachment \`e un meccanismo plausibile per molte reti reali: le pagine web pi\`u famose ricevono pi\`u link (perch\'e gli utenti le conoscono e le citano); gli articoli scientifici gi\`a molto citati ricevono nuove citazioni pi\`u facilmente (perch\'e appaiono ai primi posti nelle ricerche bibliografiche); le persone gi\`a famose sui social media acquisiscono nuovi follower pi\`u velocemente. Questo meccanismo di ``feedback positivo'' \`e ubiquo nei sistemi complessi e produce la caratteristica distribuzione a legge di potenza osservata empiricamente.
+Categorizzando i legami in \textbf{forti} (amici intimi) e \textbf{deboli} (conoscenti):
 
+\medskip
+\noindent\textbf{Proprietà STCP.} Se un nodo A ha legami forti con B e C, allora esiste
+un legame (almeno debole) tra B e C.
+
+\medskip
+\noindent\textbf{Conseguenza.} I legami deboli sono candidati naturali a essere ponti locali:
+se A–B fosse forte e fosse un ponte locale, violerebbero STCP.
+Questo spiega perché i legami deboli portano informazioni nuove.
+
+\subsection{Dimostrazione formale: ponti locali e legami deboli}
+
+\noindent\textbf{Claim.} Se un nodo A soddisfa la STCP ed è coinvolto in almeno due legami
+forti, allora qualsiasi ponte locale a cui A partecipa deve essere un legame debole.
+
+\medskip
+\noindent\textbf{Dimostrazione (per assurdo).}
+\begin{enumerate}
+  \item Supponiamo che A abbia un legame forte con B e che A–B sia un ponte locale.
+  \item Poiché A ha almeno due legami forti, esiste un altro nodo C con A–C forte.
+  \item Poiché A–B è un ponte locale, A e B non hanno amici in comune → B e C non sono
+        connessi.
+  \item Ma A–B forte e A–C forte con B–C assente viola la STCP.
+        Contraddizione. \quad $\square$
+\end{enumerate}
+Quindi \textbf{i legami deboli hanno un duplice ruolo}: sono connessioni superficiali (bassa
+forza) ma al tempo stesso preziosi ponti verso parti distanti della rete
+(``la forza dei legami deboli'' di Granovetter).
+
+\subsection{Validazione empirica: studio Onnela et al. (reti di telefonia mobile)}
+
+Per molti anni le previsioni di Granovetter rimasero difficili da verificare su larga scala.
+Con l'avvento delle comunicazioni digitali, Onnela et al.\ studiarono la rete
+\textit{chi-chiama-chi} di un operatore di telefonia mobile, con milioni di nodi.
+
+\medskip
+\noindent\textbf{Misura continua della forza del legame.}
+Nelle reti reali la dicotomia forte/debole è troppo rigida. La forza di un arco A–B
+viene definita come il tempo totale di conversazione tra A e B; si può poi ordinare
+tutti gli archi per percentile di forza.
+
+\medskip
+\noindent\textbf{Neighborhood overlap.}
+Analogamente, la proprietà di ``ponte locale'' (nessun amico in comune) è rarissima nelle
+reti reali. Si introduce quindi una misura graduale:
+\formula{
+  \text{Neighborhood Overlap}(A,B) =
+  \frac{|\mathcal{N}(A) \cap \mathcal{N}(B)|}{|\mathcal{N}(A) \cup \mathcal{N}(B)|}
+}
+dove $\mathcal{N}(X)$ è l'insieme dei vicini di $X$ (escluso il nodo stesso).
+\begin{itemize}
+  \item Overlap $= 0$: A e B non hanno vicini in comune → arco è un ponte locale.
+  \item Overlap piccolo: arco è ``quasi'' un ponte locale.
+  \item Overlap grande: arco è immerso in un gruppo fitto.
+\end{itemize}
+
+\noindent\textbf{Risultato.} Lo studio di Onnela et al.\ confermò la previsione di Granovetter:
+all'aumentare della forza del legame, l'overlap di vicinato cresce sistematicamente. In
+altre parole, i legami deboli tendono ad avere overlap basso e a fungere da ponti tra
+comunità distinte, mentre i legami forti collegano nodi con molti amici in comune.
+
+%% ============================================================
+\section{Contesti Sociali e Omofilia}
+%% ============================================================
+
+\subsection{Omofilia}
+
+\definition{Omofilia}{Il principio per cui tendiamo ad essere simili ai nostri amici.}
+
+I legami nelle reti sociali tendono a connettere persone simili per età, etnia, luogo di
+residenza, occupazione, interessi e opinioni. L'omofilia può guidare la formazione di legami
+e rafforzare la chiusura triadica: se A–B e A–C sono amici, l'omofilia suggerisce che B e C
+siano già simili tra loro, aumentando la probabilità di un legame B–C.
+
+\subsection{Misurare l'Omofilia}
+
+Dato un attributo categorico (es.\ genere) con frazione $p$ di nodi tipo ``maschio'' e
+frazione $q = 1-p$ di nodi tipo ``femmina'':
+
+Se i legami fossero formati casualmente, la frazione attesa di archi \emph{eterogenei}
+(che collegano i due tipi) sarebbe:
+\formula{2pq}
+
+Se la frazione osservata di archi eterogenei è \emph{minore} di $2pq$, la rete
+mostra \textbf{omofilia}; se è \emph{maggiore}, mostra \textbf{eterofilia}.
+
+\medskip
+\noindent\textbf{Esempio numerico.}
+Consideriamo una rete scolastica con 9 alunni: 6 maschi ($p = 6/9 = 2/3$) e 3 femmine
+($q = 3/9 = 1/3$). La rete ha 18 archi totali, di cui 5 sono eterogeni (collegano un maschio
+a una femmina). Con il mixing casuale ci aspetteremmo $2pq = 2 \cdot (2/3) \cdot (1/3) = 4/9$
+di archi eterogeni, ovvero $18 \times (4/9) = 8$ archi. Ne osserviamo solo 5 $<$ 8 →
+\textbf{evidenza di omofilia per genere}.
+
+\medskip
+\noindent\textbf{Note metodologiche.}
+\begin{enumerate}
+  \item Il numero atteso $2pq \cdot |E|$ varia per effetto del campionamento; per concludere
+        all'omofilia occorre verificare che lo scarto sia \textit{statisticamente significativo}
+        (es.\ con un test del chi-quadro o mediante permutazioni).
+  \item Se la frazione di archi eterogenei è significativamente \emph{maggiore} di $2pq$,
+        si parla di \textbf{eterofilia} (o omofilia inversa): le persone tendono a legarsi con
+        chi è diverso da loro.
+  \item Il test si estende a caratteristiche con più di due valori: un arco è
+        \textit{eterogeneo} se i suoi estremi hanno valori diversi, e si calcola la proporzione
+        di archi eterogenei attesa dal mixing casuale sulla base della distribuzione dei valori
+        nella rete.
+\end{enumerate}
+
+\subsection{Selezione e Influenza Sociale}
+
+Due meccanismi generano l'omofilia osservata:
+
+\begin{itemize}
+  \item \textbf{Selezione}: le persone formano legami con chi è già simile a loro
+        (\textit{``birds of a feather flock together''}).
+  \item \textbf{Influenza sociale}: i legami esistenti modificano i comportamenti e le
+        caratteristiche degli individui (\textit{peer pressure}).
+\end{itemize}
+
+\noindent\textbf{Caratteristiche immutabili} (sesso biologico, etnia): solo la selezione opera.\\
+\noindent\textbf{Caratteristiche mutabili} (comportamenti, opinioni, interessi): entrambi
+i meccanismi operano.
+
+\medskip
+\noindent\textbf{Esempio}. Studi longitudinali sugli adolescenti (Cohen \& Kandel) mostrano
+che sia selezione sia influenza sociale spiegano la somiglianza comportamentale tra amici,
+con l'influenza sociale più moderata della selezione. Capire quale meccanismo prevalga è
+fondamentale per progettare interventi efficaci (es.\ programmi anti-droga).
+
+\subsection{Affiliazione e Reti Bipartite}
+
+Possiamo modellare reti che includono sia \textbf{persone} sia \textbf{contesti} (focus group,
+club, classi, eventi) come nodi, connettendo persone ai contesti in cui partecipano.
+Feld (1981) chiama questi contesti \textbf{foci}: punti focali di interazione sociale.
+Si ottiene una \textbf{rete bipartita}: due tipi di nodi (persone e foci), archi solo tra tipi diversi.
+
+La \textbf{proiezione} su un tipo di nodi crea archi tra persone che condividono un contesto,
+spiegando così l'emergere dell'omofilia anche senza scelta esplicita di amici simili.
+
+\subsection{Tipi di chiusura nelle reti sociali}
+
+Nelle reti sociali si distinguono tre forme di chiusura che guidano la formazione di nuovi legami:
+
+\begin{itemize}
+  \item \textbf{Chiusura triadica}: B e C diventano amici perché hanno un amico comune A
+        (entrambi sono persone).
+  \item \textbf{Chiusura focale} (\textit{focal closure}): B e C diventano amici perché
+        partecipano a un focus comune A (es.\ stessa classe, stessa associazione).
+  \item \textbf{Chiusura di membership} (\textit{membership closure}): B aderisce a un focus
+        a cui il suo amico A già partecipa (forma di influenza sociale sui foci scelti).
+\end{itemize}
+
+\subsection{Co-evoluzione delle reti sociali e di affiliazione}
+
+Le reti sociali e le reti di affiliazione \textbf{co-evolvono}: la partecipazione a un focus
+crea opportunità di amicizia; le amicizie esistenti influenzano la scelta dei foci futuri.
+Questo meccanismo spiega perché l'omofilia osservata nelle reti sociali emerga in parte
+spontaneamente, anche in assenza di una scelta deliberata di amici simili.
+
+\medskip
+\noindent\textbf{Studio empirico: Kossinets \& Watts.}
+Kossinets e Watts analizzarono una rete di e-mail universitaria seguita nel tempo,
+integrando i dati di comunicazione con gli orari delle lezioni (ogni corso = un focus).
+Misurarono la probabilità giornaliera di formazione di un legame in funzione di:
+\begin{itemize}
+  \item il numero di amici in comune (chiusura triadica): la probabilità cresce in modo
+        superlineare con il numero di amici condivisi.
+  \item il numero di corsi condivisi (chiusura focale): un singolo corso condiviso ha
+        un effetto assoluto simile a un singolo amico in comune, ma l'effetto si satura
+        rapidamente all'aggiunta di ulteriori corsi condivisi.
+\end{itemize}
+Il confronto mostra che chiusura triadica e focale sono meccanismi complementari e
+paragonabili per importanza nella formazione di legami.
+
+%% ============================================================
+\section{Analisi delle Reti con R}
+%% ============================================================
+
+\subsection{Il pacchetto \texttt{igraph}}
+
+La libreria \textbf{igraph} (disponibile per R e Python) è lo strumento standard per l'analisi
+e la visualizzazione di reti. Si installa con:
+
+\begin{lstlisting}[language=R]
+install.packages("igraph")
+library(igraph)
+\end{lstlisting}
+
+\subsection{Costruzione di un grafo}
+
+\begin{lstlisting}[language=R]
+# Grafo diretto vuoto
+g <- graph.empty(directed = TRUE)
+
+# Aggiunta di nodi (famiglia reale)
+g <- g + vertex("Elizabeth II")
+g <- g + vertex("Philip")
+g <- g + vertex("Charles")
+g <- g + vertex("Diana")
+g <- g + vertex("William")
+g <- g + vertex("Harry")
+g <- g + vertex("Catherine")
+g <- g + vertex("George")
+
+# Aggiunta di archi (relazioni genitore -> figlio)
+g <- g + edges("Elizabeth II", "Charles")
+g <- g + edges("Philip",       "Charles")
+g <- g + edges("Charles",      "William")
+g <- g + edges("Diana",        "William")
+g <- g + edges("Charles",      "Harry")
+g <- g + edges("Diana",        "Harry")
+g <- g + edges("William",      "George")
+g <- g + edges("Catherine",    "George")
+
+plot.igraph(g)
+\end{lstlisting}
+
+\begin{lstlisting}[language=R]
+# Grafo da lista di archi
+g1 <- graph(edges = c(1,2, 2,3, 3,1), n = 3, directed = FALSE)
+plot(g1)
+
+# Grafo con nomi
+g3 <- graph(c("John","Jim","Jim","Jill","Jill","John"))
+plot(g3)
+
+# Grafo da formula letterale
+plot(graph_from_literal(a---b, b---c))  # non orientato
+plot(graph_from_literal(a--+b, b+--c)) # orientato
+\end{lstlisting}
+
+\subsection{Lettura di dati da file}
+
+\begin{lstlisting}[language=R]
+# Dataset 1: rete media (orientata, lista di archi)
+nodes <- read.csv("Dataset1-Media-Example-NODES.csv",
+                  header = TRUE, as.is = TRUE)
+links <- read.csv("Dataset1-Media-Example-EDGES.csv",
+                  header = TRUE, as.is = TRUE)
+net <- graph_from_data_frame(d = links, vertices = nodes,
+                              directed = TRUE)
+plot(net, edge.arrow.size = 0.4, edge.curved = 0.1)
+\end{lstlisting}
+
+\begin{lstlisting}[language=R]
+# Dataset 2: rete bipartita (matrice di incidenza)
+nodes2 <- read.csv("Dataset2-Media-User-Example-NODES.csv",
+                   header = TRUE, as.is = TRUE)
+links2 <- read.csv("Dataset2-Media-User-Example-EDGES.csv",
+                   header = TRUE, row.names = 1)
+links2 <- as.matrix(links2)
+net2   <- graph_from_incidence_matrix(links2)
+table(V(net2)$type)  # numero nodi per tipo
+plot(net2, vertex.label = NA)
+\end{lstlisting}
+
+\subsection{Visualizzazione avanzata}
+
+\begin{lstlisting}[language=R]
+# Colori per tipo di medium
+colrs <- c("gray50", "tomato", "gold")
+V(net)$color <- colrs[V(net)$media.type]
+
+# Dimensione nodi proporzionale al grado
+V(net)$size <- degree(net) * 2
+
+# Stile degli archi
+E(net)$width  <- E(net)$weight / 5
+E(net)$arrow.size <- 0.3
+
+plot(net,
+     vertex.label = V(net)$media,
+     vertex.label.color = "black",
+     vertex.label.cex = 0.7,
+     layout = layout_with_fr(net))
+\end{lstlisting}
+
+\begin{lstlisting}[language=R]
+# Rete bipartita con proiezioni
+net2.bp <- bipartite.projection(net2)
+plot(net2.bp$proj1,
+     vertex.label.color = "black",
+     vertex.label.dist  = 1,
+     vertex.label = nodes2$media[!is.na(nodes2$media.type)])
+
+# Layout bipartito esplicito
+plot(net2, vertex.label = NA, vertex.size = 7,
+     layout = layout_as_bipartite)
+\end{lstlisting}
+
+%% ============================================================
+\section{Misure di Centralità e Citation Networks}
+%% ============================================================
+
+\subsection{Centralità nelle reti}
+
+La \textbf{centralità} misura l'importanza di un nodo nella rete. Esistono diverse misure,
+ognuna con un'interpretazione diversa di ``importanza''.
+
+\subsection{Centralità di grado (\textit{Degree Centrality})}
+
+Il nodo più connesso è quello con il grado massimo:
+\formula{C_D(i) = k_i}
+
+\subsection{Centralità di betweenness}
+
+La \textbf{betweenness centrality} misura quante volte un nodo si trova sui cammini più corti
+tra coppie di nodi:
+\formula{C_B(i) = \sum_{s \neq i \neq t} \frac{\sigma_{st}(i)}{\sigma_{st}}}
+dove $\sigma_{st}$ è il numero di cammini più corti tra $s$ e $t$, e $\sigma_{st}(i)$
+quanti di essi passano per $i$.
+
+I nodi con alta betweenness sono \textbf{broker} di informazione.
+
+\subsection{Centralità di vicinanza (\textit{Closeness Centrality})}
+
+\formula{C_C(i) = \frac{N-1}{\sum_{j \neq i} d(i,j)}}
+
+Un nodo con alta closeness raggiunge rapidamente tutti gli altri.
+
+\subsection{Centralità di autovettore (\textit{Eigenvector Centrality})}
+
+La centralità di autovettore assegna importanza a un nodo in base all'importanza dei suoi
+vicini:
+\formula{C_E(i) = \frac{1}{\lambda} \sum_{j \in \mathcal{N}(i)} C_E(j)}
+In notazione matriciale: $\mathbf{A}\,\mathbf{x} = \lambda\,\mathbf{x}$ dove $\mathbf{x}$
+è l'autovettore associato all'autovalore massimo. PageRank di Google è una variante.
+
+\subsection{Applicazione: Citation Networks con R}
+
+\begin{lstlisting}[language=R]
+library(igraph)
+
+# Caricamento dati
+allCounts <- as.matrix(read.csv("ac.csv", as.is = TRUE))
+G <- graph.edgelist(allCounts, directed = FALSE)
+
+# Sottografo su specifici temi
+themes <- read.csv("themes.csv", as.is = TRUE)
+matchingCases    <- which(themes$issue %in% c(20040, 20050))
+matchingCases_ids <- themes$usid[matchingCases]
+H <- induced.subgraph(G, matchingCases_ids)
+
+# Layout di Fruchterman-Reingold
+set.seed(1)
+lout <- layout.fruchterman.reingold(H)
+plot.igraph(H, layout = lout, vertex.size = 5,
+            vertex.label.cex = 0.5)
+\end{lstlisting}
+
+\begin{lstlisting}[language=R]
+# Eigenvector Centrality
+eigenCent <- evcent(H)$vector
+sort(eigenCent, decreasing = TRUE)[1:10]
+
+# Colorazione heat map per centralita'
+bins     <- unique(quantile(eigenCent, seq(0, 1, length.out = 30)))
+vals     <- cut(eigenCent, bins, labels = FALSE, include.lowest = TRUE)
+colorVals <- rev(heat.colors(length(bins)))[vals]
+V(H)$color <- colorVals
+plot.igraph(H, vertex.label = NA, vertex.size = 5)
+
+# Betweenness Centrality
+betweenCent <- betweenness(H)
+sort(betweenCent, decreasing = TRUE)[1:10]
+cor(betweenCent, eigenCent)   # correlazione tra le due misure
+\end{lstlisting}
+
+\subsection{Comunità: algoritmo di Girvan–Newman}
+
+\textbf{Partizionamento dei grafi.}
+L'obiettivo è suddividere un grafo in \textbf{regioni dense} (comunità) con connessioni
+sparse tra di esse. Esistono due famiglie principali di metodi:
+\begin{itemize}
+  \item \textbf{Metodi divisivi} (top-down): identificano e rimuovono gli archi di
+        collegamento tra comunità, a partire dall'intero grafo.
+  \item \textbf{Metodi agglomerativi} (bottom-up): partono dai singoli nodi e li uniscono
+        progressivamente nelle stesse comunità sulla base di criteri di similarità.
+\end{itemize}
+
+\textbf{Betweenness degli archi (\textit{Edge Betweenness}).}
+Per selezionare quale arco rimuovere nei metodi divisivi si usa la
+\textbf{betweenness degli archi}: la quantità totale di flusso che passa per quell'arco.
+Formalmente, si suppone che per ogni coppia di nodi $(s,t)$ esista un'unità di flusso che
+si distribuisce equamente sui cammini più corti da $s$ a $t$; la betweenness dell'arco
+$(u,v)$ è la somma di questi flussi su tutte le coppie.
+\formula{
+  C_B(u,v) = \sum_{s \neq t} \frac{\sigma_{st}(u,v)}{\sigma_{st}}
+}
+Gli archi con alta betweenness sono ``ponti'' tra comunità; i nodi con alta betweenness
+(node betweenness) \textbf{occupano buchi strutturali} (\textit{structural holes}) e
+fungono da intermediari di informazione.
+
+\textbf{Il metodo di Girvan–Newman} è un metodo divisivo basato sulla betweenness degli archi:
+\begin{enumerate}
+  \item Calcola la betweenness di tutti gli archi.
+  \item Rimuove l'arco (o gli archi) con betweenness massima.
+  \item Ricalcola la betweenness di tutti gli archi rimasti (la rimozione altera i cammini
+        più corti).
+  \item Ripete finché non rimangono archi.
+\end{enumerate}
+Il metodo è efficace su reti di dimensioni moderate (qualche migliaio di nodi); per reti
+più grandi il ricalcolo iterativo della betweenness diventa computazionalmente costoso,
+rendendo preferibili metodi agglomerativi o approssimazioni.
+
+\begin{lstlisting}[language=R]
+# Rilevamento comunita' tramite edge betweenness
+w <- edge.betweenness.community(H)
+sort(table(w$membership))   # distribuzione delle comunita'
+\end{lstlisting}
+
+%% ============================================================
+\section{Visualizzazione dei Dati}
+%% ============================================================
+
+\subsection{Principi fondamentali}
+
+Una buona visualizzazione deve:
+\begin{enumerate}
+  \item Mostrare i dati veritieramente, senza distorsioni.
+  \item Facilitare il confronto.
+  \item Essere comprensibile al pubblico di riferimento.
+  \item Scegliere il tipo di grafico adatto al tipo di dato.
+\end{enumerate}
+
+\subsection{ggplot2 in R}
+
+\textbf{ggplot2} implementa la \textit{Grammar of Graphics}: ogni visualizzazione si
+compone di dati, mapping estetici (\textit{aesthetics}) e oggetti geometrici (\textit{geom}).
+
+\begin{lstlisting}[language=R]
+library(ggplot2)
+
+# Scatterplot base
+ggplot(data = mpg) +
+  geom_point(mapping = aes(x = displ, y = hwy))
+
+# Colore per classe
+ggplot(data = mpg) +
+  geom_point(mapping = aes(x = displ, y = hwy, color = class))
+
+# Dimensione per classe
+ggplot(data = mpg) +
+  geom_point(mapping = aes(x = displ, y = hwy, size = class))
+
+# Facets (griglia di grafici per sotto-gruppi)
+ggplot(data = mpg) +
+  geom_point(mapping = aes(x = displ, y = hwy)) +
+  facet_wrap(~ class)
+\end{lstlisting}
+
+\begin{lstlisting}[language=R]
+# Curva smoothing
+ggplot(data = mpg) +
+  geom_smooth(mapping = aes(x = displ, y = hwy))
+
+# Linee differenti per tipo di trazione
+ggplot(data = mpg) +
+  geom_smooth(mapping = aes(x = displ, y = hwy, linetype = drv))
+
+# Combinare piu' geom
+ggplot(data = mpg) +
+  geom_point(mapping  = aes(x = displ, y = hwy)) +
+  geom_smooth(mapping = aes(x = displ, y = hwy))
+\end{lstlisting}
+
+\subsection{Esempio: Salari dei professori}
+
+\begin{lstlisting}[language=R]
+library(car)
+data(Salaries)
+
+# Correlazione tra stipendio e anni dal PhD
+with(Salaries, cor(salary, yrs.since.phd))   # ~0.42
+with(Salaries, cor(salary, yrs.service))     # ~0.33
+
+# Test di correlazione
+with(Salaries, cor.test(salary, yrs.since.phd))
+\end{lstlisting}
+
+\subsection{Buone pratiche}
+
+\begin{itemize}
+  \item Evitare grafici a torta per più di 4-5 categorie (preferire barplot).
+  \item Non troncare l'asse Y (a meno che non sia esplicitamente giustificato).
+  \item Usare colori accessibili (palette friendly per daltonici).
+  \item Includere sempre assi etichettati, titolo e fonte dei dati.
+  \item Scegliere la scala appropriata (lineare vs.\ logaritmica).
+\end{itemize}
+
+%% ============================================================
+\section{Filtraggio Dati e Text Analysis}
+%% ============================================================
+
+\subsection{Dataset NYT / COVID-19}
+
+L'analisi testuale del corso utilizza un corpus di post Facebook del \textit{New York Times}
+relativi alla pandemia COVID-19. Il workflow di preprocessing è il seguente.
+
+\begin{lstlisting}[language=R]
+posts <- read.csv("nyt_posts.csv")
+posts <- posts[, -(37:40)]    # rimozione colonne inutili
+dim(posts)
+
+# Filtraggio per engagement minimo
+p <- posts[posts$Likes > 4 & posts$Comments > 4 & posts$Shares > 4, ]
+paste0(round(dim(p)[1] / dim(posts)[1], 2) * 100, "%")
+
+# Estrazione ID post dall'URL
+library(stringr)
+p$post_id <- str_sub(p$URL, 43, 60)
+table(p$Type)
+\end{lstlisting}
+
+\begin{lstlisting}[language=R]
+# Selezione post con "COVID-19" nel testo
+m <- as.character(df_other$text)
+y <- which(unlist(lapply(m, function(x) {
+       grepl("COVID-19", x, ignore.case = TRUE)
+     })))
+posts_covid_m <- df_other[y, ]
+\end{lstlisting}
+
+\subsection{Pre-elaborazione del testo con \texttt{quanteda}}
+
+\begin{lstlisting}[language=R]
+library(quanteda)
+source("stopwords_extended.R")
+
+# Costruzione del corpus
+corpus <- corpus(posts_covid_lm, text_field = "text")
+
+# Tokenizzazione e pulizia
+doc.tokens <- tokens(corpus)
+doc.tokens <- tokens(doc.tokens,
+                     remove_punct   = TRUE,
+                     remove_numbers = TRUE)
+doc.tokens <- tokens_select(doc.tokens,
+                stopwords(language = "en", source = "snowball"),
+                selection = "remove")
+doc.tokens <- tokens_select(doc.tokens, stopmore,
+                            selection = "remove")
+doc.tokens <- tokens_tolower(doc.tokens)
+toks_ngram  <- tokens_ngrams(doc.tokens, n = 1:2)
+
+# Document-Feature Matrix (DFM)
+dfmat1 <- dfm(toks_ngram) |> dfm_trim(min_termfreq = 10)
+dfmat1
+\end{lstlisting}
+
+\subsection{TF-IDF}
+
+Il peso \textbf{TF-IDF} (\textit{Term Frequency – Inverse Document Frequency})
+misura l'importanza di un termine $t$ in un documento $d$ rispetto a un corpus $D$:
+\formula{
+  \text{TF}(t,d) = \frac{f_{t,d}}{\sum_{t'} f_{t',d}}
+  \qquad
+  \text{IDF}(t,D) = \log\frac{|D|}{|\{d \in D : t \in d\}|}
+}
+\formula{
+  \text{TF-IDF}(t,d,D) = \text{TF}(t,d) \times \text{IDF}(t,D)
+}
+
+Termini molto frequenti in tutto il corpus (es.\ ``the'', ``a'') ricevono
+IDF basso e quindi peso basso, mentre termini specifici di pochi documenti
+ricevono peso alto.
+
+\begin{lstlisting}[language=R]
+library(quanteda.textstats)
+
+# 100 termini piu' frequenti
+features_dfm <- textstat_frequency(dfmat1, n = 100)
+
+# TF-IDF
+dfmat_tfidf <- dfm_tfidf(dfmat1)
+\end{lstlisting}
+
+\subsection{Analisi del sentimento}
+
+L'analisi del sentimento assegna a testi un punteggio di valenza emotiva (positivo,
+negativo, neutro). Approcci principali:
+\begin{itemize}
+  \item \textbf{Dizionari lessicali} (es.\ AFINN, BING, NRC): lookup diretto.
+  \item \textbf{Modelli ML supervisionati}: classificatori addestrati su testi annotati.
+  \item \textbf{Modelli basati su trasformatori} (BERT): catturano il contesto.
+\end{itemize}
+
+%% ============================================================
+\section{Topic Modeling con BERTopic}
+%% ============================================================
+
+\subsection{Cos'è il Topic Modeling?}
+
+Il \textbf{topic modeling} è una tecnica di apprendimento non supervisionato per scoprire
+temi latenti in un corpus di testi. Dato un insieme di documenti (tweet, articoli, commenti,
+ecc.), l'obiettivo è assegnare automaticamente ogni documento a uno o più argomenti.
+
+\subsection{Rappresentazione dei documenti}
+
+\subsubsection{Bag of Words (BoW)}
+Ogni documento è rappresentato dalla frequenza delle sue parole (vettore sparso).
+\begin{itemize}
+  \item[\checkmark] Semplice, interpretabile.
+  \item[$\times$] Perde informazione sintattica e semantica; problemi con omonimia ed enantiosemia.
+\end{itemize}
+
+\subsubsection{Embeddings (word2vec, BERT)}
+Ogni parola/frase viene mappata in un vettore denso nello spazio $\mathbb{R}^d$ dove
+la similarità vettoriale riflette la similarità semantica.
+
+Il modello \textbf{BERT} (\textit{Bidirectional Encoder Representations from Transformers}, 2018)
+legge il testo in entrambe le direzioni e produce rappresentazioni contestuali.
+\textbf{Sentence-BERT} (SBERT, 2019) usa il \textit{mean pooling} sulle rappresentazioni per
+ottenere un embedding a livello di frase.
+\begin{itemize}
+  \item[\checkmark] Nessun preprocessing testuale specifico; mantiene il contesto.
+  \item[$\times$] Non interpretabile; limite di lunghezza ($\sim$500 token $\approx$ 300 parole);
+        può risentire di bias nel corpus di addestramento.
+\end{itemize}
+
+\textbf{La maledizione della dimensionalità (\textit{Curse of Dimensionality}).}
+Dopo l'embedding, ogni documento è un punto in uno spazio con centinaia di dimensioni ($d \approx 768$
+per BERT). In spazi ad altissima dimensione il concetto di ``distanza'' perde significato: quasi
+tutte le coppie di punti diventano equidistanti, rendendo il clustering inefficace. Per questo
+BERTopic introduce un passo di \textbf{riduzione della dimensionalità} prima del clustering.
+
+\subsection{Il pipeline di BERTopic}
+
+\textbf{BERTopic} (Grootendorst, 2022) combina quattro passi:
+
+\begin{enumerate}
+  \item \textbf{Embedding dei documenti} tramite SBERT: ogni documento diventa un vettore
+        in uno spazio ad alta dimensione ($d \approx 768$).
+  \item \textbf{Riduzione della dimensionalità} con UMAP: da $\mathbb{R}^{768}$ a
+        $\mathbb{R}^5$ (o meno), preservando la struttura locale.
+  \item \textbf{Clustering} con HDBSCAN: raggruppa documenti semanticamente simili
+        in cluster; i documenti fuori da tutti i cluster sono etichettati come ``rumore''.
+  \item \textbf{Rappresentazione dei topic} con c-TF-IDF: per ogni cluster si calcola
+        un TF-IDF ``classico'' applicato ai cluster come fossero documenti.
+\end{enumerate}
+
+\subsubsection{UMAP (Uniform Manifold Approximation and Projection)}
+
+UMAP riduce la dimensionalità preservando la struttura locale dei dati:
+\begin{enumerate}
+  \item Costruisce un grafo di vicinanza nello spazio ad alta dimensione.
+  \item Costruisce un grafo equivalente in bassa dimensione.
+  \item Minimizza la \textit{cross-entropy loss} tra i due grafi tramite
+        discesa del gradiente stocastica.
+\end{enumerate}
+Il risultato è una proiezione che preserva i cluster semantici. La qualità dipende dal
+parametro $K$ (numero di vicini considerati).
+
+\subsubsection{Algoritmi di clustering: da K-Means a HDBSCAN}
+
+\textbf{K-Means} è l'algoritmo di clustering più semplice: si scelgono $K$ centroidi,
+si assegna ogni punto al centroide più vicino, si ricalcolano i centroidi, e si ripete fino
+alla convergenza. Limitazione principale: richiede di specificare $K$ a priori e produce
+cluster di forma sferica.
+
+\textbf{DBSCAN} (\textit{Density-Based Spatial Clustering of Applications with Noise})
+supera questi limiti: individua cluster di forma arbitraria sulla base della densità locale
+(parametri: raggio $\varepsilon$ e numero minimo di punti \texttt{minPts}), e classifica i
+punti isolati come \textbf{rumore}. Complessità media $O(n \log n)$.
+
+\textbf{HDBSCAN} (\textit{Hierarchical DBSCAN}) estende DBSCAN:
+\begin{itemize}
+  \item non richiede di specificare il numero di cluster \textit{a priori};
+  \item individua cluster di forma arbitraria e con densità diverse;
+  \item richiede un solo iperparametro principale (dimensione minima del cluster);
+  \item etichetta come rumore i punti in regioni a bassa densità.
+\end{itemize}
+
+\subsubsection{c-TF-IDF (class-TF-IDF)}
+
+Per ottenere le parole rappresentative di ogni topic, BERTopic unisce tutti i documenti
+di un cluster in un unico ``meta-documento'' e calcola:
+\formula{
+  c\text{-TF-IDF}_{t,c} = \frac{f_{t,c}}{\sum_{t'} f_{t',c}}
+  \times \log\left(1 + \frac{A}{f_t}\right)
+}
+dove $f_{t,c}$ è la frequenza di $t$ nel cluster $c$, $f_t$ è la frequenza totale di $t$
+nel corpus, e $A$ è il numero medio di parole per classe.
+
+\textbf{Altre rappresentazioni dei topic.}
+BERTopic supporta rappresentazioni alternative alla c-TF-IDF:
+\begin{itemize}
+  \item \textbf{Marginal Maximum Relevance (MMR)}: bilancia rilevanza e diversità delle
+        parole chiave.
+  \item \textbf{Part of Speech (POS)}: filtra le parole chiave per categoria grammaticale.
+  \item \textbf{KeyBERT}: usa gli embedding BERT per trovare le parole più simili
+        semanticamente al topic.
+  \item \textbf{LLM}: sfrutta modelli di linguaggio di grandi dimensioni per generare
+        etichette o riassunti testuali per ciascun topic.
+\end{itemize}
+
+\subsection{Valutazione del modello}
+
+BERTopic richiede la scelta di diversi iperparametri (embedding model, numero di vicini
+UMAP, dimensione minima del cluster HDBSCAN, lingua per le stopword). La valutazione avviene
+sia quantitativamente sia qualitativamente.
+
+\textbf{Metriche quantitative:}
+\begin{itemize}
+  \item \textbf{DB Cluster Relative Validity (DBCV)}: misura la qualità del clustering
+        tra $-1$ e $1$; valori più alti indicano cluster più coesi e separati. Permette
+        di confrontare diversi run con parametri diversi sullo stesso corpus.
+  \item \textbf{Coherence score}: misura la coerenza semantica dei topic, valutando quanto
+        spesso le parole chiave di un topic co-occorrono nel corpus.
+  \item \textbf{Diversity score} (es.\ Jaccard Topic Diversity): misura quanto i topic siano
+        distinti tra loro calcolando la proporzione di parole chiave uniche sul totale.
+\end{itemize}
+
+\textbf{Ispezione manuale}: la lettura delle parole chiave e dei documenti rappresentativi
+di ciascun topic rimane il metodo più affidabile ma richiede molto tempo.
+
+\subsection{Vantaggi e limiti di BERTopic}
+
+\begin{center}
+\begin{tabular}{p{0.44\textwidth}p{0.44\textwidth}}
+\toprule
+\textbf{Vantaggi} & \textbf{Limiti} \\
+\midrule
+Scalabile a grandi corpus & Richiede GPU per l'embedding \\
+Preserva il contesto semantico & Molti iperparametri da ottimizzare \\
+Flessibile (componenti sostituibili) & Limite di lunghezza dei documenti \\
+Topic interpretabili tramite parole chiave & Possibili bias dal corpus di pre-addestramento \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{Varianti di BERTopic}
+
+\begin{itemize}
+  \item \textbf{Dynamic Topic Modeling}: evoluzione dei topic nel tempo.
+  \item \textbf{Guided Topic Modeling}: incorporazione di seed words.
+  \item \textbf{Zero-shot Topic Modeling}: classificazione senza dati di addestramento.
+  \item \textbf{Online Topic Modeling}: aggiornamento incrementale del modello.
+\end{itemize}
+
+%% ============================================================
+\section{Big Data e Dati Sociali}
+%% ============================================================
+
+\subsection{Cosa sono i Big Data?}
+
+``\textit{Big Data}'' è un termine spesso frainteso: non si riferisce semplicemente a
+grandi quantità di dati, ma a una \textbf{capacità di ricerca, aggregazione e
+incrocio} di insiemi di dati eterogenei \cite[Boyd \& Crawford, 2012]{}.
+
+\medskip
+\noindent Due interpretazioni prevalenti:
+\begin{enumerate}
+  \item \textbf{Strumento potente}: permette di affrontare questioni sociali complesse
+        su larga scala.
+  \item \textbf{Manifestazione preoccupante}: rischi per la privacy, la libertà civile
+        e il controllo governativo/corporativo.
+\end{enumerate}
+
+\noindent Le \textbf{quattro forze regolatrici} dei sistemi sociali (Lessig, 1999):
+\begin{itemize}
+  \item \textbf{Mercato}: i Big Data rappresentano un'opportunità commerciale enorme.
+  \item \textbf{Legge}: i Big Data sollevano preoccupazioni sulla privacy e la protezione
+        dei dati personali (es.\ GDPR).
+  \item \textbf{Norme sociali}: la personalizzazione algoritmica è vista come utile
+        (informazioni più rilevanti) ma anche come fonte di frammentazione del dibattito
+        pubblico (camere d'eco).
+  \item \textbf{Architettura (codice)}: le piattaforme digitali progettano ambienti che
+        modellano i comportamenti degli utenti, spesso in modo opaco.
+\end{itemize}
+Queste forze sono spesso in conflitto nell'ecosistema dei Big Data.
+
+\subsection{Sei provocazioni sui Big Data (Boyd \& Crawford)}
+
+\subsubsection{1. I Big Data cambiano la definizione di conoscenza}
+
+L'emergere di sistemi computazionali per l'analisi dei dati modifica il modo in cui
+costruiamo conoscenza scientifica e sociale. I tool disponibili hanno limitazioni
+strutturali (es.\ archivi Twitter/Facebook di difficile accesso) che condizionano
+le domande di ricerca.
+
+\subsubsection{2. I claim di obiettività e accuratezza sono fuorvianti}
+
+Tutti i ricercatori interpretano i dati. Le scelte di design (cosa misurare, come pulire
+i dati, quali variabili includere) sono soggettive. I grandi dataset possono contenere
+errori sistematici che si amplificano con la combinazione di fonti diverse.
+
+\subsubsection{3. I Big Data non sono equivalenti ai Big Data}
+
+L'accesso ai dati non è democratico: grandi aziende e governi hanno accesso privilegiato
+che i ricercatori accademici non hanno. I dati disponibili dipendono da scelte commerciali
+e politiche, non dalla rilevanza scientifica.
+
+\subsubsection{4. I Big Data estrapolati dal contesto perdono significato}
+
+I dati social sono ampiamente usati per fare affermazioni sulle reti sociali, ma le relazioni
+rappresentate sui social media non equivalgono necessariamente alle reti personali studiate
+dai sociologi attraverso interviste e osservazioni.
+
+Boyd e Crawford distinguono due tipi di reti sociali nei Big Data:
+\begin{itemize}
+  \item \textbf{Reti articolate} (\textit{articulated networks}): derivate da dichiarazioni
+        esplicite degli utenti (liste di amici/follower). Includono amici intimi, conoscenti,
+        colleghi, celebrity, ecc.
+  \item \textbf{Reti comportamentali} (\textit{behavioral networks}): derivate da pattern
+        di comunicazione e interazione effettiva sulla piattaforma.
+\end{itemize}
+Entrambe hanno valore per i ricercatori, ma non sono equivalenti tra loro né alle reti
+personali reali. Ad esempio, la frequenza dei contatti non indica necessariamente la forza
+del legame, e non ogni connessione corrisponde a un'altra connessione.
+
+\subsubsection{5. Le questioni etiche sono complesse}
+
+\begin{itemize}
+  \item \textbf{Consenso informato}: i dati social sono pubblici, ma non necessariamente
+        ceduti per scopi di ricerca. Il fatto che un utente abbia pubblicato un contenuto
+        su Facebook non significa che acconsenta al suo uso in una ricerca scientifica.
+  \item \textbf{Anonimizzazione e re-identificazione}: dati apparentemente anonimi possono
+        essere re-identificati combinando attributi. Un caso emblematico è lo studio di
+        Lewis et al.\ (2008), in cui un gruppo di ricercatori di Harvard raccolse i profili
+        Facebook di circa 1.700 studenti e li rese disponibili come dataset di ricerca.
+        Il ricercatore Zimmer mostrò che la re-identificazione era possibile: includendo
+        genere, stato di provenienza, corso di laurea ed etnia, i soggetti diventavano
+        facilmente identificabili (es.\ l'unico studente albanese di un college privato
+        del New England con circa 1.640 matricole). Gli autori dello studio risposero che
+        i dati erano già presenti su Facebook, ma Zimmer controbatté che postare su
+        Facebook non equivale a dare il consenso alla ricerca scientifica.
+  \item \textbf{Discriminazione algoritmica}: modelli addestrati su dati storici possono
+        perpetuare discriminazioni.
+\end{itemize}
+
+\subsubsection{6. Accesso asimmetrico ai Big Data crea nuove disparità}
+
+La divisione tra chi ha e chi non ha accesso ai grandi dataset crea disuguaglianze nella
+produzione di conoscenza e nel potere decisionale.
+
+\medskip
+\noindent\textbf{Nota metodologica: correlazioni e causalità.}
+Una limitazione trasversale all'analisi dei Big Data è che la correlazione statistica tra
+variabili non implica un nesso causale. I grandi dataset facilitano la scoperta di pattern
+ma non necessariamente la loro spiegazione causale. Occorre rigore metodologico per non
+trarre conclusioni errate.
+
+\subsection{Qualità dei dati sociali e tassonomia dei bias (Olteanu et al., 2019)}
+
+La raccolta e l'analisi dei dati social introduce sistematicamente dei bias che il
+ricercatore deve riconoscere e, per quanto possibile, controllare. Olteanu et al.\ (2019)
+propongono una tassonomia articolata in sei categorie:
+
+\begin{enumerate}
+  \item \textbf{Population biases}: differenze demografiche tra gli utenti di una piattaforma
+        e la popolazione target. Le principali piattaforme social presentano composizioni
+        demografiche sistematicamente diverse dalla popolazione generale (es.\ divari per
+        genere, età, etnia). Assumere che i dati siano rappresentativi della popolazione
+        porta a conclusioni fuorvianti.
+
+  \item \textbf{Behavioral biases}: differenze nel comportamento degli utenti across
+        piattaforme o contesti. Includono:
+        \begin{itemize}
+          \item \textit{Interaction biases}: come gli utenti interagiscono tra loro varia per
+                relazione, demografia e funzionalità della piattaforma.
+          \item \textit{Content consumption biases}: gli utenti tendono a consumare contenuti
+                di persone simili, favorendo la formazione di \textit{echo chambers}.
+          \item \textit{Self-selection e misreport}: gli utenti pubblicano selettivamente
+                (auto-censura, rimozione contenuti) e possono dare auto-report inaccurati.
+        \end{itemize}
+
+  \item \textbf{Content production biases}: differenze lessicali, sintattiche e semantiche
+        nei contenuti prodotti da popolazioni diverse. L'uso della lingua varia tra paesi,
+        gruppi demografici e nel tempo; utenti ``esperti'' producono contenuti diversi da
+        utenti normali.
+
+  \item \textbf{Linking biases}: differenze negli attributi delle reti costruite da
+        connessioni o interazioni degli utenti. Le reti basate su connessioni esplicite
+        (es.\ amici dichiarati) sono strutturalmente diverse da quelle basate su interazioni
+        implicite (es.\ chi risponde a chi). L'omofilia può distorcere sistematicamente
+        le percezioni degli utenti sulla prevalenza di certi attributi nella popolazione.
+
+  \item \textbf{Temporal variations}: variazioni nelle popolazioni, nei comportamenti e
+        nelle piattaforme nel tempo. Includono fenomeni stagionali/periodici, eventi
+        improvvisi (es.\ catastrofi naturali), cambiamenti di funzionalità della piattaforma,
+        e il decadimento dei dataset nel tempo (cancellazione di account, restrizioni API).
+
+  \item \textbf{Functional biases}: bias derivanti dai meccanismi specifici delle
+        piattaforme. Ogni piattaforma ha le proprie affordances (azioni incentivate o
+        disincentivate) e algoritmi proprietari (spesso non documentati) che modellano il
+        comportamento degli utenti e la distribuzione dei contenuti. Ad esempio,
+        ridimensionare la finestra di risposta su Facebook ha portato risposte più brevi,
+        più frequenti e più rapide.
+\end{enumerate}
+
+\textbf{Ridondanza.}
+Un ulteriore problema è la \textbf{ridondanza}: lo stesso contenuto può apparire in
+copie esatte (\textit{duplicati}) o approssimate (\textit{near-duplicates}), distorcendo
+la quantificazione dei fenomeni. La ridondanza può però essere anche un \textit{segnale}
+(es.\ un messaggio ripubblicato molte volte indica viralità).
+
+\subsection{Attributi privati nei dati digitali}
+
+La ricerca di Kosinski et al.\ (2013) dimostrò che i \textit{Facebook likes} permettono
+di prevedere con alta accuratezza attributi privati degli utenti (orientamento sessuale,
+etnia, opinioni politiche, tratti della personalità). Questo solleva questioni etiche
+fondamentali sull'uso dei dati digitali.
+
+%% ============================================================
+\appendix
+\renewcommand{\thesection}{\Alph{section}}
+\section{Formulario riassuntivo}
+%% ============================================================
+
+\begin{center}
+\begin{tabular}{lll}
+  \toprule
+  \textbf{Misura} & \textbf{Formula} & \textbf{Interpretazione} \\
+  \midrule
+  Grado (non or.) & $k_i = \sum_j A_{ji}$ & Numero di vicini \\
+  Grado medio & $\langle k \rangle = 2L/N$ & Connettività media \\
+  Clustering loc. & $C_i = \frac{2L_i}{k_i(k_i-1)}$ & Densità locale \\
+  Clustering medio & $\langle C \rangle = \frac{1}{N}\sum C_i$ & Clustering globale \\
+  Betweenness & $C_B(i) = \sum_{s\neq i \neq t} \frac{\sigma_{st}(i)}{\sigma_{st}}$
+              & Ruolo di intermediario \\
+  Closeness & $C_C(i) = \frac{N-1}{\sum_{j\neq i}d(i,j)}$ & Efficienza di raggiungimento \\
+  Eigenvector & $\mathbf{A}\mathbf{x} = \lambda\mathbf{x}$ & Importanza dei vicini \\
+  TF-IDF & $\text{TF}\times\log(|D|/\text{df})$ & Rilevanza termine in doc \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+\section{Glossario}
+\begin{description}
+  \item[Arco (edge)] Connessione tra due nodi in un grafo.
+  \item[Betweenness centrality] Misura di centralità basata su cammini più corti.
+  \item[BERTopic] Framework di topic modeling basato su BERT, UMAP e HDBSCAN.
+  \item[BoW] Bag of Words: rappresentazione vettoriale sparsa dei documenti.
+  \item[Chiusura triadica] Tendenza a formare triangoli in reti sociali.
+  \item[Clustering coefficient] Misura della densità di connessioni tra vicini.
+  \item[Componente connessa] Sottografo massimale in cui ogni coppia di nodi è raggiungibile.
+  \item[Diametro] Massima distanza geodesica in un grafo.
+  \item[Grado (degree)] Numero di archi incidenti su un nodo.
+  \item[Grafo] Struttura matematica composta da nodi e archi.
+  \item[HDBSCAN] Hierarchical Density-Based Spatial Clustering.
+  \item[Homophily] Tendenza a legarsi con chi è simile a noi.
+  \item[igraph] Libreria R/Python per analisi di reti.
+  \item[Matrice di adiacenza] Rappresentazione matriciale di un grafo.
+  \item[Nodo (vertex)] Elemento base di un grafo.
+  \item[Omofilia] Vedi Homophily.
+  \item[Ponte locale] Arco che collega nodi senza amici in comune.
+  \item[Scale-free] Rete con distribuzione di grado a power-law.
+  \item[Sentiment analysis] Analisi automatica della valenza emotiva dei testi.
+  \item[Small world] Rete con diametro piccolo e alto clustering.
+  \item[TF-IDF] Term Frequency–Inverse Document Frequency.
+  \item[Topic modeling] Scoperta automatica di temi latenti nei testi.
+  \item[UMAP] Uniform Manifold Approximation and Projection.
+\end{description}
+
+\end{document}
