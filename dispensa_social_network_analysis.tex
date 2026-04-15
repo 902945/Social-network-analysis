@@ -210,6 +210,11 @@ Dimostrò che un cammino euleriano (che attraversa ogni arco una sola volta) \em
 e solo se il grafo ha \textbf{al più due nodi di grado dispari}.
 Nel grafo di Königsberg tutti e quattro i nodi hanno grado dispari → nessun cammino ammissibile.
 
+\textbf{L'ottavo ponte (1875).} Nel 1875 gli abitanti di Königsberg costruirono un nuovo ponte
+tra i nodi B e C. Questo ridusse a uno solo il numero di nodi con grado dispari, rendendo
+possibile trovare il cammino euleriano. L'esempio illustra concretamente come una piccola
+modifica alla struttura di un grafo possa cambiarne radicalmente le proprietà.
+
 \medskip
 \noindent\textbf{Lezioni chiave:}
 \begin{enumerate}
@@ -271,22 +276,73 @@ Il numero massimo teorico di archi è:
 Le reti reali sono tipicamente \textbf{sparse}: $|E| \ll |E|_{\max}$.
 Ad esempio, il Karate Club di Zachary: $|V|=34$, $|E|=78$, $|E|_{\max}=561$.
 
+\subsection{Connettività e componenti connesse}
+
+\definition{Componente connessa}{Sottoinsieme massimale di nodi tale che (1) ogni coppia di nodi
+al suo interno è collegata da almeno un cammino, e (2) non esiste un sottoinsieme più grande
+con la stessa proprietà.}
+
+Un grafo con una sola componente connessa si dice \textbf{grafo connesso}; in un grafo
+disconnesso la matrice di adiacenza può essere riscritta in forma a blocchi diagonali.
+
+\textbf{Grafi orientati.} Per i grafi orientati si distingue tra:
+\begin{itemize}
+  \item \textbf{Componente fortemente connessa}: ogni nodo raggiunge tutti gli altri
+        \emph{seguendo la direzione degli archi}.
+  \item \textbf{Componente debolmente connessa}: ogni coppia di nodi è collegata
+        ignorando la direzione degli archi.
+\end{itemize}
+
+\subsection{Componente gigante (\textit{Giant Component})}
+
+Nelle reti reali di grandi dimensioni il grafo non è quasi mai completamente connesso,
+ma esiste tipicamente una sola \textbf{componente gigante}: una componente connessa che
+contiene una frazione significativa di tutti i nodi della rete.
+
+\medskip
+\noindent\textbf{Perché di solito ne esiste solo una?}
+Se esistessero due componenti giganti, sarebbe sufficiente un singolo arco per fonderle
+in una componente ancora più grande. In reti sociali reali tale arco si forma quasi certamente,
+quindi le due componenti collassano in una.
+
+\medskip
+\noindent\textbf{Rilevanza pratica.}
+La presenza di una grande componente è cruciale per la diffusione di fenomeni (malattie,
+informazioni, comportamenti): un individuo con un solo contatto diretto può tuttavia fare
+parte di una componente che raggiunte la maggioranza della popolazione, percorrendo
+cammini di trasmissione indiretti.
+
+\medskip
+\noindent\textbf{Lista di adiacenza.}
+Per memorizzare reti di grandi dimensioni (sparse) è conveniente usare una
+\textbf{lista di adiacenza} anziché la matrice di adiacenza completa: si memorizzano
+solo gli archi esistenti, riducendo il costo di memoria da $O(N^2)$ a $O(N+L)$.
+
 \subsection{Cammini, distanza e diametro}
 
 \definition{Cammino}{Sequenza di archi $(v_0,v_1),(v_1,v_2),\ldots,(v_{k-1},v_k)$.}
 \definition{Distanza geodesica}{$d(u,v)$ è la lunghezza del cammino più breve tra $u$ e $v$.}
-\definition{Diametro}{Il diametro di una rete è $\max_{u,v} d(u,v)$.}
+\definition{Diametro}{Il diametro di una rete è $d_{\max} = \max_{u,v} d(u,v)$, ovvero la
+massima distanza geodesica registrata tra qualsiasi coppia di nodi.}
+\definition{Lunghezza media del percorso}{$\langle d \rangle = \frac{1}{N(N-1)}\sum_{i\neq j}d(i,j)$
+è la distanza media tra tutte le coppie di nodi (calcolata solo all'interno della stessa
+componente connessa).}
 
 \subsection{Il Piccolo Mondo (\textit{Small World})}
 
 L'esperimento di Milgram (1967) suggerì che la distanza media tra due individui negli USA
-fosse circa \textbf{sei gradi di separazione}. Le reti reali mostrano:
+fosse circa \textbf{sei gradi di separazione}. Un'analisi successiva su Microsoft Messenger
+(circa 240 milioni di utenti) stimò una lunghezza media del percorso $\langle d \rangle \approx 6.6$
+e una mediana di 7. Le reti reali mostrano tipicamente:
 \begin{enumerate}
-  \item \textbf{Diametro piccolo}: la distanza media cresce come $\log N$.
+  \item \textbf{$\langle d \rangle$ piccola}: la lunghezza media del percorso cresce come $\log N$,
+        molto più lentamente della dimensione della rete.
   \item \textbf{Alto coefficiente di clustering}: i vicini di un nodo tendono ad essere
-        connessi tra loro.
+        connessi tra loro (molto di più di quanto ci si aspetterebbe in un grafo casuale).
 \end{enumerate}
-Questo è il modello di Watts–Strogatz (1998).
+La coesistenza di questi due fenomeni è catturata dal \textbf{modello di Watts–Strogatz (1998)}:
+partendo da un grafo ad anello regolare, il ricablaggio casuale di una piccola frazione di archi
+abbassa drasticamente $\langle d \rangle$ mantenendo alto il clustering.
 
 %% ============================================================
 \section{Legami Forti e Deboli}
@@ -351,6 +407,57 @@ un legame (almeno debole) tra B e C.
 se A–B fosse forte e fosse un ponte locale, violerebbero STCP.
 Questo spiega perché i legami deboli portano informazioni nuove.
 
+\subsection{Dimostrazione formale: ponti locali e legami deboli}
+
+\noindent\textbf{Claim.} Se un nodo A soddisfa la STCP ed è coinvolto in almeno due legami
+forti, allora qualsiasi ponte locale a cui A partecipa deve essere un legame debole.
+
+\medskip
+\noindent\textbf{Dimostrazione (per assurdo).}
+\begin{enumerate}
+  \item Supponiamo che A abbia un legame forte con B e che A–B sia un ponte locale.
+  \item Poiché A ha almeno due legami forti, esiste un altro nodo C con A–C forte.
+  \item Poiché A–B è un ponte locale, A e B non hanno amici in comune → B e C non sono
+        connessi.
+  \item Ma A–B forte e A–C forte con B–C assente viola la STCP.
+        Contraddizione. \quad $\square$
+\end{enumerate}
+Quindi \textbf{i legami deboli hanno un duplice ruolo}: sono connessioni superficiali (bassa
+forza) ma al tempo stesso preziosi ponti verso parti distanti della rete
+(``la forza dei legami deboli'' di Granovetter).
+
+\subsection{Validazione empirica: studio Onnela et al. (reti di telefonia mobile)}
+
+Per molti anni le previsioni di Granovetter rimasero difficili da verificare su larga scala.
+Con l'avvento delle comunicazioni digitali, Onnela et al.\ studiarono la rete
+\textit{chi-chiama-chi} di un operatore di telefonia mobile, con milioni di nodi.
+
+\medskip
+\noindent\textbf{Misura continua della forza del legame.}
+Nelle reti reali la dicotomia forte/debole è troppo rigida. La forza di un arco A–B
+viene definita come il tempo totale di conversazione tra A e B; si può poi ordinare
+tutti gli archi per percentile di forza.
+
+\medskip
+\noindent\textbf{Neighborhood overlap.}
+Analogamente, la proprietà di ``ponte locale'' (nessun amico in comune) è rarissima nelle
+reti reali. Si introduce quindi una misura graduale:
+\formula{
+  \text{Neighborhood Overlap}(A,B) =
+  \frac{|\mathcal{N}(A) \cap \mathcal{N}(B)|}{|\mathcal{N}(A) \cup \mathcal{N}(B)|}
+}
+dove $\mathcal{N}(X)$ è l'insieme dei vicini di $X$ (escluso il nodo stesso).
+\begin{itemize}
+  \item Overlap $= 0$: A e B non hanno vicini in comune → arco è un ponte locale.
+  \item Overlap piccolo: arco è ``quasi'' un ponte locale.
+  \item Overlap grande: arco è immerso in un gruppo fitto.
+\end{itemize}
+
+\noindent\textbf{Risultato.} Lo studio di Onnela et al.\ confermò la previsione di Granovetter:
+all'aumentare della forza del legame, l'overlap di vicinato cresce sistematicamente. In
+altre parole, i legami deboli tendono ad avere overlap basso e a fungere da ponti tra
+comunità distinte, mentre i legami forti collegano nodi con molti amici in comune.
+
 %% ============================================================
 \section{Contesti Sociali e Omofilia}
 %% ============================================================
@@ -375,6 +482,29 @@ Se i legami fossero formati casualmente, la frazione attesa di archi \emph{etero
 
 Se la frazione osservata di archi eterogenei è \emph{minore} di $2pq$, la rete
 mostra \textbf{omofilia}; se è \emph{maggiore}, mostra \textbf{eterofilia}.
+
+\medskip
+\noindent\textbf{Esempio numerico.}
+Consideriamo una rete scolastica con 9 alunni: 6 maschi ($p = 6/9 = 2/3$) e 3 femmine
+($q = 3/9 = 1/3$). La rete ha 18 archi totali, di cui 5 sono eterogeni (collegano un maschio
+a una femmina). Con il mixing casuale ci aspetteremmo $2pq = 2 \cdot (2/3) \cdot (1/3) = 4/9$
+di archi eterogeni, ovvero $18 \times (4/9) = 8$ archi. Ne osserviamo solo 5 $<$ 8 →
+\textbf{evidenza di omofilia per genere}.
+
+\medskip
+\noindent\textbf{Note metodologiche.}
+\begin{enumerate}
+  \item Il numero atteso $2pq \cdot |E|$ varia per effetto del campionamento; per concludere
+        all'omofilia occorre verificare che lo scarto sia \textit{statisticamente significativo}
+        (es.\ con un test del chi-quadro o mediante permutazioni).
+  \item Se la frazione di archi eterogenei è significativamente \emph{maggiore} di $2pq$,
+        si parla di \textbf{eterofilia} (o omofilia inversa): le persone tendono a legarsi con
+        chi è diverso da loro.
+  \item Il test si estende a caratteristiche con più di due valori: un arco è
+        \textit{eterogeneo} se i suoi estremi hanno valori diversi, e si calcola la proporzione
+        di archi eterogenei attesa dal mixing casuale sulla base della distribuzione dei valori
+        nella rete.
+\end{enumerate}
 
 \subsection{Selezione e Influenza Sociale}
 
@@ -401,10 +531,46 @@ fondamentale per progettare interventi efficaci (es.\ programmi anti-droga).
 
 Possiamo modellare reti che includono sia \textbf{persone} sia \textbf{contesti} (focus group,
 club, classi, eventi) come nodi, connettendo persone ai contesti in cui partecipano.
-Si ottiene una \textbf{rete bipartita}: due tipi di nodi, archi solo tra tipi diversi.
+Feld (1981) chiama questi contesti \textbf{foci}: punti focali di interazione sociale.
+Si ottiene una \textbf{rete bipartita}: due tipi di nodi (persone e foci), archi solo tra tipi diversi.
 
 La \textbf{proiezione} su un tipo di nodi crea archi tra persone che condividono un contesto,
 spiegando così l'emergere dell'omofilia anche senza scelta esplicita di amici simili.
+
+\subsection{Tipi di chiusura nelle reti sociali}
+
+Nelle reti sociali si distinguono tre forme di chiusura che guidano la formazione di nuovi legami:
+
+\begin{itemize}
+  \item \textbf{Chiusura triadica}: B e C diventano amici perché hanno un amico comune A
+        (entrambi sono persone).
+  \item \textbf{Chiusura focale} (\textit{focal closure}): B e C diventano amici perché
+        partecipano a un focus comune A (es.\ stessa classe, stessa associazione).
+  \item \textbf{Chiusura di membership} (\textit{membership closure}): B aderisce a un focus
+        a cui il suo amico A già partecipa (forma di influenza sociale sui foci scelti).
+\end{itemize}
+
+\subsection{Co-evoluzione delle reti sociali e di affiliazione}
+
+Le reti sociali e le reti di affiliazione \textbf{co-evolvono}: la partecipazione a un focus
+crea opportunità di amicizia; le amicizie esistenti influenzano la scelta dei foci futuri.
+Questo meccanismo spiega perché l'omofilia osservata nelle reti sociali emerga in parte
+spontaneamente, anche in assenza di una scelta deliberata di amici simili.
+
+\medskip
+\noindent\textbf{Studio empirico: Kossinets \& Watts.}
+Kossinets e Watts analizzarono una rete di e-mail universitaria seguita nel tempo,
+integrando i dati di comunicazione con gli orari delle lezioni (ogni corso = un focus).
+Misurarono la probabilità giornaliera di formazione di un legame in funzione di:
+\begin{itemize}
+  \item il numero di amici in comune (chiusura triadica): la probabilità cresce in modo
+        superlineare con il numero di amici condivisi.
+  \item il numero di corsi condivisi (chiusura focale): un singolo corso condiviso ha
+        un effetto assoluto simile a un singolo amico in comune, ma l'effetto si satura
+        rapidamente all'aggiunta di ulteriori corsi condivisi.
+\end{itemize}
+Il confronto mostra che chiusura triadica e focale sono meccanismi complementari e
+paragonabili per importanza nella formazione di legami.
 
 %% ============================================================
 \section{Analisi delle Reti con R}
@@ -426,18 +592,25 @@ library(igraph)
 # Grafo diretto vuoto
 g <- graph.empty(directed = TRUE)
 
-# Aggiunta di nodi
+# Aggiunta di nodi (famiglia reale)
 g <- g + vertex("Elizabeth II")
 g <- g + vertex("Philip")
 g <- g + vertex("Charles")
 g <- g + vertex("Diana")
 g <- g + vertex("William")
+g <- g + vertex("Harry")
+g <- g + vertex("Catherine")
+g <- g + vertex("George")
 
-# Aggiunta di archi
+# Aggiunta di archi (relazioni genitore -> figlio)
 g <- g + edges("Elizabeth II", "Charles")
 g <- g + edges("Philip",       "Charles")
 g <- g + edges("Charles",      "William")
 g <- g + edges("Diana",        "William")
+g <- g + edges("Charles",      "Harry")
+g <- g + edges("Diana",        "Harry")
+g <- g + edges("William",      "George")
+g <- g + edges("Catherine",    "George")
 
 plot.igraph(g)
 \end{lstlisting}
@@ -595,8 +768,40 @@ cor(betweenCent, eigenCent)   # correlazione tra le due misure
 
 \subsection{Comunità: algoritmo di Girvan–Newman}
 
-L'algoritmo di \textbf{Girvan–Newman} individua comunità rimuovendo iterativamente gli archi
-con betweenness più alta (gli archi ``ponti'' tra comunità).
+\textbf{Partizionamento dei grafi.}
+L'obiettivo è suddividere un grafo in \textbf{regioni dense} (comunità) con connessioni
+sparse tra di esse. Esistono due famiglie principali di metodi:
+\begin{itemize}
+  \item \textbf{Metodi divisivi} (top-down): identificano e rimuovono gli archi di
+        collegamento tra comunità, a partire dall'intero grafo.
+  \item \textbf{Metodi agglomerativi} (bottom-up): partono dai singoli nodi e li uniscono
+        progressivamente nelle stesse comunità sulla base di criteri di similarità.
+\end{itemize}
+
+\textbf{Betweenness degli archi (\textit{Edge Betweenness}).}
+Per selezionare quale arco rimuovere nei metodi divisivi si usa la
+\textbf{betweenness degli archi}: la quantità totale di flusso che passa per quell'arco.
+Formalmente, si suppone che per ogni coppia di nodi $(s,t)$ esista un'unità di flusso che
+si distribuisce equamente sui cammini più corti da $s$ a $t$; la betweenness dell'arco
+$(u,v)$ è la somma di questi flussi su tutte le coppie.
+\formula{
+  C_B(u,v) = \sum_{s \neq t} \frac{\sigma_{st}(u,v)}{\sigma_{st}}
+}
+Gli archi con alta betweenness sono ``ponti'' tra comunità; i nodi con alta betweenness
+(node betweenness) \textbf{occupano buchi strutturali} (\textit{structural holes}) e
+fungono da intermediari di informazione.
+
+\textbf{Il metodo di Girvan–Newman} è un metodo divisivo basato sulla betweenness degli archi:
+\begin{enumerate}
+  \item Calcola la betweenness di tutti gli archi.
+  \item Rimuove l'arco (o gli archi) con betweenness massima.
+  \item Ricalcola la betweenness di tutti gli archi rimasti (la rimozione altera i cammini
+        più corti).
+  \item Ripete finché non rimangono archi.
+\end{enumerate}
+Il metodo è efficace su reti di dimensioni moderate (qualche migliaio di nodi); per reti
+più grandi il ricalcolo iterativo della betweenness diventa computazionalmente costoso,
+rendendo preferibili metodi agglomerativi o approssimazioni.
 
 \begin{lstlisting}[language=R]
 # Rilevamento comunita' tramite edge betweenness
@@ -803,14 +1008,21 @@ Ogni documento è rappresentato dalla frequenza delle sue parole (vettore sparso
 Ogni parola/frase viene mappata in un vettore denso nello spazio $\mathbb{R}^d$ dove
 la similarità vettoriale riflette la similarità semantica.
 
-Il modello \textbf{BERT} (\textit{Bidirectional Encoder Representations from Transformers})
+Il modello \textbf{BERT} (\textit{Bidirectional Encoder Representations from Transformers}, 2018)
 legge il testo in entrambe le direzioni e produce rappresentazioni contestuali.
-\textbf{Sentence-BERT} (SBERT) usa il \textit{mean pooling} sulle rappresentazioni per
+\textbf{Sentence-BERT} (SBERT, 2019) usa il \textit{mean pooling} sulle rappresentazioni per
 ottenere un embedding a livello di frase.
 \begin{itemize}
   \item[\checkmark] Nessun preprocessing testuale specifico; mantiene il contesto.
-  \item[$\times$] Non interpretabile; limite di lunghezza (~500 token $\approx$ 300 parole).
+  \item[$\times$] Non interpretabile; limite di lunghezza ($\sim$500 token $\approx$ 300 parole);
+        può risentire di bias nel corpus di addestramento.
 \end{itemize}
+
+\textbf{La maledizione della dimensionalità (\textit{Curse of Dimensionality}).}
+Dopo l'embedding, ogni documento è un punto in uno spazio con centinaia di dimensioni ($d \approx 768$
+per BERT). In spazi ad altissima dimensione il concetto di ``distanza'' perde significato: quasi
+tutte le coppie di punti diventano equidistanti, rendendo il clustering inefficace. Per questo
+BERTopic introduce un passo di \textbf{riduzione della dimensionalità} prima del clustering.
 
 \subsection{Il pipeline di BERTopic}
 
@@ -839,12 +1051,23 @@ UMAP riduce la dimensionalità preservando la struttura locale dei dati:
 Il risultato è una proiezione che preserva i cluster semantici. La qualità dipende dal
 parametro $K$ (numero di vicini considerati).
 
-\subsubsection{HDBSCAN (Hierarchical DBSCAN)}
+\subsubsection{Algoritmi di clustering: da K-Means a HDBSCAN}
 
-HDBSCAN è un algoritmo di clustering basato sulla densità che:
+\textbf{K-Means} è l'algoritmo di clustering più semplice: si scelgono $K$ centroidi,
+si assegna ogni punto al centroide più vicino, si ricalcolano i centroidi, e si ripete fino
+alla convergenza. Limitazione principale: richiede di specificare $K$ a priori e produce
+cluster di forma sferica.
+
+\textbf{DBSCAN} (\textit{Density-Based Spatial Clustering of Applications with Noise})
+supera questi limiti: individua cluster di forma arbitraria sulla base della densità locale
+(parametri: raggio $\varepsilon$ e numero minimo di punti \texttt{minPts}), e classifica i
+punti isolati come \textbf{rumore}. Complessità media $O(n \log n)$.
+
+\textbf{HDBSCAN} (\textit{Hierarchical DBSCAN}) estende DBSCAN:
 \begin{itemize}
   \item non richiede di specificare il numero di cluster \textit{a priori};
-  \item individua cluster di forma arbitraria;
+  \item individua cluster di forma arbitraria e con densità diverse;
+  \item richiede un solo iperparametro principale (dimensione minima del cluster);
   \item etichetta come rumore i punti in regioni a bassa densità.
 \end{itemize}
 
@@ -859,15 +1082,52 @@ di un cluster in un unico ``meta-documento'' e calcola:
 dove $f_{t,c}$ è la frequenza di $t$ nel cluster $c$, $f_t$ è la frequenza totale di $t$
 nel corpus, e $A$ è il numero medio di parole per classe.
 
+\textbf{Altre rappresentazioni dei topic.}
+BERTopic supporta rappresentazioni alternative alla c-TF-IDF:
+\begin{itemize}
+  \item \textbf{Marginal Maximum Relevance (MMR)}: bilancia rilevanza e diversità delle
+        parole chiave.
+  \item \textbf{Part of Speech (POS)}: filtra le parole chiave per categoria grammaticale.
+  \item \textbf{KeyBERT}: usa gli embedding BERT per trovare le parole più simili
+        semanticamente al topic.
+  \item \textbf{LLM}: sfrutta modelli di linguaggio di grandi dimensioni per generare
+        etichette o riassunti testuali per ciascun topic.
+\end{itemize}
+
 \subsection{Valutazione del modello}
 
-Metriche comuni:
+BERTopic richiede la scelta di diversi iperparametri (embedding model, numero di vicini
+UMAP, dimensione minima del cluster HDBSCAN, lingua per le stopword). La valutazione avviene
+sia quantitativamente sia qualitativamente.
+
+\textbf{Metriche quantitative:}
 \begin{itemize}
-  \item \textbf{Coherence score}: misura la coerenza semantica dei topic.
-  \item \textbf{Diversity score}: misura quanto i topic siano distinti tra loro.
-  \item \textbf{Ispezione manuale}: lettura delle parole chiave e dei documenti
-        rappresentativi di ciascun topic.
+  \item \textbf{DB Cluster Relative Validity (DBCV)}: misura la qualità del clustering
+        tra $-1$ e $1$; valori più alti indicano cluster più coesi e separati. Permette
+        di confrontare diversi run con parametri diversi sullo stesso corpus.
+  \item \textbf{Coherence score}: misura la coerenza semantica dei topic, valutando quanto
+        spesso le parole chiave di un topic co-occorrono nel corpus.
+  \item \textbf{Diversity score} (es.\ Jaccard Topic Diversity): misura quanto i topic siano
+        distinti tra loro calcolando la proporzione di parole chiave uniche sul totale.
 \end{itemize}
+
+\textbf{Ispezione manuale}: la lettura delle parole chiave e dei documenti rappresentativi
+di ciascun topic rimane il metodo più affidabile ma richiede molto tempo.
+
+\subsection{Vantaggi e limiti di BERTopic}
+
+\begin{center}
+\begin{tabular}{p{0.44\textwidth}p{0.44\textwidth}}
+\toprule
+\textbf{Vantaggi} & \textbf{Limiti} \\
+\midrule
+Scalabile a grandi corpus & Richiede GPU per l'embedding \\
+Preserva il contesto semantico & Molti iperparametri da ottimizzare \\
+Flessibile (componenti sostituibili) & Limite di lunghezza dei documenti \\
+Topic interpretabili tramite parole chiave & Possibili bias dal corpus di pre-addestramento \\
+\bottomrule
+\end{tabular}
+\end{center}
 
 \subsection{Varianti di BERTopic}
 
@@ -897,8 +1157,17 @@ incrocio} di insiemi di dati eterogenei \cite[Boyd \& Crawford, 2012]{}.
         e il controllo governativo/corporativo.
 \end{enumerate}
 
-\noindent Le quattro forze regolatrici dei sistemi sociali (Lessig, 1999):
-\textit{mercato}, \textit{legge}, \textit{norme sociali}, \textit{architettura (codice)}.
+\noindent Le \textbf{quattro forze regolatrici} dei sistemi sociali (Lessig, 1999):
+\begin{itemize}
+  \item \textbf{Mercato}: i Big Data rappresentano un'opportunità commerciale enorme.
+  \item \textbf{Legge}: i Big Data sollevano preoccupazioni sulla privacy e la protezione
+        dei dati personali (es.\ GDPR).
+  \item \textbf{Norme sociali}: la personalizzazione algoritmica è vista come utile
+        (informazioni più rilevanti) ma anche come fonte di frammentazione del dibattito
+        pubblico (camere d'eco).
+  \item \textbf{Architettura (codice)}: le piattaforme digitali progettano ambienti che
+        modellano i comportamenti degli utenti, spesso in modo opaco.
+\end{itemize}
 Queste forze sono spesso in conflitto nell'ecosistema dei Big Data.
 
 \subsection{Sei provocazioni sui Big Data (Boyd \& Crawford)}
@@ -922,18 +1191,40 @@ L'accesso ai dati non è democratico: grandi aziende e governi hanno accesso pri
 che i ricercatori accademici non hanno. I dati disponibili dipendono da scelte commerciali
 e politiche, non dalla rilevanza scientifica.
 
-\subsubsection{4. Molte forme di analisi dei Big Data producono correlazioni, non causalità}
+\subsubsection{4. I Big Data estrapolati dal contesto perdono significato}
 
-La correlazione statistica tra variabili non implica un nesso causale. I Big Data
-facilitano la scoperta di pattern ma non necessariamente la loro spiegazione causale.
-Occorre rigore metodologico per non trarre conclusioni errate.
+I dati social sono ampiamente usati per fare affermazioni sulle reti sociali, ma le relazioni
+rappresentate sui social media non equivalgono necessariamente alle reti personali studiate
+dai sociologi attraverso interviste e osservazioni.
+
+Boyd e Crawford distinguono due tipi di reti sociali nei Big Data:
+\begin{itemize}
+  \item \textbf{Reti articolate} (\textit{articulated networks}): derivate da dichiarazioni
+        esplicite degli utenti (liste di amici/follower). Includono amici intimi, conoscenti,
+        colleghi, celebrity, ecc.
+  \item \textbf{Reti comportamentali} (\textit{behavioral networks}): derivate da pattern
+        di comunicazione e interazione effettiva sulla piattaforma.
+\end{itemize}
+Entrambe hanno valore per i ricercatori, ma non sono equivalenti tra loro né alle reti
+personali reali. Ad esempio, la frequenza dei contatti non indica necessariamente la forza
+del legame, e non ogni connessione corrisponde a un'altra connessione.
 
 \subsubsection{5. Le questioni etiche sono complesse}
 
 \begin{itemize}
   \item \textbf{Consenso informato}: i dati social sono pubblici, ma non necessariamente
-        ceduti per scopi di ricerca.
-  \item \textbf{Anonimizzazione}: dati apparentemente anonimi possono essere re-identificati.
+        ceduti per scopi di ricerca. Il fatto che un utente abbia pubblicato un contenuto
+        su Facebook non significa che acconsenta al suo uso in una ricerca scientifica.
+  \item \textbf{Anonimizzazione e re-identificazione}: dati apparentemente anonimi possono
+        essere re-identificati combinando attributi. Un caso emblematico è lo studio di
+        Lewis et al.\ (2008), in cui un gruppo di ricercatori di Harvard raccolse i profili
+        Facebook di circa 1.700 studenti e li rese disponibili come dataset di ricerca.
+        Il ricercatore Zimmer mostrò che la re-identificazione era possibile: includendo
+        genere, stato di provenienza, corso di laurea ed etnia, i soggetti diventavano
+        facilmente identificabili (es.\ l'unico studente albanese di un college privato
+        del New England con circa 1.640 matricole). Gli autori dello studio risposero che
+        i dati erano già presenti su Facebook, ma Zimmer controbatté che postare su
+        Facebook non equivale a dare il consenso alla ricerca scientifica.
   \item \textbf{Discriminazione algoritmica}: modelli addestrati su dati storici possono
         perpetuare discriminazioni.
 \end{itemize}
@@ -943,17 +1234,66 @@ Occorre rigore metodologico per non trarre conclusioni errate.
 La divisione tra chi ha e chi non ha accesso ai grandi dataset crea disuguaglianze nella
 produzione di conoscenza e nel potere decisionale.
 
-\subsection{Qualità dei dati sociali}
+\medskip
+\noindent\textbf{Nota metodologica: correlazioni e causalità.}
+Una limitazione trasversale all'analisi dei Big Data è che la correlazione statistica tra
+variabili non implica un nesso causale. I grandi dataset facilitano la scoperta di pattern
+ma non necessariamente la loro spiegazione causale. Occorre rigore metodologico per non
+trarre conclusioni errate.
 
-\begin{itemize}
-  \item \textbf{Completezza}: i dati social coprono solo una porzione della popolazione
-        (sesgo di selezione).
-  \item \textbf{Accuracy}: errori di misurazione, bot, account falsi.
-  \item \textbf{Consistenza}: le piattaforme cambiano le API nel tempo, rendendo difficile
-        la comparazione longitudinale.
-  \item \textbf{Temporalità}: le conversazioni online hanno una vita breve; rilevanza
-        del momento di raccolta.
-\end{itemize}
+\subsection{Qualità dei dati sociali e tassonomia dei bias (Olteanu et al., 2019)}
+
+La raccolta e l'analisi dei dati social introduce sistematicamente dei bias che il
+ricercatore deve riconoscere e, per quanto possibile, controllare. Olteanu et al.\ (2019)
+propongono una tassonomia articolata in sei categorie:
+
+\begin{enumerate}
+  \item \textbf{Population biases}: differenze demografiche tra gli utenti di una piattaforma
+        e la popolazione target. Le principali piattaforme social presentano composizioni
+        demografiche sistematicamente diverse dalla popolazione generale (es.\ divari per
+        genere, età, etnia). Assumere che i dati siano rappresentativi della popolazione
+        porta a conclusioni fuorvianti.
+
+  \item \textbf{Behavioral biases}: differenze nel comportamento degli utenti across
+        piattaforme o contesti. Includono:
+        \begin{itemize}
+          \item \textit{Interaction biases}: come gli utenti interagiscono tra loro varia per
+                relazione, demografia e funzionalità della piattaforma.
+          \item \textit{Content consumption biases}: gli utenti tendono a consumare contenuti
+                di persone simili, favorendo la formazione di \textit{echo chambers}.
+          \item \textit{Self-selection e misreport}: gli utenti pubblicano selettivamente
+                (auto-censura, rimozione contenuti) e possono dare auto-report inaccurati.
+        \end{itemize}
+
+  \item \textbf{Content production biases}: differenze lessicali, sintattiche e semantiche
+        nei contenuti prodotti da popolazioni diverse. L'uso della lingua varia tra paesi,
+        gruppi demografici e nel tempo; utenti ``esperti'' producono contenuti diversi da
+        utenti normali.
+
+  \item \textbf{Linking biases}: differenze negli attributi delle reti costruite da
+        connessioni o interazioni degli utenti. Le reti basate su connessioni esplicite
+        (es.\ amici dichiarati) sono strutturalmente diverse da quelle basate su interazioni
+        implicite (es.\ chi risponde a chi). L'omofilia può distorcere sistematicamente
+        le percezioni degli utenti sulla prevalenza di certi attributi nella popolazione.
+
+  \item \textbf{Temporal variations}: variazioni nelle popolazioni, nei comportamenti e
+        nelle piattaforme nel tempo. Includono fenomeni stagionali/periodici, eventi
+        improvvisi (es.\ catastrofi naturali), cambiamenti di funzionalità della piattaforma,
+        e il decadimento dei dataset nel tempo (cancellazione di account, restrizioni API).
+
+  \item \textbf{Functional biases}: bias derivanti dai meccanismi specifici delle
+        piattaforme. Ogni piattaforma ha le proprie affordances (azioni incentivate o
+        disincentivate) e algoritmi proprietari (spesso non documentati) che modellano il
+        comportamento degli utenti e la distribuzione dei contenuti. Ad esempio,
+        ridimensionare la finestra di risposta su Facebook ha portato risposte più brevi,
+        più frequenti e più rapide.
+\end{enumerate}
+
+\textbf{Ridondanza.}
+Un ulteriore problema è la \textbf{ridondanza}: lo stesso contenuto può apparire in
+copie esatte (\textit{duplicati}) o approssimate (\textit{near-duplicates}), distorcendo
+la quantificazione dei fenomeni. La ridondanza può però essere anche un \textit{segnale}
+(es.\ un messaggio ripubblicato molte volte indica viralità).
 
 \subsection{Attributi privati nei dati digitali}
 
