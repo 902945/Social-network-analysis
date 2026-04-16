@@ -343,6 +343,14 @@ modifica alla struttura di un grafo possa cambiarne radicalmente le proprietà.
 
 \subsection{Definizioni fondamentali}
 
+La teoria dei grafi fornisce il linguaggio matematico con cui descrivere qualsiasi struttura
+reticolare: una mappa della metropolitana, le amicizie su Facebook, le interazioni tra proteine.
+Prima di procedere con l'analisi, è fondamentale padroneggiare le definizioni di base, perché
+ogni misura che utilizzeremo — centralità, clustering, distanza — è costruita su questi concetti.
+Immaginate la rete di conoscenze di una persona: ogni individuo è un \emph{nodo}, ogni rapporto
+di amicizia o conoscenza è un \emph{arco}. Su questa struttura si fondano tutte le analisi
+successive.
+
 \definition{Grafo}{Un grafo $G=(V,E)$ è definito da un insieme di nodi (o vertici) $V$ e
 un insieme di archi $E \subseteq V \times V$.}
 
@@ -368,6 +376,29 @@ Il \textbf{grado} $k_i$ di un nodo $i$ è il numero di archi che lo collegano ad
 dove $N_k$ è il numero di nodi con grado $k$. Le reti reali spesso mostrano distribuzioni
 a \textit{power-law} $p_k \sim k^{-\gamma}$ (reti \emph{scale-free}).
 
+\medskip
+\noindent\textbf{Spiegazione delle formule.}
+La formula $L = \frac{1}{2}\sum_{i} k_i$ mostra che il numero totale di archi $L$ si ottiene
+sommando tutti i gradi dei nodi e dividendo per 2, perché ogni arco è contato due volte: una
+volta per ciascuno dei suoi due endpoint. Ad esempio, in una rete con tre persone che si
+conoscono tutte, ogni persona ha grado $k_i = 2$; la somma dei gradi è 6, divisa per 2 dà
+$L = 3$ archi. Il \textbf{grado medio} $\langle k \rangle = 2L/N$ rappresenta il numero
+medio di vicini per nodo: in una rete Internet dove ogni router ha in media 3 connessioni,
+$\langle k \rangle = 3$.
+
+Nella versione orientata (digrafo), si distingue tra archi in entrata (\textit{in-degree}
+$k_i^{in}$, ad esempio i follower su Twitter) e archi in uscita (\textit{out-degree}
+$k_i^{out}$, ad esempio i following). La formula $\langle k^{in} \rangle = L/N = \langle k^{out} \rangle$
+dice che in media ogni nodo ha lo stesso numero di follower e following, il che ha senso
+perché ogni arco orientato aggiunge 1 al grado entrante di un nodo e 1 al grado uscente di un altro.
+
+La \textbf{distribuzione di grado} $p_k$ indica la probabilità che un nodo scelto casualmente
+abbia grado $k$. In una rete di amici, la maggior parte delle persone ha pochi amici e alcune
+persone ne hanno molti: questa asimmetria si chiama \emph{power-law} o distribuzione a legge
+di potenza. Il parametro $\gamma$ (tipicamente $2 < \gamma < 3$ nelle reti sociali reali)
+controlla quanto rapidamente le probabilità decrescono all'aumentare del grado: più è piccolo,
+più frequenti sono i nodi con grado elevatissimo (\emph{hub}).
+
 \subsection{Matrice di adiacenza}
 
 Per una rete di $N$ nodi, la matrice di adiacenza $A \in \{0,1\}^{N \times N}$ è definita da:
@@ -387,12 +418,42 @@ Il grado di un nodo si ricava direttamente dalla matrice:
   k_i = \sum_{j=1}^{N} A_{ji} = \sum_{j=1}^{N} A_{ij} \quad (\text{non orientato})
 \]
 
+\medskip
+\noindent\textbf{Perché la matrice di adiacenza è utile.}
+La matrice di adiacenza $A$ è la rappresentazione ``completa'' di un grafo: contiene tutta
+l'informazione sulla struttura della rete in una forma su cui è possibile eseguire operazioni
+algebriche. In particolare, il prodotto $A^2$ ha l'elemento $(i,j)$ pari al numero di cammini
+di lunghezza 2 da $i$ a $j$ (cioè quanti amici in comune hanno $i$ e $j$); più in generale,
+$(A^k)_{ij}$ conta i cammini di lunghezza $k$. Questo legame tra algebra lineare e proprietà
+strutturali del grafo è alla base di tecniche come la centralità di autovettore e il PageRank.
+
+Per grafi \textbf{non orientati}, $A$ è simmetrica ($A = A^T$), il che implica che gli
+autovalori di $A$ sono tutti reali — una proprietà fondamentale per l'analisi spettrale
+delle reti. Per grafi \textbf{orientati}, $A$ è in generale asimmetrica: $A_{ij} = 1$
+indica un arco da $j$ a $i$, ma non necessariamente da $i$ a $j$. La traccia di $A$ (somma
+degli elementi diagonali) conta i \emph{self-loop}: archi che collegano un nodo a sé stesso,
+rari nelle reti sociali ma presenti in alcune reti biologiche.
+
 \subsection{Reti sparse}
 
 Il numero massimo teorico di archi è:
 \formula{|E|_{\max} = \binom{N}{2} = \frac{N(N-1)}{2}}
 Le reti reali sono tipicamente \textbf{sparse}: $|E| \ll |E|_{\max}$.
 Ad esempio, il Karate Club di Zachary: $|V|=34$, $|E|=78$, $|E|_{\max}=561$.
+
+\medskip
+\noindent\textbf{Perché la sparsità è importante.}
+In una rete con $N$ nodi, memorizzare la matrice di adiacenza completa richiederebbe
+$O(N^2)$ di memoria. Per una rete con un milione di nodi, questo significa $10^{12}$
+elementi — circa 1000 GB per valori booleani. Fortunatamente, le reti reali sono sparse:
+il numero di archi $|E|$ cresce tipicamente in modo lineare con $N$ ($|E| \approx cN$
+per qualche costante $c$), non quadratico. Questo rende praticabile la memorizzazione
+tramite \textbf{liste di adiacenza} (costo $O(N+|E|)$) e il calcolo di proprietà come
+cammini più corti con algoritmi come BFS/Dijkstra in tempo $O(N+|E|)$.
+
+La sparsità ha anche implicazioni concettuali: in una rete sociale sparsa, ogni individuo
+conosce una piccola frazione della popolazione totale, eppure grazie alla struttura della
+rete può raggiungere quasi chiunque in pochi passi — il famoso ``piccolo mondo''.
 
 \subsection{Connettività e componenti connesse}
 
@@ -431,6 +492,17 @@ parte di una componente che raggiunte la maggioranza della popolazione, percorre
 cammini di trasmissione indiretti.
 
 \medskip
+\noindent\textbf{Esempio di emergenza della componente gigante.}
+Immaginate di aggiungere archi uno per uno a un grafo con $N$ nodi isolati (modello di Erdős–Rényi).
+Per densità molto bassa, la rete consiste in molte piccole componenti isolate. Quando il grado
+medio $\langle k \rangle$ supera la soglia critica di $\langle k \rangle = 1$, avviene una
+\emph{transizione di fase}: emerge improvvisamente una componente gigante che ingloba una
+frazione finita dei nodi. Questo comportamento è analogo alle transizioni di fase in fisica
+(ad es.\ il passaggio dell'acqua dallo stato liquido al vapore) e ha importanti implicazioni
+pratiche: nelle campagne vaccinali, immunizzare un numero sufficiente di individui può
+``distruggere'' la componente gigante e fermare la diffusione di un'epidemia.
+
+\medskip
 \noindent\textbf{Lista di adiacenza.}
 Per memorizzare reti di grandi dimensioni (sparse) è conveniente usare una
 \textbf{lista di adiacenza} anziché la matrice di adiacenza completa: si memorizzano
@@ -466,6 +538,14 @@ abbassa drasticamente $\langle d \rangle$ mantenendo alto il clustering.
 \section{Legami Forti e Deboli}
 %% ============================================================
 
+Comprendere come scorrono le informazioni attraverso una rete sociale è uno dei problemi
+centrali della sociologia moderna. Non tutti i legami sono uguali: un'amicizia intima
+e una conoscenza superficiale hanno ruoli strutturalmente diversi nella rete. La distinzione
+tra legami \emph{forti} e \emph{deboli} — introdotta da Mark Granovetter — è uno dei
+contributi teorici più influenti della Social Network Analysis, con applicazioni che vanno
+dalla ricerca del lavoro alla diffusione delle innovazioni, dalla prevenzione delle
+epidemie alle strategie di marketing virale.
+
 \subsection{L'ipotesi di Granovetter}
 
 Negli anni '60, il sociologo Mark Granovetter condusse interviste con persone che avevano
@@ -499,6 +579,22 @@ $C_i = 1$: tutti i vicini formano un grafo completo.
 
 Il \textbf{coefficiente di clustering medio} di una rete è:
 \formula{\langle C \rangle = \frac{1}{N}\sum_{i=1}^{N} C_i}
+
+\medskip
+\noindent\textbf{Interpretazione intuitiva.}
+Il coefficiente di clustering risponde alla domanda: ``quanto sono interconnessi tra loro
+i miei amici?''. Il denominatore $k_i(k_i-1)$ conta il numero massimo di archi possibili
+tra i $k_i$ vicini di $i$ (cioè tutte le coppie possibili, tenendo conto della direzione),
+mentre $2L_i$ conta quanti di questi archi esistono effettivamente. Se tutti i vostri amici
+si conoscono già tra loro, $C_i = 1$; se nessuno dei vostri amici conosce gli altri,
+$C_i = 0$.
+
+Questo concetto è strettamente legato alla chiusura triadica: un coefficiente di clustering
+alto indica che molte triade ``aperte'' ($A$--$B$ e $A$--$C$ connessi, ma $B$--$C$ no) si
+sono ``chiuse'' nel tempo. Il clustering medio $\langle C \rangle$ è una proprietà globale
+della rete: nelle reti sociali reali è tipicamente molto più alto di quanto ci si aspetterebbe
+in un grafo casuale della stessa dimensione — questa è una delle caratteristiche che definisce
+il \emph{piccolo mondo}.
 
 \subsection{Ponti e Ponti Locali}
 
@@ -543,6 +639,22 @@ forti, allora qualsiasi ponte locale a cui A partecipa deve essere un legame deb
 Quindi \textbf{i legami deboli hanno un duplice ruolo}: sono connessioni superficiali (bassa
 forza) ma al tempo stesso preziosi ponti verso parti distanti della rete
 (``la forza dei legami deboli'' di Granovetter).
+
+\medskip
+\noindent\textbf{Esempio concreto della STCP.}
+Considerate una persona, Alice, che ha legami forti con due colleghi di lavoro, Bob e Carlo.
+La STCP afferma che esiste almeno un legame debole tra Bob e Carlo. Se Alice–Bob fosse un
+ponte locale (Alice e Bob non hanno conoscenti in comune), allora Bob e Carlo non sarebbero
+connessi. Ma allora il legame Alice–Bob forte e il legame Alice–Carlo forte, senza connessione
+Bob–Carlo, violerebbe la STCP.
+
+Nella pratica: perché questa situazione è instabile? Perché Alice probabilmente ha presentato
+Bob a Carlo in qualche occasione (festa di lavoro, riunione), creando quel legame ``almeno
+debole'' previsto dalla STCP. Il legame Bob–Carlo potrebbe rimanere debole (si salutano di
+tanto in tanto), ma la sua \emph{assenza} sarebbe socialmente strana dato che entrambi
+conoscono bene Alice. Questo è il motivo per cui i veri ``ponti'' tra comunità distinte
+di una rete sociale sono quasi sempre legami deboli: una persona con legami forti non può
+essere un ponte, perché la STCP ne impedirebbe l'assenza di connessioni trasversali.
 
 \subsection{Validazione empirica: studio Onnela et al. (reti di telefonia mobile)}
 
@@ -599,7 +711,24 @@ Se i legami fossero formati casualmente, la frazione attesa di archi \emph{etero
 \formula{2pq}
 
 Se la frazione osservata di archi eterogenei è \emph{minore} di $2pq$, la rete
-mostra \textbf{omofilia}; se è \emph{maggiore}, mostra \textbf{eterofilia}.
+mostra \textbf{omofilia}; se è \emph{maggiore}, mostra \textbf{eterofilia}
+(\textit{eterofilia}: la tendenza a legarsi con persone \emph{diverse} da sé,
+ad esempio in relazioni di mentoring tra giovani e anziani).
+
+\medskip
+\noindent\textbf{Perché $2pq$?}
+La formula $2pq$ deriva dal calcolo probabilistico del \emph{mixing casuale} (\textit{random
+mixing}): se ogni arco collegasse due nodi scelti indipendentemente e a caso dalla
+popolazione, la probabilità che un estremo cada nel gruppo A (proporzione $p$) e l'altro
+nel gruppo B (proporzione $q = 1-p$) sarebbe $p \cdot q$. Siccome l'arco può andare
+``A$\to$B'' oppure ``B$\to$A'', la probabilità totale di un arco eterogeneo è $2pq$.
+Questo è esattamente il termine del binomio $(p+q)^2 = p^2 + 2pq + q^2$, dove $p^2$
+è la probabilità di un arco omogeneo A–A e $q^2$ di un arco omogeneo B–B.
+
+Dunque, $2pq$ è il \emph{baseline} atteso in assenza di preferenze: se osserviamo meno
+archi eterogenei, qualcosa (la preferenza per simili) spinge le persone a connettersi
+con chi è uguale a loro — questo è l'omofilia. Se osserviamo più archi eterogenei,
+qualcosa spinge verso il legame con persone diverse — questa è l'eterofilia.
 
 \medskip
 \noindent\textbf{Esempio numerico.}
@@ -629,15 +758,30 @@ di archi eterogeni, ovvero $18 \times (4/9) = 8$ archi. Ne osserviamo solo 5 $<$
 Due meccanismi generano l'omofilia osservata:
 
 \begin{itemize}
-  \item \textbf{Selezione}: le persone formano legami con chi è già simile a loro
-        (\textit{``birds of a feather flock together''}).
-  \item \textbf{Influenza sociale}: i legami esistenti modificano i comportamenti e le
-        caratteristiche degli individui (\textit{peer pressure}).
+  \item \textbf{Selezione} (\textit{selection}): le persone formano legami con chi è già simile a loro
+        (\textit{``birds of a feather flock together''}). La selezione opera \emph{prima} della
+        formazione del legame: si sceglie come amico chi condivide già i propri valori, interessi
+        o caratteristiche demografiche.
+  \item \textbf{Influenza sociale} (\textit{social influence}): i legami esistenti modificano i comportamenti e le
+        caratteristiche degli individui (\textit{peer pressure}). L'influenza opera \emph{dopo}
+        la formazione del legame: gli amici ci convincono ad adottare certi comportamenti,
+        opinioni o abitudini, rendendoci più simili a loro nel tempo.
 \end{itemize}
 
-\noindent\textbf{Caratteristiche immutabili} (sesso biologico, etnia): solo la selezione opera.\\
+\noindent\textbf{Caratteristiche immutabili} (sesso biologico, etnia): solo la selezione opera, perché
+l'influenza sociale non può cambiare queste caratteristiche.\\
 \noindent\textbf{Caratteristiche mutabili} (comportamenti, opinioni, interessi): entrambi
-i meccanismi operano.
+i meccanismi operano, rendendo difficile distinguere empiricamente quale dei due prevalga
+in un dato contesto.
+
+\medskip
+\noindent\textbf{Perché questa distinzione è importante?}
+Capire quale meccanismo prevalga è fondamentale per progettare interventi efficaci.
+Se la somiglianza tra amici è dovuta principalmente alla \emph{selezione}, gli interventi
+di salute pubblica o prevenzione dovrebbero mirare a modificare il contesto sociale (ad es.\
+chi frequenta chi). Se è dovuta principalmente all'\emph{influenza sociale}, è più efficace
+intervenire sui \emph{leader di opinione} nella rete, perché il loro cambiamento di
+comportamento si propagherà ai loro contatti.
 
 \medskip
 \noindent\textbf{Esempio}. Studi longitudinali sugli adolescenti (Cohen \& Kandel) mostrano
@@ -812,13 +956,29 @@ plot(net2, vertex.label = NA, vertex.size = 7,
 
 \subsection{Centralità nelle reti}
 
-La \textbf{centralità} misura l'importanza di un nodo nella rete. Esistono diverse misure,
-ognuna con un'interpretazione diversa di ``importanza''.
+Dire che un nodo è ``importante'' in una rete è ambiguo: importante in che senso?
+Il concetto di \textbf{centralità} cerca di catturare questa intuizione in modo preciso,
+ma esistono molte definizioni diverse — ognuna risponde a una domanda leggermente diversa
+su cosa significhi essere centrale. Un nodo può essere centrale perché ha molti vicini
+diretti (degree centrality), perché si trova su molti cammini che collegano altri nodi
+(betweenness), perché è vicino a tutti gli altri (closeness), oppure perché è collegato
+a nodi a loro volta importanti (eigenvector centrality). La scelta della misura dipende
+dal fenomeno che si vuole studiare: per la diffusione rapida di un'informazione si usa
+la closeness; per identificare i broker di informazione si usa la betweenness; per capire
+chi ha più influenza indiretta si usa la centralità di autovettore.
 
 \subsection{Centralità di grado (\textit{Degree Centrality})}
 
 Il nodo più connesso è quello con il grado massimo:
 \formula{C_D(i) = k_i}
+
+\noindent La \textbf{centralità di grado} è la misura più semplice e intuitiva: conta
+quanti vicini diretti ha un nodo. È particolarmente informativa in reti dove i collegamenti
+diretti determinano l'accesso alle risorse o alle informazioni — ad esempio, nelle reti
+di diffusione di malattie, un nodo con grado alto è un superspreader potenziale. Tuttavia,
+la centralità di grado ha i suoi limiti: non distingue tra nodi che sono connessi a
+``hub'' influenti e nodi che sono connessi a nodi periferici — due nodi con lo stesso grado
+possono avere ruoli strutturali molto diversi nella rete.
 
 \subsection{Centralità di betweenness}
 
@@ -830,11 +990,38 @@ quanti di essi passano per $i$.
 
 I nodi con alta betweenness sono \textbf{broker} di informazione.
 
+\noindent\textbf{Intuizione: il casello autostradale.}
+Immaginate la rete come una mappa stradale in cui si vuole viaggiare dal nodo $s$ al nodo
+$t$ seguendo le strade più brevi. Alcuni incroci (nodi) si trovano su quasi tutti i percorsi
+ottimali: questi sono i nodi con alta betweenness, gli equivalenti dei caselli autostradali
+o dei nodi di smistamento. Chi controlla questi nodi ha un potere di intermediazione
+enorme: può rallentare, filtrare o distorcere il flusso di informazioni che li attraversa.
+Nelle reti sociali, i broker sono spesso individui che collegano comunità diverse; nelle
+reti aziendali, possono essere manager di livello medio che aggregano e traducono
+informazioni tra livelli gerarchici.
+
+Il valore $\sigma_{st}(i)/\sigma_{st}$ rappresenta la \emph{frazione} dei cammini ottimali
+tra $s$ e $t$ che passano per $i$: se esiste un solo cammino più breve e passa per $i$,
+contribuisce 1; se ci sono 10 cammini più brevi e solo 3 passano per $i$, contribuisce 0,3.
+La somma su tutte le coppie $(s,t)$ dà la betweenness totale.
+
 \subsection{Centralità di vicinanza (\textit{Closeness Centrality})}
 
 \formula{C_C(i) = \frac{N-1}{\sum_{j \neq i} d(i,j)}}
 
 Un nodo con alta closeness raggiunge rapidamente tutti gli altri.
+
+\noindent\textbf{Quando usare la closeness.}
+La closeness misura la distanza media inversa di un nodo da tutti gli altri: un valore
+alto indica che il nodo è ``vicino al centro'' della rete. La formula $N-1$ al numeratore
+normalizza la misura in modo che il valore massimo sia 1 (raggiunto da un nodo connesso
+direttamente a tutti gli altri). La closeness è più utile della betweenness quando si
+studia la \emph{velocità di diffusione}: un nodo con alta closeness può diffondere
+un'informazione a tutta la rete in meno passi. Ad esempio, in una campagna di vaccinazione,
+vaccinare prima gli individui con alta closeness riduce il tempo di immunizzazione della
+popolazione. La closeness però è meno robusta su reti disconnesse: se il grafo non è
+connesso, la somma delle distanze può essere infinita (si usa spesso la variante
+``harmonic centrality'' che somma gli inversi delle distanze).
 
 \subsection{Centralità di autovettore (\textit{Eigenvector Centrality})}
 
@@ -843,6 +1030,22 @@ vicini:
 \formula{C_E(i) = \frac{1}{\lambda} \sum_{j \in \mathcal{N}(i)} C_E(j)}
 In notazione matriciale: $\mathbf{A}\,\mathbf{x} = \lambda\,\mathbf{x}$ dove $\mathbf{x}$
 è l'autovettore associato all'autovalore massimo. PageRank di Google è una variante.
+
+\noindent\textbf{Il collegamento con PageRank.}
+La centralità di autovettore cattura l'idea che ``non conta solo quanti amici hai, ma anche
+quanto sono importanti i tuoi amici''. Un nodo connesso a cinque hub importanti sarà più
+centrale di un nodo connesso a cento nodi periferici. La soluzione autovettoriale garantisce
+la coerenza: se aumenta la centralità di un vicino, aumenta anche quella del nodo.
+
+\textbf{PageRank} (Brin \& Page, 1998), l'algoritmo originale di Google, è una variante della
+centralità di autovettore che aggiunge due elementi: (1) un termine di \emph{damping} che
+tiene conto del fatto che un utente casuale che naviga il web ha una probabilità $1-\alpha$
+di saltare a una pagina casuale in ogni passo ($\alpha \approx 0.85$); (2) la normalizzazione
+per il grado uscente, in modo che pagine con molti link in uscita ``diluiscano'' il loro
+voto. La formula è $PR(i) = \frac{1-\alpha}{N} + \alpha \sum_{j \to i} \frac{PR(j)}{k_j^{out}}$.
+Questa variante rende l'algoritmo più robusto agli abusi (pagine create artificialmente
+per aumentare il PageRank) e garantisce la convergenza anche in grafi non completamente
+connessi.
 
 \subsection{Applicazione: Citation Networks con R}
 
@@ -1012,6 +1215,22 @@ with(Salaries, cor.test(salary, yrs.since.phd))
 
 \subsection{Dataset NYT / COVID-19}
 
+L'analisi del testo (\textit{text analysis}) è una delle applicazioni più importanti
+della Social Network Analysis moderna, perché i dati social sono in larga parte testuali:
+post, commenti, tweet, articoli. Prima di analizzare un testo, occorre trasformarlo in
+una rappresentazione numerica che un algoritmo possa elaborare. Questa fase di
+\textbf{pre-elaborazione} è critica: scelte sbagliate in questa fase possono rendere
+l'analisi inutile o fuorviante.
+
+Un \textbf{corpus} è una raccolta strutturata di documenti testuali su cui si eseguono
+le analisi. Ogni documento può essere un post, un articolo, un tweet, ecc. Le principali
+operazioni di pre-elaborazione sono: la \textbf{tokenizzazione} (suddivisione del testo
+in unità elementari, i \emph{token}: parole, punteggiatura, simboli), la rimozione delle
+\textbf{stopwords} (parole grammaticali molto frequenti ma prive di significato semantico,
+come ``il'', ``la'', ``di'', ``the'', ``a''), la normalizzazione del caso (tutto minuscolo),
+e la creazione di \textbf{n-grammi} (sequenze di $n$ token consecutivi che catturano
+frasi ricorrenti, ad es.\ ``New York'', ``social network'').
+
 L'analisi testuale del corso utilizza un corpus di post Facebook del \textit{New York Times}
 relativi alla pandemia COVID-19. Il workflow di preprocessing è il seguente.
 
@@ -1040,6 +1259,14 @@ posts_covid_m <- df_other[y, ]
 \end{lstlisting}
 
 \subsection{Pre-elaborazione del testo con \texttt{quanteda}}
+
+La libreria \texttt{quanteda} per R implementa un workflow completo di pre-elaborazione
+testuale. Il risultato finale è una \textbf{Document-Feature Matrix (DFM)}: una matrice
+in cui ogni riga è un documento e ogni colonna è un termine (o n-gramma); il valore della
+cella $(d,t)$ è la frequenza del termine $t$ nel documento $d$. Questa matrice è tipicamente
+\emph{molto sparsa}: la maggior parte dei termini appare in pochissimi documenti, quindi
+la maggior parte dei valori è zero. La DFM è la rappresentazione di input standard per
+molti algoritmi di analisi testuale, tra cui TF-IDF e il topic modeling.
 
 \begin{lstlisting}[language=R]
 library(quanteda)
@@ -1083,6 +1310,27 @@ Termini molto frequenti in tutto il corpus (es.\ ``the'', ``a'') ricevono
 IDF basso e quindi peso basso, mentre termini specifici di pochi documenti
 ricevono peso alto.
 
+\medskip
+\noindent\textbf{Spiegazione dettagliata.}
+Il \textbf{TF} (\textit{Term Frequency}) di un termine $t$ nel documento $d$ è
+$\text{TF}(t,d) = f_{t,d} / \sum_{t'} f_{t',d}$: il rapporto tra il numero di volte
+che $t$ appare in $d$ e il numero totale di termini in $d$. La normalizzazione elimina
+il vantaggio dei documenti lunghi. Un termine che appare 10 volte in un documento di
+100 parole ha lo stesso TF di uno che appare 100 volte in un documento di 1000 parole.
+
+L'\textbf{IDF} (\textit{Inverse Document Frequency}) vale $\log(|D| / |\{d \in D : t \in d\}|)$:
+il logaritmo del rapporto tra il numero totale di documenti $|D|$ e il numero di documenti
+che contengono il termine $t$. Se $t$ appare in tutti i documenti, IDF $= \log(1) = 0$:
+il termine è così comune da non avere valore discriminante. Se $t$ appare in un solo
+documento su 1000, IDF $= \log(1000) \approx 6.9$: il termine è molto specifico e
+discriminante. Il logaritmo smorza la crescita dell'IDF per termini rarissimi.
+
+Il prodotto \textbf{TF-IDF} premia quindi i termini che sono frequenti nel singolo documento
+(TF alto) ma rari nel corpus (IDF alto): sono i termini che meglio distinguono il documento
+dagli altri. Questa misura è utilizzata per estrarre parole chiave, costruire rappresentazioni
+vettoriali dei documenti per il \textit{retrieval} di informazioni, e come input per
+algoritmi di classificazione e clustering testuale.
+
 \begin{lstlisting}[language=R]
 library(quanteda.textstats)
 
@@ -1122,9 +1370,33 @@ Ogni documento è rappresentato dalla frequenza delle sue parole (vettore sparso
   \item[$\times$] Perde informazione sintattica e semantica; problemi con omonimia ed enantiosemia.
 \end{itemize}
 
+\noindent\textbf{Esempio concreto.}
+Considerate il documento ``il cane mangia il gatto''. Dopo la tokenizzazione e la rimozione
+delle stopwords (``il''), rimangono i token: \{cane, mangia, gatto\}. Il vocabolario del
+corpus è ad esempio \{cane, gatto, mangia, dorme, vola\}. Il vettore BoW di questo documento
+è $(1, 1, 1, 0, 0)$: 1 per cane, 1 per gatto, 1 per mangia, 0 per dorme, 0 per vola.
+Un documento ``il gatto dorme'' diventerebbe $(0, 1, 0, 1, 0)$.
+
+Notate che l'informazione sull'ordine delle parole è persa: ``il cane mangia il gatto''
+e ``il gatto mangia il cane'' producono lo stesso vettore BoW. Questa è la limitazione
+fondamentale del BoW: non cattura il significato sintattico né il contesto. Un'ulteriore
+limitazione è l'omonimia: la parola ``banco'' (di scuola vs.\ di pesci vs.\ istituto di
+credito) produce lo stesso token ma ha significati completamente diversi a seconda del
+contesto.
+
 \subsubsection{Embeddings (word2vec, BERT)}
 Ogni parola/frase viene mappata in un vettore denso nello spazio $\mathbb{R}^d$ dove
 la similarità vettoriale riflette la similarità semantica.
+
+\noindent\textbf{Esempio concreto di embedding semantico.}
+In uno spazio di embedding ben addestrato, le parole ``re'' e ``regina'' hanno vettori
+vicini (alta similarità coseno), così come ``cane'' e ``gatto''. Ma la relazione è ancora
+più ricca: la differenza vettoriale $\vec{re} - \vec{uomo} + \vec{donna} \approx \vec{regina}$
+cattura la relazione semantica ``re sta a uomo come regina sta a donna''. Allo stesso modo,
+frasi con significato simile come ``il treno è in ritardo'' e ``il convoglio ferroviario
+ha accumulato del ritardo'' producono embedding molto vicini nello spazio $\mathbb{R}^d$,
+anche se non condividono quasi nessuna parola. Questo è il vantaggio fondamentale rispetto
+al BoW: due documenti possono essere semanticamente simili pur usando vocabolari diversi.
 
 Il modello \textbf{BERT} (\textit{Bidirectional Encoder Representations from Transformers}, 2018)
 legge il testo in entrambe le direzioni e produce rappresentazioni contestuali.
@@ -1141,6 +1413,17 @@ Dopo l'embedding, ogni documento è un punto in uno spazio con centinaia di dime
 per BERT). In spazi ad altissima dimensione il concetto di ``distanza'' perde significato: quasi
 tutte le coppie di punti diventano equidistanti, rendendo il clustering inefficace. Per questo
 BERTopic introduce un passo di \textbf{riduzione della dimensionalità} prima del clustering.
+
+\noindent\textbf{Intuizione geometrica.}
+In uno spazio a 1 dimensione (una linea), due punti casuali nell'intervallo $[0,1]$ hanno in
+media una distanza di circa $1/3$. In uno spazio a $d$ dimensioni, la distanza media tra due
+punti casuali nel cubo unitario cresce come $\sqrt{d/6}$, mentre la distanza minima cresce
+molto più lentamente. In pratica, per $d$ molto grande, il rapporto tra la distanza massima
+e quella minima tende a 1: tutti i punti sembrano equidistanti. Questo significa che in
+$\mathbb{R}^{768}$ è quasi impossibile distinguere un vicino da un punto lontano, rendendo
+algoritmi basati sulla distanza (come il clustering) fondamentalmente inutili senza
+pre-elaborazione. UMAP risolve questo problema proiettando i dati in $\mathbb{R}^5$ o
+$\mathbb{R}^{10}$, dove le distanze sono di nuovo significative e i cluster sono visibili.
 
 \subsection{Il pipeline di BERTopic}
 
@@ -1264,7 +1547,7 @@ Topic interpretabili tramite parole chiave & Possibili bias dal corpus di pre-ad
 
 ``\textit{Big Data}'' è un termine spesso frainteso: non si riferisce semplicemente a
 grandi quantità di dati, ma a una \textbf{capacità di ricerca, aggregazione e
-incrocio} di insiemi di dati eterogenei \cite[Boyd \& Crawford, 2012]{}.
+incrocio} di insiemi di dati eterogenei (Boyd \& Crawford, 2012).
 
 \medskip
 \noindent Due interpretazioni prevalenti:
