@@ -1729,29 +1729,383 @@ fondamentali sull'uso dei dati digitali.
 
 \section{Glossario}
 \begin{description}
-  \item[Arco (edge)] Connessione tra due nodi in un grafo.
-  \item[Betweenness centrality] Misura di centralità basata su cammini più corti.
-  \item[BERTopic] Framework di topic modeling basato su BERT, UMAP e HDBSCAN.
-  \item[BoW] Bag of Words: rappresentazione vettoriale sparsa dei documenti.
-  \item[Chiusura triadica] Tendenza a formare triangoli in reti sociali.
-  \item[Clustering coefficient] Misura della densità di connessioni tra vicini.
-  \item[Componente connessa] Sottografo massimale in cui ogni coppia di nodi è raggiungibile.
-  \item[Diametro] Massima distanza geodesica in un grafo.
-  \item[Grado (degree)] Numero di archi incidenti su un nodo.
-  \item[Grafo] Struttura matematica composta da nodi e archi.
-  \item[HDBSCAN] Hierarchical Density-Based Spatial Clustering.
-  \item[Homophily] Tendenza a legarsi con chi è simile a noi.
-  \item[igraph] Libreria R/Python per analisi di reti.
-  \item[Matrice di adiacenza] Rappresentazione matriciale di un grafo.
-  \item[Nodo (vertex)] Elemento base di un grafo.
-  \item[Omofilia] Vedi Homophily.
-  \item[Ponte locale] Arco che collega nodi senza amici in comune.
-  \item[Scale-free] Rete con distribuzione di grado a power-law.
-  \item[Sentiment analysis] Analisi automatica della valenza emotiva dei testi.
-  \item[Small world] Rete con diametro piccolo e alto clustering.
-  \item[TF-IDF] Term Frequency–Inverse Document Frequency.
-  \item[Topic modeling] Scoperta automatica di temi latenti nei testi.
-  \item[UMAP] Uniform Manifold Approximation and Projection.
+
+  \item[Arco (edge)] Connessione tra due nodi in un grafo $G=(V,E)$. In un grafo non
+  orientato l'arco $(u,v)$ è identico all'arco $(v,u)$; in un grafo orientato (digrafo)
+  i due archi sono distinti e rappresentano relazioni con direzione opposta. In una rete
+  pesata ogni arco porta un valore numerico (il peso $w_{ij}$) che rappresenta la forza
+  o la capacità della connessione.
+
+  \item[Betweenness centrality] Misura di centralità di un nodo $i$ che conta quante
+  volte $i$ si trova sul cammino più corto tra ogni coppia di nodi $(s,t)$, normalizzato
+  sul numero totale di cammini più corti tra $s$ e $t$. Un nodo con alta betweenness
+  funge da \textit{broker} di informazione: controllandolo si può rallentare o bloccare
+  il flusso nella rete. Si estende agli archi (edge betweenness), utile nell'algoritmo
+  di Girvan–Newman per la rilevazione di comunità.
+
+  \item[BERT] \textit{Bidirectional Encoder Representations from Transformers} (2018).
+  Modello di linguaggio pre-addestrato su grandi corpus testuali che produce
+  rappresentazioni contestuali: la rappresentazione di una parola dipende da tutte le
+  altre parole del contesto sia a sinistra sia a destra. Sentence-BERT (SBERT, 2019)
+  estende BERT per produrre vettori a livello di frase, fondamentali per il topic
+  modeling con BERTopic.
+
+  \item[BERTopic] Framework di topic modeling non supervisionato (Grootendorst, 2022)
+  che combina quattro passi: embedding dei documenti con Sentence-BERT, riduzione della
+  dimensionalità con UMAP, clustering con HDBSCAN, e rappresentazione dei topic con
+  c-TF-IDF. A differenza di LDA, BERTopic non richiede di specificare a priori il numero
+  di topic e preserva il contesto semantico grazie agli embedding.
+
+  \item[BoW (Bag of Words)] Rappresentazione di un documento come vettore delle
+  frequenze delle sue parole, ignorando l'ordine e la struttura sintattica. Il vocabolario
+  del corpus definisce la dimensione del vettore; la maggior parte delle componenti è
+  zero (vettore sparso). BoW è semplice e interpretabile ma perde informazione sintattica
+  e semantica, e non distingue usi diversi della stessa parola (omonimia).
+
+  \item[Cammino (path)] Sequenza di archi adiacenti in un grafo: $(v_0,v_1),(v_1,v_2),
+  \ldots,(v_{k-1},v_k)$. La \textit{lunghezza} del cammino è il numero di archi (o, in
+  reti pesate, la somma dei pesi). Il cammino più corto tra due nodi è chiamato
+  \textit{cammino geodetico} e la sua lunghezza è la \textit{distanza} tra i nodi.
+
+  \item[Cammino euleriano] Cammino che attraversa ciascun arco del grafo esattamente una
+  volta. Esiste se e solo se il grafo ha al più due nodi di grado dispari (teorema di
+  Eulero, 1736). Se esiste un cammino euleriano che inizia e finisce nello stesso nodo,
+  si chiama \textit{circuito euleriano} ed esiste se e solo se tutti i nodi hanno grado
+  pari. Il problema dei ponti di Königsberg è l'esempio storico che ha dato origine alla
+  teoria dei grafi.
+
+  \item[Camera d'eco (echo chamber)] Ambiente informativo in cui un individuo è esposto
+  prevalentemente a contenuti e opinioni che confermano le proprie credenze, a causa di
+  meccanismi di omofilia, algoritmi di raccomandazione personalizzati e autoesclusione
+  dei contenuti dissonanti. Le camere d'eco sono studiate come fattore di polarizzazione
+  dell'opinione pubblica nelle reti sociali digitali.
+
+  \item[Centralità] Famiglia di misure che quantificano l'importanza di un nodo (o di un
+  arco) all'interno di una rete. Diverse definizioni di ``importanza'' danno origine a
+  misure diverse: il grado misura il numero di connessioni dirette, la betweenness misura
+  il controllo sui flussi, la closeness misura la rapidità di raggiungimento degli altri,
+  la eigenvector centrality misura l'influenza in base all'importanza dei vicini.
+
+  \item[Chiusura triadica] Principio per cui se due nodi $B$ e $C$ hanno un amico comune
+  $A$, esiste una probabilità elevata che $B$ e $C$ formino un legame nel tempo. La
+  chiusura triadica è guidata da opportunità di incontro (attraverso $A$), fiducia
+  mediata dalla conoscenza comune, e pressione verso la coerenza cognitiva. Il
+  coefficiente di clustering misura il grado in cui la chiusura triadica si è realizzata
+  attorno a un nodo.
+
+  \item[Closeness centrality] Misura di centralità $C_C(i) = (N-1)/\sum_{j\neq i}d(i,j)$
+  che quantifica l'inverso della distanza media di un nodo da tutti gli altri. Un nodo
+  con alta closeness è vicino in media a tutti gli altri e può quindi diffondere
+  informazioni rapidamente nell'intera rete. È particolarmente informativa quando si
+  vuole identificare i nodi che minimizzano il tempo di trasmissione globale.
+
+  \item[Clustering coefficient] Misura della densità locale di un nodo $i$, definita come
+  il rapporto tra il numero di archi effettivamente presenti tra i vicini di $i$ e il
+  numero massimo possibile: $C_i = 2L_i / [k_i(k_i-1)]$. Vale $0$ se nessun vicino è
+  connesso a nessun altro, e $1$ se i vicini formano un grafo completo (cricca). Il
+  clustering medio $\langle C \rangle$ è una proprietà globale della rete; reti
+  small-world hanno $\langle C \rangle$ alto con $\langle d \rangle$ basso.
+
+  \item[Componente connessa] Sottoinsieme massimale di nodi di un grafo non orientato tale
+  che ogni coppia di nodi al suo interno sia collegata da almeno un cammino. In un grafo
+  orientato si distingue tra componente \textit{fortemente} connessa (ogni nodo raggiunge
+  tutti gli altri seguendo la direzione degli archi) e componente \textit{debolmente}
+  connessa (raggiungibilità ignorando le direzioni). Un grafo con una sola componente
+  connessa è detto \textit{connesso}.
+
+  \item[Componente gigante] Componente connessa che contiene una frazione significativa
+  (tipicamente $O(N)$) di tutti i nodi di una grande rete. Nei modelli di rete casuale
+  (Erdős–Rényi), la componente gigante emerge per transizione di fase quando il grado
+  medio supera 1: per $\langle k \rangle > 1$ una singola componente domina la rete;
+  per $\langle k \rangle < 1$ la rete è frammentata in piccole componenti. La presenza
+  di una componente gigante è fondamentale per la diffusione di epidemie o informazioni.
+
+  \item[c-TF-IDF (class TF-IDF)] Variante del TF-IDF usata in BERTopic per rappresentare
+  i topic: tutti i documenti di un cluster vengono concatenati in un unico meta-documento
+  e il peso di un termine $t$ nel cluster $c$ è $f_{t,c}/\sum_{t'}f_{t',c} \times
+  \log(1+A/f_t)$, dove $A$ è il numero medio di parole per classe. Favorisce termini
+  frequenti nel cluster e rari nel corpus complessivo.
+
+  \item[DBSCAN] \textit{Density-Based Spatial Clustering of Applications with Noise}.
+  Algoritmo di clustering che individua cluster di forma arbitraria sulla base della
+  densità locale: un punto è un \textit{core point} se almeno \texttt{minPts} altri
+  punti cadono entro un raggio $\varepsilon$. I punti non raggiungibili da nessun core
+  point vengono classificati come \textbf{rumore}. Non richiede di specificare $K$ a
+  priori ma è sensibile ai parametri $\varepsilon$ e \texttt{minPts}.
+
+  \item[Degree centrality] La misura di centralità più semplice: il grado del nodo,
+  ovvero il numero di archi diretti $C_D(i)=k_i$. In reti orientate si distingue tra
+  in-degree (archi entranti, indicatore di popolarità) e out-degree (archi uscenti,
+  indicatore di attività). È facile da calcolare ma può essere fuorviante in reti con
+  distribuzione di grado disomogenea, dove hub e nodi periferici coesistono.
+
+  \item[Diametro] La massima distanza geodesica tra qualsiasi coppia di nodi in un grafo:
+  $d_{\max} = \max_{u,v} d(u,v)$. In reti disconnesse si calcola separatamente per ogni
+  componente. Il diametro dà un'idea del caso peggiore per la trasmissione di informazioni;
+  nelle reti small-world è sorprendentemente piccolo ($O(\log N)$) nonostante l'enorme
+  numero di nodi.
+
+  \item[Digrafo (grafo orientato)] Grafo in cui ogni arco ha una direzione: $(u,v) \neq
+  (v,u)$. Esempi: reti di citazioni (un articolo cita un altro, non viceversa), reti
+  follower di Twitter, reti di pagine web collegate da hyperlink. In un digrafo si
+  distinguono grado entrante $k^{in}$ e grado uscente $k^{out}$; la matrice di adiacenza
+  non è necessariamente simmetrica.
+
+  \item[Distribuzione di grado] La distribuzione di probabilità $p_k = N_k/N$ del grado
+  dei nodi di una rete, dove $N_k$ è il numero di nodi con grado $k$. Reti casuali
+  (Erdős–Rényi) hanno distribuzione di Poisson; reti reali mostrano spesso code pesanti
+  o distribuzioni a power-law $p_k \sim k^{-\gamma}$ (reti scale-free). La forma della
+  distribuzione di grado determina molte proprietà globali della rete (robustezza,
+  diffusione di epidemie, ecc.).
+
+  \item[Eigenvector centrality] Misura di centralità in cui l'importanza di un nodo è
+  proporzionale alla somma delle importanze dei suoi vicini: $C_E(i) = (1/\lambda)
+  \sum_{j \in \mathcal{N}(i)} C_E(j)$, equivalente alla soluzione dell'equazione agli
+  autovalori $\mathbf{A}\mathbf{x}=\lambda\mathbf{x}$ con $\lambda$ massimo. Un nodo
+  guadagna importanza non solo avendo molti vicini ma avendo vicini importanti. PageRank
+  è una variante che aggiunge ammortizzamento (damping) per gestire i dangling nodes.
+
+  \item[Embedding] Rappresentazione di un oggetto (parola, frase, nodo) come vettore
+  denso in uno spazio $\mathbb{R}^d$ con $d$ relativamente piccolo (tipicamente $d \in
+  [100, 768]$). Negli embedding semantici la distanza vettoriale riflette la similarità
+  di significato: parole usate in contesti simili hanno vettori vicini. Gli embedding
+  consentono operazioni aritmetiche semantiche (es.\ re–uomo+donna $\approx$ regina)
+  e sono la base di modelli come word2vec, GloVe e BERT.
+
+  \item[Eterofilia] Tendenza opposta all'omofilia: le connessioni di rete tendono a
+  collegare nodi con attributi diversi più di quanto ci si aspetterebbe dal mixing
+  casuale. Si rileva quando la proporzione osservata di archi eterogenei (che collegano
+  nodi di tipo diverso) è significativamente maggiore del valore atteso $2pq$. Esempi
+  includono reti commerciali (fornitori si connettono a clienti diversi) e alcune reti
+  di conoscenza professionale.
+
+  \item[Foci (Feld, 1981)] Punti focali di interazione sociale: contesti organizzati
+  (classi scolastiche, luoghi di lavoro, associazioni, eventi) che riuniscono persone
+  con caratteristiche simili e creano opportunità di formazione di legami. Il concetto di
+  Feld spiega come l'omofilia emerga non da una scelta esplicita ma dall'appartenenza a
+  foci omogenei. I foci sono la base delle reti bipartite persona-contesto usate per
+  studiare la \textit{focal closure}.
+
+  \item[Grado (degree)] Numero di archi incidenti su un nodo. In reti non orientate è
+  uguale al numero di vicini diretti; in reti orientate si distinguono grado entrante
+  $k^{in}$ (archi ricevuti) e grado uscente $k^{out}$ (archi inviati). La somma di
+  tutti i gradi è il doppio del numero di archi: $\sum_i k_i = 2|E|$. Il grado è la
+  misura di centralità più immediata ma può essere fuorviante in reti molto disomogenee.
+
+  \item[Grafo] Struttura matematica $G=(V,E)$ composta da un insieme di nodi (vertici)
+  $V$ e un insieme di archi $E \subseteq V \times V$. I grafi sono lo strumento
+  fondamentale per modellare sistemi di entità interconnesse: reti sociali, reti di
+  trasporto, reti biologiche, Internet. La teoria dei grafi, nata con Eulero nel 1736,
+  fornisce il linguaggio formale per analizzare queste strutture.
+
+  \item[Grafo bipartito] Grafo i cui nodi si dividono in due insiemi disgiunti $U$ e $V$
+  tali che ogni arco connette un nodo di $U$ a un nodo di $V$ (nessun arco è interno a
+  un insieme). Esempi: persone e film che hanno guardato, utenti e pagine che seguono.
+  La \textit{proiezione} su $U$ crea archi tra nodi di $U$ che condividono almeno un
+  vicino in $V$, rivelando la struttura di co-partecipazione.
+
+  \item[Grafo completo] Grafo in cui ogni coppia di nodi distinti è connessa da un arco;
+  il numero di archi è $|E|_{\max} = N(N-1)/2$ per grafi non orientati. In un grafo
+  completo il coefficiente di clustering è 1 per ogni nodo. Le reti reali sono quasi
+  sempre molto lontane dalla completezza (reti sparse).
+
+  \item[Grafo connesso] Grafo non orientato in cui ogni coppia di nodi è collegata da
+  almeno un cammino, ovvero il grafo ha un'unica componente connessa. Per grafi orientati
+  si parla di \textit{fortemente connesso} (raggiungibilità seguendo le direzioni degli
+  archi) e \textit{debolmente connesso} (raggiungibilità ignorando le direzioni).
+
+  \item[Grafo pesato] Grafo in cui ogni arco $(i,j)$ ha associato un valore numerico
+  $w_{ij}$ (il peso), che può rappresentare la forza di una relazione (minuti di
+  conversazione, numero di interazioni), la distanza geografica, la capacità di un canale,
+  ecc. Nelle reti pesate le misure di centralità e distanza vengono adattate per tenere
+  conto dei pesi.
+
+  \item[HDBSCAN] \textit{Hierarchical Density-Based Spatial Clustering of Applications
+  with Noise}. Estensione gerarchica di DBSCAN che non richiede i parametri $\varepsilon$
+  e \texttt{minPts} fissi, identifica cluster di densità diversa, e produce una gerarchia
+  di cluster da cui si estrae il partizionamento ottimale. I punti in regioni a bassa
+  densità restano classificati come rumore. In BERTopic viene usato dopo la riduzione
+  dimensionale con UMAP.
+
+  \item[Hub] Nodo con grado molto superiore alla media in una rete scale-free. La
+  presenza di hub è una conseguenza diretta della distribuzione di grado a power-law:
+  pochi nodi raccolgono un numero enorme di connessioni. Gli hub rendono le reti
+  scale-free robuste a guasti casuali (la probabilità di rimuovere un hub per caso è
+  bassa) ma vulnerabili ad attacchi mirati.
+
+  \item[igraph] Libreria open-source per l'analisi e la visualizzazione di reti,
+  disponibile per R e Python. Offre funzioni per creare grafi, calcolare misure di
+  centralità, rilevare comunità, tracciare layout e molto altro. È lo strumento
+  principale usato in questo corso per l'analisi pratica delle reti con R.
+
+  \item[Influenza sociale] Meccanismo per cui i legami esistenti modificano le
+  caratteristiche, i comportamenti e le opinioni degli individui (\textit{peer pressure}).
+  Si distingue dalla \textit{selezione} (formazione di legami con chi è già simile) e
+  co-agisce con essa nel produrre l'omofilia osservata nelle reti sociali. Il disegno
+  longitudinale di studi (Cohen \& Kandel) è necessario per separare i due effetti.
+
+  \item[K-Means] Algoritmo di clustering che partiziona $n$ punti in $K$ cluster
+  minimizzando la varianza intra-cluster. Si scelgono $K$ centroidi iniziali, si
+  assegna ogni punto al centroide più vicino e si ricalcolano i centroidi fino alla
+  convergenza. Limitazioni: richiede $K$ a priori, produce cluster di forma sferica e
+  di dimensioni simili, ed è sensibile agli outlier.
+
+  \item[Legame debole / legame forte] Dicotomia introdotta da Granovetter (1973) per
+  distinguere relazioni di grande intimità e tempo condiviso (legami forti, tipicamente
+  amici intimi) da relazioni più superficiali (legami deboli, tipicamente conoscenti).
+  I legami deboli tendono a essere ponti locali tra cluster diversi e a portare
+  informazioni nuove non disponibili nel gruppo stretto, da cui la ``forza dei legami
+  deboli''.
+
+  \item[Matrice di adiacenza] Rappresentazione matriciale di un grafo di $N$ nodi: la
+  matrice $A \in \{0,1\}^{N\times N}$ ha $A_{ij}=1$ se esiste un arco da $j$ a $i$.
+  Per grafi non orientati $A$ è simmetrica. La potenza $A^k$ conta i cammini di
+  lunghezza $k$ tra coppie di nodi, proprietà utile per calcolare misure di centralità
+  spettrali. Lo svantaggio è il costo di memoria $O(N^2)$; per reti sparse si preferisce
+  la lista di adiacenza.
+
+  \item[Modularity] Misura scalare $Q \in [-0.5, 1]$ che quantifica la qualità di un
+  partizionamento in comunità: confronta la densità di archi all'interno di ciascuna
+  comunità con quella attesa in un grafo casuale con la stessa distribuzione di grado.
+  Valori di $Q > 0.3$ indicano una struttura comunitaria significativa. Molti algoritmi
+  di rilevamento di comunità (es.\ Louvain) massimizzano $Q$.
+
+  \item[Neighborhood overlap] Misura graduale del grado in cui due nodi $A$ e $B$
+  condividono vicini: $\text{Overlap}(A,B) = |\mathcal{N}(A)\cap\mathcal{N}(B)| /
+  |\mathcal{N}(A)\cup\mathcal{N}(B)|$. Vale $0$ quando $A$ e $B$ non hanno vicini in
+  comune (l'arco è un ponte locale), e $1$ quando tutti i vicini sono condivisi.
+  Onnela et al.\ hanno mostrato empiricamente che l'overlap cresce al crescere della
+  forza del legame, confermando la teoria di Granovetter su scala di milioni di utenti.
+
+  \item[Network Science] Disciplina accademica interdisciplinare che studia le reti
+  complesse, combinando teoria dei grafi (matematica), meccanica statistica (fisica),
+  data mining (informatica) e struttura sociale (sociologia). Una scoperta centrale è
+  che reti di domini diversi (biologico, tecnologico, sociale) mostrano proprietà
+  strutturali simili (scale-free, small-world) perché governate dagli stessi principi
+  organizzativi (Barabási, 2016).
+
+  \item[Nodo (vertex)] Elemento base di un grafo, che rappresenta un'entità del sistema
+  modellato: una persona, una pagina web, una proteina, un aeroporto. L'insieme dei nodi
+  è indicato con $V$; la sua cardinalità $|V|=N$ è la \textit{dimensione} della rete.
+  I nodi possono avere attributi (es.\ nome, tipo, peso) che arricchiscono l'analisi.
+
+  \item[Omofilia] Principio per cui le connessioni di una rete tendono a formarsi tra
+  nodi simili per attributi demografici (età, etnia, genere), geografici, culturali o
+  comportamentali. Operazionalmente si misura confrontando la proporzione osservata di
+  archi eterogenei con il valore atteso dal mixing casuale $2pq$. L'omofilia emerge
+  attraverso due meccanismi: selezione (scelta attiva di amici simili) e influenza
+  sociale (convergenza verso i comportamenti degli amici).
+
+  \item[Ponte locale] Arco $(A,B)$ tale che $A$ e $B$ non hanno nessun amico in comune;
+  la sua rimozione aumenta la distanza $d(A,B)$ a più di $2$. I ponti locali sono
+  generalizzazioni dei ponti (la cui rimozione disconnette il grafo): nella pratica i
+  ponti veri sono rarissimi, ma i ponti locali sono comuni e svolgono la stessa funzione
+  di collegamento tra comunità diverse. Secondo la teoria di Granovetter, i legami
+  deboli tendono ad essere ponti locali.
+
+  \item[Power-law] Distribuzione di probabilità in cui $P(x) \propto x^{-\gamma}$ con
+  $\gamma > 1$. A differenza di una distribuzione gaussiana, non ha una scala
+  caratteristica: eventi molto grandi (nodi di grado altissimo, messaggi virali
+  enormemente condivisi) sono molto più frequenti di quanto previsto dalla distribuzione
+  normale. In Network Science le reti scale-free hanno distribuzioni di grado a
+  power-law con $2 < \gamma < 3$.
+
+  \item[Proiezione di rete bipartita] Trasformazione di una rete bipartita $G=(U\cup V,
+  E)$ in una rete unimodale su $U$: si crea un arco tra due nodi di $U$ se hanno almeno
+  un vicino comune in $V$. La proiezione può essere pesata (il peso dell'arco conta il
+  numero di vicini condivisi). Cattura la struttura di co-partecipazione latente nella
+  rete bipartita originale.
+
+  \item[Proprietà STCP (Strong Triadic Closure Property)] Proprietà di un nodo $A$:
+  se $A$ ha legami forti con $B$ e con $C$, allora esiste almeno un legame (forte o
+  debole) tra $B$ e $C$. La violazione di STCP crea tensione cognitiva. Come corollario,
+  se $A$ ha due o più legami forti e un legame che è ponte locale, quest'ultimo deve
+  essere un legame debole: questo è il fondamento formale della ``forza dei legami
+  deboli'' di Granovetter.
+
+  \item[Re-identificazione] Processo di associare dati apparentemente anonimi a
+  individui specifici combinando più attributi. Anche quando un dataset viene privato
+  dei dati identificativi diretti (nome, e-mail), la combinazione di attributi
+  indirettamente identificativi (età, residenza, professione, etnia) spesso permette
+  di risalire all'identità. Lo studio di Zimmer (2010) sul dataset Facebook di Harvard
+  è un caso emblematico discusso in questo corso.
+
+  \item[Rete bipartita] Rete i cui nodi appartengono a due categorie disgiunte $U$ e
+  $V$, con archi solo tra le due categorie. Modella naturalmente relazioni tra entità
+  di tipo diverso: utenti e prodotti, persone e eventi, autori e articoli. In R, igraph
+  gestisce reti bipartite tramite l'attributo \texttt{type} dei nodi e la funzione
+  \texttt{bipartite.projection()}.
+
+  \item[Rete scale-free] Rete con distribuzione di grado a power-law $p_k \sim
+  k^{-\gamma}$. Non ha una scala caratteristica di connettività: la maggior parte dei
+  nodi ha grado basso, ma esistono hub con grado molto elevato. Il meccanismo generativo
+  più noto è l'attaccamento preferenziale di Barabási–Albert (\textit{preferential
+  attachment}): i nuovi nodi si connettono preferibilmente ai nodi già molto connessi
+  (``il ricco diventa più ricco''). Esempi: Internet, reti di citazioni, reti di
+  collaborazione scientifica.
+
+  \item[Scale-free] Vedi \textit{Rete scale-free}.
+
+  \item[Selezione (omofilia)] Meccanismo per cui gli individui formano legami
+  preferibilmente con chi è già simile a loro (``birds of a feather flock together'').
+  Agisce principalmente su caratteristiche immutabili (etnia, sesso biologico) e
+  sui valori e interessi preesistenti. È il meccanismo generativo principale dell'omofilia,
+  ma spesso si combina con l'influenza sociale per produrre la correlazione osservata tra
+  attributi degli amici.
+
+  \item[Sentimento / Sentiment analysis] Analisi automatica della valenza emotiva di un
+  testo (positivo, negativo, neutro) o di emozioni più specifiche (gioia, paura,
+  rabbia, \ldots). Gli approcci principali includono: dizionari lessicali (AFINN, BING,
+  NRC), classificatori ML supervisionati addestrati su testi annotati, e modelli basati
+  su trasformatori (BERT) che colgono il contesto e la negazione.
+
+  \item[Sistema complesso] Sistema composto da molte parti interconnesse la cui struttura
+  di connessione è complicata e che presenta \textit{proprietà emergenti}: caratteristiche
+  del sistema nel suo insieme che non si possono inferire sommando le proprietà dei
+  singoli componenti. Esempi: cervello umano, mercati finanziari, Internet, ecosistemi
+  biologici, reti sociali. La Network Science studia i sistemi complessi attraverso la
+  loro struttura a rete.
+
+  \item[Small world] Proprietà di una rete che combina lunghezza media del percorso
+  piccola ($\langle d \rangle = O(\log N)$) e alto coefficiente di clustering medio.
+  Cattura l'intuizione dei ``sei gradi di separazione'': anche in reti enormi chiunque
+  è raggiungibile in pochi passi, eppure i vicini di ciascun nodo tendono a conoscersi
+  tra loro. Il modello di Watts–Strogatz (1998) genera reti con questa proprietà tramite
+  ricablaggio casuale di una piccola frazione degli archi di un anello regolare.
+
+  \item[Stopwords] Parole grammaticali o molto frequenti (articoli, preposizioni,
+  congiunzioni, \ldots) che non portano informazione semantica utile per l'analisi
+  testuale e vengono rimosse in fase di preprocessing. Liste standard di stopwords sono
+  disponibili per decine di lingue (es.\ \texttt{stopwords("en")} in quanteda); è comune
+  estenderle con termini specifici del dominio.
+
+  \item[Tokenizzazione] Processo di suddivisione di un testo in unità minimali
+  (token), tipicamente parole, ma anche sotto-parole, punteggiatura o n-grammi. È il
+  primo passo del preprocessing testuale. Dopo la tokenizzazione si applicano ulteriori
+  operazioni: rimozione delle stopwords, riduzione a minuscolo (\textit{lowercasing}),
+  lemmatizzazione o \textit{stemming} per ricondurre le parole alla loro forma base.
+
+  \item[TF-IDF] \textit{Term Frequency – Inverse Document Frequency}. Peso assegnato a
+  un termine $t$ in un documento $d$ rispetto a un corpus $D$: $\text{TF}(t,d) \times
+  \text{IDF}(t,D)$. TF misura quanto spesso il termine appare nel documento (normalizzato
+  per la lunghezza del documento); IDF penalizza i termini che appaiono in molti documenti
+  (termini generici) e premia quelli specifici di pochi documenti. Parole come ``il'' o
+  ``è'' hanno IDF $\approx 0$ e quindi peso vicino a zero.
+
+  \item[Topic modeling] Tecnica di apprendimento non supervisionato per scoprire temi
+  latenti in un corpus di testi: dato un insieme di documenti, assegna automaticamente
+  ogni documento a uno o più argomenti (topic), rappresentati come distribuzioni su
+  parole chiave. I modelli classici includono LDA (Latent Dirichlet Allocation); i
+  modelli moderni come BERTopic usano embedding neurali per una migliore cattura del
+  contesto semantico.
+
+  \item[UMAP] \textit{Uniform Manifold Approximation and Projection}. Algoritmo di
+  riduzione della dimensionalità non lineare che proietta dati da uno spazio ad alta
+  dimensione (es.\ $\mathbb{R}^{768}$ per BERT) in uno spazio a bassa dimensione
+  (es.\ $\mathbb{R}^5$) preservando la struttura locale dei dati. A differenza di PCA
+  (riduzione lineare) o t-SNE (lento su grandi dataset), UMAP scala bene e preserva
+  sia la struttura locale sia quella globale, rendendolo ideale per BERTopic.
+
 \end{description}
 
 \end{document}
