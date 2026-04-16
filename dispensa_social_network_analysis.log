@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.4.16)  16 APR 2026 09:57
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.4.16)  16 APR 2026 09:59
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -524,7 +524,7 @@ File: l3backend-pdftex.def 2024-01-04 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count312
 \l__pdf_internal_box=\box62
 )
-No file dispensa_social_network_analysis.aux.
+(./dispensa_social_network_analysis.aux)
 \openout1 = `dispensa_social_network_analysis.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 109.
@@ -547,6 +547,7 @@ LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 109.
 LaTeX Font Info:    ... okay on input line 109.
 LaTeX Info: Redefining \it@ocap on input line 109.
 LaTeX Info: Redefining \it@ccap on input line 109.
+
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
 *geometry* verbose mode - [ preamble ] result:
@@ -626,6 +627,9 @@ File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
 Package hyperref Info: Link coloring OFF on input line 109.
+
+(./dispensa_social_network_analysis.out)
+(./dispensa_social_network_analysis.out)
 \@outlinefile=\write3
 \openout3 = `dispensa_social_network_analysis.out'.
 
@@ -679,47 +683,49 @@ File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 ) [1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texmf/fonts/enc/
-dvips/lm/lm-ec.enc}]
-No file dispensa_social_network_analysis.toc.
-\tf@toc=\write4
-\openout4 = `dispensa_social_network_analysis.toc'.
-
-
+dvips/lm/lm-ec.enc}] (./dispensa_social_network_analysis.toc
 pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has 
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.145 \newpage
-               [1]
-LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 1
-74.
- (/usr/share/texmf/tex/latex/lm/ts1lmr.fd
-File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
-) [2{/usr/share/texmf/fonts/enc/dvips/lm/lm-ts1.enc}{/usr/share/texmf/fonts/enc
-/dvips/lm/lm-rm.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathsy.enc}] [3] [4
-{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathit.enc}] [5] [6] [7{/usr/share/texm
-f/fonts/enc/dvips/lm/lm-mathex.enc}] [8] [9] [10] [11] [12] [13] [14] [15] [16]
-LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 8
-41.
+l.39 ...ali e di affiliazione}{17}{subsection.4.6}
+                                                  % [1]
+LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 4
+1.
 
 (/usr/share/texmf/tex/latex/lm/t1lmtt.fd
 File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <12> not available
-(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 841.
 Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `lmtt' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
+ [2])
+\tf@toc=\write4
+\openout4 = `dispensa_social_network_analysis.toc'.
+
+ [3]
+LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 1
+74.
+
+(/usr/share/texmf/tex/latex/lm/ts1lmr.fd
+File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+) [4{/usr/share/texmf/fonts/enc/dvips/lm/lm-ts1.enc}{/usr/share/texmf/fonts/enc
+/dvips/lm/lm-rm.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathsy.enc}] [5] [6
+{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathit.enc}] [7] [8] [9{/usr/share/texm
+f/fonts/enc/dvips/lm/lm-mathex.enc}]
+[10] [11] [12] [13] [14] [15] [16] [17] [18]
+LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <12> not available
+(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 841.
 LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <10.95> not available
 (Font)              Font shape `T1/lmtt/b/n' tried instead on input line 848.
- [17] [18] [19] [20] [21] [22]
-[23] [24] [25] [26] [27] [28] [29] [30] [31]
+ [19] [20] [21] [22] [23] [24]
+[25] [26] [27] [28] [29] [30] [31] [32] [33]
 Underfull \hbox (badness 1776) in paragraph at lines 1528--1529
 []|\T1/lmr/m/n/12 (+20) Possibili bias dal cor-pus di pre-
  []
 
-[32] [33] [34] [35] [36]
+[34] [35] [36] [37] [38]
 Overfull \hbox (23.87898pt too wide) in paragraph at lines 1765--1769
 []\T1/lmr/m/n/12 (-20) Sequenza di ar-chi adia-cen-ti in un gra-fo: $\OT1/lmr/m
 /n/12 (-20) (\OML/lmm/m/it/12 v[]; v[]\OT1/lmr/m/n/12 (-20) )\OML/lmm/m/it/12 ;
@@ -728,7 +734,7 @@ m/m/it/12 ; [] ; \OT1/lmr/m/n/12 (-20) (\OML/lmm/m/it/12 v[]; v[]\OT1/lmr/m/n/1
 2 (-20) )$\T1/lmr/m/n/12 (-20) .
  []
 
-[37] [38] [39]
+[39] [40] [41]
 Overfull \hbox (20.27222pt too wide) in paragraph at lines 1861--1867
 \T1/lmr/m/n/12 (-20) por-zio-na-le al-la som-ma del-le im-por-tan-ze dei suoi v
 i-ci-ni: $\OML/lmm/m/it/12 C[]\OT1/lmr/m/n/12 (-20) (\OML/lmm/m/it/12 i\OT1/lmr
@@ -737,29 +743,21 @@ m/it/12 C[]\OT1/lmr/m/n/12 (-20) (\OML/lmm/m/it/12 j\OT1/lmr/m/n/12 (-20) )$\T1
 /lmr/m/n/12 (-20) ,
  []
 
-[40] [41] [42] [43] [44] [45] [46] (./dispensa_social_network_analysis.aux)
+[42] [43] [44] [45] [46] [47] [48] (./dispensa_social_network_analysis.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
  ***********
-
-
-Package rerunfilecheck Warning: File `dispensa_social_network_analysis.out' has
- changed.
-(rerunfilecheck)                Rerun to get outlines right
-(rerunfilecheck)                or use package `bookmark'.
-
-Package rerunfilecheck Info: Checksums for `dispensa_social_network_analysis.ou
-t':
-(rerunfilecheck)             Before: <no file>
-(rerunfilecheck)             After:  AEF26E20C2653245BA667EC8E4C96545;15251.
+Package rerunfilecheck Info: File `dispensa_social_network_analysis.out' has no
+t changed.
+(rerunfilecheck)             Checksum: AEF26E20C2653245BA667EC8E4C96545;15251.
  ) 
 Here is how much of TeX's memory you used:
- 17862 strings out of 476171
- 274546 string characters out of 5795119
+ 17952 strings out of 476171
+ 276170 string characters out of 5795119
  2253975 words of memory out of 5000000
- 38934 multiletter control sequences out of 15000+600000
- 637164 words of font info for 227 fonts, out of 8000000 for 9000
+ 39012 multiletter control sequences out of 15000+600000
+ 637293 words of font info for 228 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  75i,13n,79p,1029b,2051s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texmf/fonts/type1/public/lm/lmbx12.pfb></usr/share/texmf/fonts/ty
@@ -777,11 +775,11 @@ re/texmf/fonts/type1/public/lm/lmtt12.pfb></usr/share/texmf/fonts/type1/public/
 lm/lmtti10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbo
 ls/msam10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/symbol
 s/msbm10.pfb>
-Output written on dispensa_social_network_analysis.pdf (47 pages, 545159 bytes)
+Output written on dispensa_social_network_analysis.pdf (49 pages, 557503 bytes)
 .
 PDF statistics:
- 753 PDF objects out of 1000 (max. 8388607)
- 651 compressed objects within 7 object streams
- 387 named destinations out of 1000 (max. 500000)
- 41473 words of extra memory for PDF output out of 42996 (max. 10000000)
+ 1062 PDF objects out of 1200 (max. 8388607)
+ 955 compressed objects within 10 object streams
+ 389 named destinations out of 1000 (max. 500000)
+ 42065 words of extra memory for PDF output out of 42996 (max. 10000000)
 
