@@ -950,6 +950,43 @@ plot(net2, vertex.label = NA, vertex.size = 7,
      layout = layout_as_bipartite)
 \end{lstlisting}
 
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.78\textwidth]{figures/html_extracted/5-CT0540a_015.png}
+  \caption{Esempio di visualizzazione di rete dal materiale HTML di \texttt{5-CT0540a}.}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.78\textwidth]{figures/html_extracted/5-CT0540b_021.png}
+  \caption{Esempio di layout avanzato/bipartito dal materiale HTML di \texttt{5-CT0540b}.}
+\end{figure}
+
+\subsection{Descrittive di rete in \texttt{igraph}}
+
+Per allineare la dispensa ai contenuti delle fonti HTML del modulo R, oltre alla costruzione
+del grafo è utile calcolare anche le principali \textbf{misure descrittive} direttamente in codice:
+diametro, distribuzione dei gradi, distanza media, densità, reciprocità e clustering.
+
+\begin{lstlisting}[language=R]
+# Descrittive principali
+diameter(net, directed = TRUE)
+deg <- degree(net, mode = "all")
+hist(deg)
+
+mean_distance(net, directed = TRUE)
+edge_density(net)
+reciprocity(net)
+transitivity(net, type = "global")
+
+# Triadi e ruoli locali
+triad.census(net)
+\end{lstlisting}
+
+Queste misure sono coerenti con i temi trattati nelle slide su \emph{Descriptives},
+\emph{Distances and Paths}, \emph{Density}, \emph{Reciprocity}, \emph{Clustering Coefficient}
+e \emph{Triad Types}.
+
 %% ============================================================
 \section{Misure di Centralità e Citation Networks}
 %% ============================================================
@@ -1069,6 +1106,12 @@ plot.igraph(H, layout = lout, vertex.size = 5,
             vertex.label.cex = 0.5)
 \end{lstlisting}
 
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.78\textwidth]{figures/html_extracted/6-CT0540_003.png}
+  \caption{Citation network dal materiale HTML del modulo 6.}
+\end{figure}
+
 \begin{lstlisting}[language=R]
 # Eigenvector Centrality
 eigenCent <- evcent(H)$vector
@@ -1129,6 +1172,12 @@ rendendo preferibili metodi agglomerativi o approssimazioni.
 w <- edge.betweenness.community(H)
 sort(table(w$membership))   # distribuzione delle comunita'
 \end{lstlisting}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.78\textwidth]{figures/html_extracted/6-CT0540_007.png}
+  \caption{Esempio di comunità individuate in una rete di citazioni (fonte HTML modulo 6).}
+\end{figure}
 
 %% ============================================================
 \section{Visualizzazione dei Dati}
@@ -1198,6 +1247,34 @@ with(Salaries, cor(salary, yrs.service))     # ~0.33
 # Test di correlazione
 with(Salaries, cor.test(salary, yrs.since.phd))
 \end{lstlisting}
+
+\subsection{Geometrie, trasformazioni e confronti}
+
+Nelle fonti HTML del modulo visualizzazione sono inoltre presenti esempi espliciti su:
+\textbf{bar chart}, \textbf{position adjustments} (stack, dodge, fill) e \textbf{boxplot},
+in continuità con la Grammar of Graphics.
+
+\begin{lstlisting}[language=R]
+# Bar chart con aggiustamenti di posizione
+ggplot(mpg, aes(x = class, fill = drv)) +
+  geom_bar(position = "dodge")
+
+# Boxplot
+ggplot(mpg, aes(x = class, y = hwy, fill = class)) +
+  geom_boxplot(show.legend = FALSE)
+\end{lstlisting}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.78\textwidth]{figures/html_extracted/7-CT0540_009.png}
+  \caption{Esempio di grafico \texttt{ggplot2} dal materiale HTML del modulo 7.}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.78\textwidth]{figures/html_extracted/7-CT0540_026.png}
+  \caption{Esempio di confronto distribuzioni/boxplot dal materiale HTML del modulo 7.}
+\end{figure}
 
 \subsection{Buone pratiche}
 
@@ -1350,6 +1427,25 @@ negativo, neutro). Approcci principali:
   \item \textbf{Modelli ML supervisionati}: classificatori addestrati su testi annotati.
   \item \textbf{Modelli basati su trasformatori} (BERT): catturano il contesto.
 \end{itemize}
+
+\subsection{Frequenze, topic preliminari e grafici del sentimento}
+
+Le fonti HTML includono anche visualizzazioni finali di \textbf{word frequency},
+\textbf{topic modelling preliminare} e \textbf{sentiment plots} (emozioni e polarità),
+utili per controllare rapidamente la qualità dell'analisi testuale prima della modellazione
+avanzata con BERTopic.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.78\textwidth]{figures/html_extracted/8-CT0540_004.png}
+  \caption{Visualizzazione di frequenze/feature testuali dal materiale HTML del modulo 8.}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.78\textwidth]{figures/html_extracted/8-CT0540_006.png}
+  \caption{Esempio di grafico di polarità/sentimento dal materiale HTML del modulo 8.}
+\end{figure}
 
 %% ============================================================
 \section{Topic Modeling con BERTopic}
