@@ -8,80 +8,88 @@
 \contentsline {subsection}{\numberline {1.5}Testi di riferimento}{5}{subsection.1.5}%
 \contentsline {subsection}{\numberline {1.6}I sociogrammi di Moreno: il primo esempio di SNA}{6}{subsection.1.6}%
 \contentsline {subsection}{\numberline {1.7}Il Club di Karate di Zachary}{6}{subsection.1.7}%
-\contentsline {subsection}{\numberline {1.8}Computational Social Science}{6}{subsection.1.8}%
-\contentsline {subsection}{\numberline {1.9}Il numero di Dunbar}{7}{subsection.1.9}%
-\contentsline {subsection}{\numberline {1.10}Reti di informazione online}{7}{subsection.1.10}%
-\contentsline {subsection}{\numberline {1.11}Ricerca e progetti del gruppo}{7}{subsection.1.11}%
+\contentsline {subsection}{\numberline {1.8}Chains of Affection}{6}{subsection.1.8}%
+\contentsline {subsection}{\numberline {1.9}Computational Social Science}{7}{subsection.1.9}%
+\contentsline {subsection}{\numberline {1.10}Il numero di Dunbar}{7}{subsection.1.10}%
+\contentsline {subsection}{\numberline {1.11}Reti di informazione online}{7}{subsection.1.11}%
+\contentsline {subsection}{\numberline {1.12}Ricerca e progetti del gruppo}{8}{subsection.1.12}%
 \contentsline {section}{\numberline {2}Teoria dei Grafi}{8}{section.2}%
 \contentsline {subsection}{\numberline {2.1}Il problema dei ponti di Königsberg}{8}{subsection.2.1}%
 \contentsline {subsection}{\numberline {2.2}Definizioni fondamentali}{8}{subsection.2.2}%
 \contentsline {subsection}{\numberline {2.3}Grado e distribuzione di grado}{9}{subsection.2.3}%
 \contentsline {subsection}{\numberline {2.4}Matrice di adiacenza}{10}{subsection.2.4}%
-\contentsline {subsection}{\numberline {2.5}Reti sparse}{10}{subsection.2.5}%
+\contentsline {subsection}{\numberline {2.5}Reti sparse}{11}{subsection.2.5}%
 \contentsline {subsection}{\numberline {2.6}Connettività e componenti connesse}{11}{subsection.2.6}%
-\contentsline {subsection}{\numberline {2.7}Componente gigante (\textit {Giant Component})}{11}{subsection.2.7}%
+\contentsline {subsection}{\numberline {2.7}Componente gigante (\textit {Giant Component})}{12}{subsection.2.7}%
 \contentsline {subsection}{\numberline {2.8}Cammini, distanza e diametro}{12}{subsection.2.8}%
-\contentsline {subsection}{\numberline {2.9}Il Piccolo Mondo (\textit {Small World})}{12}{subsection.2.9}%
+\contentsline {subsection}{\numberline {2.9}Il Piccolo Mondo (\textit {Small World})}{13}{subsection.2.9}%
 \contentsline {section}{\numberline {3}Legami Forti e Deboli}{13}{section.3}%
 \contentsline {subsection}{\numberline {3.1}L'ipotesi di Granovetter}{13}{subsection.3.1}%
-\contentsline {subsection}{\numberline {3.2}Chiusura Triadica}{13}{subsection.3.2}%
-\contentsline {subsection}{\numberline {3.3}Coefficiente di Clustering}{13}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.2}Chiusura Triadica}{14}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Coefficiente di Clustering}{14}{subsection.3.3}%
 \contentsline {subsection}{\numberline {3.4}Ponti e Ponti Locali}{14}{subsection.3.4}%
-\contentsline {subsection}{\numberline {3.5}La Proprietà di Chiusura Triadica Forte}{14}{subsection.3.5}%
+\contentsline {subsection}{\numberline {3.5}La Proprietà di Chiusura Triadica Forte}{15}{subsection.3.5}%
 \contentsline {subsection}{\numberline {3.6}Dimostrazione formale: ponti locali e legami deboli}{15}{subsection.3.6}%
-\contentsline {subsection}{\numberline {3.7}Validazione empirica: studio Onnela et al. (reti di telefonia mobile)}{15}{subsection.3.7}%
-\contentsline {section}{\numberline {4}Contesti Sociali e Omofilia}{16}{section.4}%
-\contentsline {subsection}{\numberline {4.1}Omofilia}{16}{subsection.4.1}%
-\contentsline {subsection}{\numberline {4.2}Misurare l'Omofilia}{16}{subsection.4.2}%
-\contentsline {subsection}{\numberline {4.3}Selezione e Influenza Sociale}{17}{subsection.4.3}%
-\contentsline {subsection}{\numberline {4.4}Affiliazione e Reti Bipartite}{18}{subsection.4.4}%
-\contentsline {subsection}{\numberline {4.5}Tipi di chiusura nelle reti sociali}{18}{subsection.4.5}%
-\contentsline {subsection}{\numberline {4.6}Co-evoluzione delle reti sociali e di affiliazione}{19}{subsection.4.6}%
-\contentsline {section}{\numberline {5}Analisi delle Reti con R}{19}{section.5}%
-\contentsline {subsection}{\numberline {5.1}Il pacchetto \texttt {igraph}}{19}{subsection.5.1}%
-\contentsline {subsection}{\numberline {5.2}Costruzione di un grafo}{19}{subsection.5.2}%
-\contentsline {subsection}{\numberline {5.3}Lettura di dati da file}{20}{subsection.5.3}%
-\contentsline {subsection}{\numberline {5.4}Visualizzazione avanzata}{21}{subsection.5.4}%
-\contentsline {section}{\numberline {6}Misure di Centralità e Citation Networks}{22}{section.6}%
-\contentsline {subsection}{\numberline {6.1}Centralità nelle reti}{22}{subsection.6.1}%
-\contentsline {subsection}{\numberline {6.2}Centralità di grado (\textit {Degree Centrality})}{22}{subsection.6.2}%
-\contentsline {subsection}{\numberline {6.3}Centralità di betweenness}{22}{subsection.6.3}%
-\contentsline {subsection}{\numberline {6.4}Centralità di vicinanza (\textit {Closeness Centrality})}{23}{subsection.6.4}%
-\contentsline {subsection}{\numberline {6.5}Centralità di autovettore (\textit {Eigenvector Centrality})}{23}{subsection.6.5}%
-\contentsline {subsection}{\numberline {6.6}Applicazione: Citation Networks con R}{24}{subsection.6.6}%
-\contentsline {subsection}{\numberline {6.7}Comunità: algoritmo di Girvan–Newman}{25}{subsection.6.7}%
-\contentsline {section}{\numberline {7}Visualizzazione dei Dati}{26}{section.7}%
-\contentsline {subsection}{\numberline {7.1}Principi fondamentali}{26}{subsection.7.1}%
-\contentsline {subsection}{\numberline {7.2}ggplot2 in R}{26}{subsection.7.2}%
-\contentsline {subsection}{\numberline {7.3}Esempio: Salari dei professori}{27}{subsection.7.3}%
-\contentsline {subsection}{\numberline {7.4}Buone pratiche}{27}{subsection.7.4}%
-\contentsline {section}{\numberline {8}Filtraggio Dati e Text Analysis}{28}{section.8}%
-\contentsline {subsection}{\numberline {8.1}Dataset NYT / COVID-19}{28}{subsection.8.1}%
-\contentsline {subsection}{\numberline {8.2}Pre-elaborazione del testo con \texttt {quanteda}}{29}{subsection.8.2}%
-\contentsline {subsection}{\numberline {8.3}TF-IDF}{30}{subsection.8.3}%
-\contentsline {subsection}{\numberline {8.4}Analisi del sentimento}{30}{subsection.8.4}%
-\contentsline {section}{\numberline {9}Topic Modeling con BERTopic}{31}{section.9}%
-\contentsline {subsection}{\numberline {9.1}Cos'è il Topic Modeling?}{31}{subsection.9.1}%
-\contentsline {subsection}{\numberline {9.2}Rappresentazione dei documenti}{31}{subsection.9.2}%
-\contentsline {subsubsection}{\numberline {9.2.1}Bag of Words (BoW)}{31}{subsubsection.9.2.1}%
-\contentsline {subsubsection}{\numberline {9.2.2}Embeddings (word2vec, BERT)}{31}{subsubsection.9.2.2}%
-\contentsline {subsection}{\numberline {9.3}Il pipeline di BERTopic}{32}{subsection.9.3}%
-\contentsline {subsubsection}{\numberline {9.3.1}UMAP (Uniform Manifold Approximation and Projection)}{33}{subsubsection.9.3.1}%
-\contentsline {subsubsection}{\numberline {9.3.2}Algoritmi di clustering: da K-Means a HDBSCAN}{33}{subsubsection.9.3.2}%
-\contentsline {subsubsection}{\numberline {9.3.3}c-TF-IDF (class-TF-IDF)}{33}{subsubsection.9.3.3}%
-\contentsline {subsection}{\numberline {9.4}Valutazione del modello}{34}{subsection.9.4}%
-\contentsline {subsection}{\numberline {9.5}Vantaggi e limiti di BERTopic}{34}{subsection.9.5}%
-\contentsline {subsection}{\numberline {9.6}Varianti di BERTopic}{35}{subsection.9.6}%
-\contentsline {section}{\numberline {10}Big Data e Dati Sociali}{35}{section.10}%
-\contentsline {subsection}{\numberline {10.1}Cosa sono i Big Data?}{35}{subsection.10.1}%
-\contentsline {subsection}{\numberline {10.2}Sei provocazioni sui Big Data (Boyd \& Crawford)}{35}{subsection.10.2}%
-\contentsline {subsubsection}{\numberline {10.2.1}1. I Big Data cambiano la definizione di conoscenza}{35}{subsubsection.10.2.1}%
-\contentsline {subsubsection}{\numberline {10.2.2}2. I claim di obiettività e accuratezza sono fuorvianti}{36}{subsubsection.10.2.2}%
-\contentsline {subsubsection}{\numberline {10.2.3}3. I Big Data non sono equivalenti ai Big Data}{36}{subsubsection.10.2.3}%
-\contentsline {subsubsection}{\numberline {10.2.4}4. I Big Data estrapolati dal contesto perdono significato}{36}{subsubsection.10.2.4}%
-\contentsline {subsubsection}{\numberline {10.2.5}5. Le questioni etiche sono complesse}{36}{subsubsection.10.2.5}%
-\contentsline {subsubsection}{\numberline {10.2.6}6. Accesso asimmetrico ai Big Data crea nuove disparità}{37}{subsubsection.10.2.6}%
-\contentsline {subsection}{\numberline {10.3}Qualità dei dati sociali e tassonomia dei bias (Olteanu et al., 2019)}{37}{subsection.10.3}%
-\contentsline {subsection}{\numberline {10.4}Attributi privati nei dati digitali}{38}{subsection.10.4}%
-\contentsline {section}{\numberline {A}Formulario riassuntivo}{38}{appendix.Alph1}%
-\contentsline {section}{\numberline {B}Glossario}{39}{appendix.Alph2}%
+\contentsline {subsection}{\numberline {3.7}Validazione empirica: studio Onnela et al. (reti di telefonia mobile)}{16}{subsection.3.7}%
+\contentsline {subsection}{\numberline {3.8}Forza dei legami su Facebook e Twitter}{17}{subsection.3.8}%
+\contentsline {subsection}{\numberline {3.9}Incorporamento e buchi strutturali}{17}{subsection.3.9}%
+\contentsline {subsubsection}{\numberline {3.9.1}Incorporamento (Embeddedness)}{17}{subsubsection.3.9.1}%
+\contentsline {subsubsection}{\numberline {3.9.2}Buchi strutturali (Burt, 1996)}{18}{subsubsection.3.9.2}%
+\contentsline {subsection}{\numberline {3.10}Capitale sociale}{19}{subsection.3.10}%
+\contentsline {section}{\numberline {4}Contesti Sociali e Omofilia}{19}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Omofilia}{19}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Misurare l'Omofilia}{19}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Selezione e Influenza Sociale}{20}{subsection.4.3}%
+\contentsline {subsection}{\numberline {4.4}Affiliazione e Reti Bipartite}{21}{subsection.4.4}%
+\contentsline {subsection}{\numberline {4.5}Tipi di chiusura nelle reti sociali}{21}{subsection.4.5}%
+\contentsline {subsection}{\numberline {4.6}Co-evoluzione delle reti sociali e di affiliazione}{22}{subsection.4.6}%
+\contentsline {section}{\numberline {5}Analisi delle Reti con R}{22}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Il pacchetto \texttt {igraph}}{22}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Costruzione di un grafo}{22}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.3}Lettura di dati da file}{23}{subsection.5.3}%
+\contentsline {subsection}{\numberline {5.4}Visualizzazione avanzata}{24}{subsection.5.4}%
+\contentsline {section}{\numberline {6}Misure di Centralità e Citation Networks}{25}{section.6}%
+\contentsline {subsection}{\numberline {6.1}Centralità nelle reti}{25}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}Centralità di grado (\textit {Degree Centrality})}{25}{subsection.6.2}%
+\contentsline {subsection}{\numberline {6.3}Centralità di betweenness}{26}{subsection.6.3}%
+\contentsline {subsection}{\numberline {6.4}Centralità di vicinanza (\textit {Closeness Centrality})}{26}{subsection.6.4}%
+\contentsline {subsection}{\numberline {6.5}Centralità di autovettore (\textit {Eigenvector Centrality})}{27}{subsection.6.5}%
+\contentsline {subsection}{\numberline {6.6}Applicazione: Citation Networks con R}{27}{subsection.6.6}%
+\contentsline {subsection}{\numberline {6.7}Comunità: algoritmo di Girvan–Newman}{28}{subsection.6.7}%
+\contentsline {section}{\numberline {7}Visualizzazione dei Dati}{29}{section.7}%
+\contentsline {subsection}{\numberline {7.1}Principi fondamentali}{29}{subsection.7.1}%
+\contentsline {subsection}{\numberline {7.2}ggplot2 in R}{29}{subsection.7.2}%
+\contentsline {subsection}{\numberline {7.3}Esempio: Salari dei professori}{30}{subsection.7.3}%
+\contentsline {subsection}{\numberline {7.4}Buone pratiche}{31}{subsection.7.4}%
+\contentsline {section}{\numberline {8}Filtraggio Dati e Text Analysis}{31}{section.8}%
+\contentsline {subsection}{\numberline {8.1}Dataset NYT / COVID-19}{31}{subsection.8.1}%
+\contentsline {subsection}{\numberline {8.2}Pre-elaborazione del testo con \texttt {quanteda}}{32}{subsection.8.2}%
+\contentsline {subsection}{\numberline {8.3}TF-IDF}{33}{subsection.8.3}%
+\contentsline {subsection}{\numberline {8.4}Analisi del sentimento}{34}{subsection.8.4}%
+\contentsline {section}{\numberline {9}Topic Modeling con BERTopic}{34}{section.9}%
+\contentsline {subsection}{\numberline {9.1}Cos'è il Topic Modeling?}{34}{subsection.9.1}%
+\contentsline {subsection}{\numberline {9.2}Rappresentazione dei documenti}{34}{subsection.9.2}%
+\contentsline {subsubsection}{\numberline {9.2.1}Bag of Words (BoW)}{34}{subsubsection.9.2.1}%
+\contentsline {subsubsection}{\numberline {9.2.2}Embeddings (word2vec, BERT)}{35}{subsubsection.9.2.2}%
+\contentsline {subsection}{\numberline {9.3}Il pipeline di BERTopic}{36}{subsection.9.3}%
+\contentsline {subsubsection}{\numberline {9.3.1}UMAP (Uniform Manifold Approximation and Projection)}{36}{subsubsection.9.3.1}%
+\contentsline {subsubsection}{\numberline {9.3.2}Algoritmi di clustering: da K-Means a HDBSCAN}{36}{subsubsection.9.3.2}%
+\contentsline {subsubsection}{\numberline {9.3.3}c-TF-IDF (class-TF-IDF)}{37}{subsubsection.9.3.3}%
+\contentsline {subsection}{\numberline {9.4}Valutazione del modello}{37}{subsection.9.4}%
+\contentsline {subsection}{\numberline {9.5}Vantaggi e limiti di BERTopic}{38}{subsection.9.5}%
+\contentsline {subsection}{\numberline {9.6}Varianti di BERTopic}{38}{subsection.9.6}%
+\contentsline {section}{\numberline {10}Big Data e Dati Sociali}{38}{section.10}%
+\contentsline {subsection}{\numberline {10.1}Pipeline prototipica per l'analisi dei dati sociali}{38}{subsection.10.1}%
+\contentsline {subsection}{\numberline {10.2}Qualità dei dati sociali: sparsità, rumore e rappresentatività}{39}{subsection.10.2}%
+\contentsline {subsection}{\numberline {10.3}Cosa sono i Big Data?}{39}{subsection.10.3}%
+\contentsline {subsection}{\numberline {10.4}Sei provocazioni sui Big Data (Boyd \& Crawford)}{40}{subsection.10.4}%
+\contentsline {subsubsection}{\numberline {10.4.1}1. I Big Data cambiano la definizione di conoscenza}{40}{subsubsection.10.4.1}%
+\contentsline {subsubsection}{\numberline {10.4.2}2. I claim di obiettività e accuratezza sono fuorvianti}{40}{subsubsection.10.4.2}%
+\contentsline {subsubsection}{\numberline {10.4.3}3. I Big Data non sono equivalenti ai Big Data}{40}{subsubsection.10.4.3}%
+\contentsline {subsubsection}{\numberline {10.4.4}4. I Big Data estrapolati dal contesto perdono significato}{40}{subsubsection.10.4.4}%
+\contentsline {subsubsection}{\numberline {10.4.5}5. Le questioni etiche sono complesse}{41}{subsubsection.10.4.5}%
+\contentsline {subsubsection}{\numberline {10.4.6}6. Accesso asimmetrico ai Big Data crea nuove disparità}{41}{subsubsection.10.4.6}%
+\contentsline {subsection}{\numberline {10.5}Qualità dei dati sociali e tassonomia dei bias (Olteanu et al., 2019)}{41}{subsection.10.5}%
+\contentsline {subsection}{\numberline {10.6}Attributi privati nei dati digitali}{43}{subsection.10.6}%
+\contentsline {section}{\numberline {A}Formulario riassuntivo}{43}{appendix.Alph1}%
+\contentsline {section}{\numberline {B}Glossario}{43}{appendix.Alph2}%

@@ -260,6 +260,23 @@ già un indicatore della divisione che si sarebbe verificata.
 \medskip
 Dimensioni della rete: $|V| = 34$ nodi, $|E| = 78$ archi.
 
+\subsection{Chains of Affection}
+
+Un ulteriore esempio classico che illustra il potere delle reti sociali è lo studio di
+Bearman, Moody e Stovel (2004), intitolato \textit{Chains of Affection}.
+Lo studio descrive la struttura della rete romantica e sessuale di un liceo americano,
+ricostruendo i legami degli ultimi 18 mesi. Oltre a caratterizzare la struttura della
+rete, gli autori spiegano i meccanismi che portano all'emergere di tale struttura e
+collegano la topologia osservata alle dinamiche di diffusione delle malattie sessualmente
+trasmissibili.
+
+Il risultato principale è che, nonostante la maggior parte degli studenti avesse avuto
+un numero limitato di partner, esisteva una \textbf{componente gigante} che coinvolgeva
+una frazione considerevole dell'intera scuola. La presenza di questa grande componente
+connessa ha implicazioni dirette per la diffusione delle malattie: uno studente con un
+solo partner potrebbe comunque trovarsi nella componente gigante e far parte di lunghe
+catene di potenziale trasmissione indiretta.
+
 \subsection{Computational Social Science}
 
 La sociologia ha sviluppato intuizioni fondamentali sulla struttura delle reti sociali, ma
@@ -358,7 +375,16 @@ un insieme di archi $E \subseteq V \times V$.}
 
 \definition{Grafo orientato (digrafo)}{Gli archi hanno una direzione: $(u,v) \neq (v,u)$.}
 
-\definition{Rete pesata}{Ogni arco $(i,j)$ ha un peso $w_{ij} \in \mathbb{R}$.}
+\definition{Rete pesata}{Ogni arco $(i,j)$ ha un peso $w_{ij} \in \mathbb{R}$, che
+può rappresentare la forza di una relazione (es.\ minuti di conversazione telefonica,
+numero di messaggi scambiati), la distanza geografica, o la capacità di un canale.
+Nella matrice di adiacenza pesata si ha $A_{ij} = w_{ij}$ anziché 0/1.}
+
+\definition{Ciclo}{Un ciclo (o circuito) è un cammino in cui il nodo iniziale e quello
+finale coincidono, con almeno tre archi, e tutti i nodi intermedi sono distinti.
+I cicli sono importanti nelle reti di comunicazione (forniscono ridondanza: se un
+arco si guasta, il traffico può deviare lungo il ciclo) e nelle reti sociali (ad es.\
+``mia moglie -- cugino -- suo amico delle superiori -- mio fratello -- io'').}
 
 \subsection{Grado e distribuzione di grado}
 
@@ -687,6 +713,130 @@ dove $\mathcal{N}(X)$ è l'insieme dei vicini di $X$ (escluso il nodo stesso).
 all'aumentare della forza del legame, l'overlap di vicinato cresce sistematicamente. In
 altre parole, i legami deboli tendono ad avere overlap basso e a fungere da ponti tra
 comunità distinte, mentre i legami forti collegano nodi con molti amici in comune.
+
+Onnela et al.\ testarono anche una seconda previsione: i legami deboli forniscono la
+struttura connettiva cruciale per mantenere unita la componente gigante? Gli autori
+rimossero gli archi uno per uno, prima partendo dai più forti e poi dai più deboli.
+Rimuovendo i legami in ordine decrescente di forza, la componente gigante si contraeva
+in modo graduale e progressivo. Rimuovendo invece i legami partendo dai più deboli,
+la componente gigante si contraeva molto più rapidamente e si frammentava bruscamente
+una volta superata una soglia critica. Questo dimostra che \textbf{i legami deboli sono
+il collante fondamentale} che tiene insieme le diverse comunità nella rete.
+
+\subsection{Forza dei legami su Facebook e Twitter}
+
+La previsione di Granovetter è stata validata anche su piattaforme di social media.
+
+\textbf{Facebook (2009).}
+Ricercatori di Facebook analizzarono i legami di amicizia e definirono tre categorie
+per misurarne la forza effettiva:
+\begin{itemize}
+  \item \textbf{Comunicazione reciproca} (\textit{mutual communication}): entrambi gli
+        utenti si sono inviati messaggi.
+  \item \textbf{Comunicazione unidirezionale} (\textit{one-way communication}): solo uno
+        dei due ha inviato messaggi all'altro (a prescindere dalle risposte).
+  \item \textbf{Relazione mantenuta} (\textit{maintained relationship}): un utente segue
+        le attività dell'altro (anche senza scambiare messaggi).
+\end{itemize}
+Le tre categorie non sono mutualmente esclusive. Lo studio rivelò due regioni distinte
+nella rete: una con alta chiusura triadica e legami di comunicazione reciproca, e un'altra
+con molti legami mantenuti ma meno comunicazione. I legami di comunicazione reciproca
+tendevano a connettere nodi all'interno dello stesso gruppo fitto, mentre i legami
+mantenuti includevano più connessioni a lontana distanza sociale.
+
+\textbf{Twitter (Huberman, Romero e Wu).}
+Per ogni utente, gli autori considerarono il numero di \textit{followee} (persone che
+segue) e definirono legami \emph{forti} come quelli verso utenti a cui l'utente aveva
+indirizzato almeno due messaggi. Il numero di legami forti era molto inferiore al numero
+di followee totali, e la distribuzione era coerente con il numero di Dunbar: un limite
+cognitivo intorno alle 100–200 relazioni stabili. Questo suggerisce che, anche sul web,
+esiste un limite cognitivo alla dimensione della rete di relazioni effettive, indipendente
+dalla piattaforma tecnologica.
+
+\subsection{Incorporamento e buchi strutturali}
+
+\subsubsection{Incorporamento (Embeddedness)}
+
+\definition{Incorporamento di un arco}{L'\textbf{incorporamento} (\textit{embeddedness})
+dell'arco $(A,B)$ è il numero di vicini in comune dei due nodi.}
+
+Nota che:
+\begin{enumerate}
+  \item L'incorporamento è il \emph{numeratore} del neighborhood overlap:
+    \[
+      \text{Embeddedness}(A,B) = |\mathcal{N}(A) \cap \mathcal{N}(B)|
+    \]
+  \item Un ponte locale ha incorporamento $= 0$ (nessun vicino in comune).
+\end{enumerate}
+
+Se due individui sono connessi da un arco con incorporamento elevato, la loro
+interazione è in un certo senso ``pubblica'': i loro amici comuni sanno entrambe le
+parti e un comportamento scorretto avrebbe conseguenze reputazionali. Questo genera
+\textbf{fiducia}: le interazioni tra nodi fortemente incorporati (sociali, economiche,
+ecc.) tendono a essere più affidabili proprio perché sono sotto l'osservazione di
+terze parti comuni.
+
+Al contrario, gli archi con incorporamento $= 0$ (ponti locali) connettono nodi
+che si muovono in cerchie sociali completamente separate: la mancanza di amici comuni
+rende più rischioso fidarsi della controparte, ma allo stesso tempo permette
+l'accesso a informazioni e risorse completamente nuove.
+
+\subsubsection{Buchi strutturali (Burt, 1996)}
+
+Mentre un nodo come $A$ (con molti archi fortemente incorporati) beneficia di
+relazioni stabili e fidate, un nodo come $B$, che si trova all'estremità di molteplici
+ponti locali, può godere di \textbf{vantaggi strutturali} di tipo diverso.
+
+\definition{Buco strutturale}{Un \textbf{buco strutturale} (\textit{structural hole})
+è lo spazio vuoto tra due gruppi di nodi che non sono collegati tra loro ma sono entrambi
+connessi a un nodo intermedio $B$.}
+
+I vantaggi per il nodo $B$ che attraversa buchi strutturali sono:
+\begin{itemize}
+  \item \textbf{Accesso a informazioni da fonti multiple} e diverse, che i nodi
+        all'interno di un singolo gruppo non possono ottenere.
+  \item \textbf{Opportunità di idee innovative} attraverso la combinazione di
+        informazioni provenienti da comunità distinte.
+  \item \textbf{Potere di intermediazione} (\textit{gatekeeper}): $B$ controlla il
+        flusso di informazioni tra i gruppi e può selezionare cosa condividere e con chi.
+\end{itemize}
+
+Studi empirici hanno mostrato che, nelle organizzazioni, la posizione di un individuo
+rispetto ai buchi strutturali (misurata dall'accesso ai ponti locali) correla
+positivamente con il suo successo professionale.
+
+\textbf{Trade-off incorporamento vs.\ buchi strutturali.}
+Le due posizioni strutturali — nodi fortemente incorporati e nodi che attraversano
+buchi strutturali — offrono vantaggi opposti e complementari:
+\begin{itemize}
+  \item I nodi incorporati godono di \emph{fiducia} e protezione all'interno del
+        gruppo, ma sono esposti alle stesse informazioni circolanti nel gruppo.
+  \item I nodi che attraversano buchi strutturali hanno accesso a \emph{informazioni
+        diverse e nuove} ma le loro interazioni sono meno protette dalla presenza di
+        amici comuni.
+\end{itemize}
+
+\subsection{Capitale sociale}
+
+Tutti i concetti discussi finora — incorporamento, buchi strutturali, forza dei legami —
+sono manifestazioni del più ampio concetto di \textbf{capitale sociale}.
+
+Il \emph{capitale sociale} è difficile da definire in modo univoco. Borgatti, Jones e
+Everett ne sintetizzano le principali interpretazioni:
+\begin{itemize}
+  \item Come \textbf{proprietà di un gruppo}: la coesione interna, la fiducia reciproca
+        e le norme condivise che rendono il gruppo capace di agire collettivamente.
+  \item Come \textbf{proprietà intrinseca al gruppo}: il capitale sociale come risorsa
+        che emerge dalla struttura stessa delle relazioni (ad es.\ quante connessioni
+        tra i membri del gruppo).
+  \item Come \textbf{proprietà basata sulle interazioni con l'esterno}: il valore
+        derivante dai ponti verso altri gruppi, cioè dai buchi strutturali.
+\end{itemize}
+
+In sintesi, possiamo pensare alle strutture sociali come \textbf{facilitatori} delle
+azioni degli individui e dei gruppi: chi occupa posizioni strutturalmente vantaggiose
+(molti archi incorporati → fiducia; accesso a buchi strutturali → informazioni nuove)
+dispone di più capitale sociale.
 
 %% ============================================================
 \section{Contesti Sociali e Omofilia}
@@ -1543,6 +1693,65 @@ Topic interpretabili tramite parole chiave & Possibili bias dal corpus di pre-ad
 \section{Big Data e Dati Sociali}
 %% ============================================================
 
+\subsection{Pipeline prototipica per l'analisi dei dati sociali}
+
+L'analisi dei dati sociali segue tipicamente una pipeline di elaborazione composta
+da quattro fasi principali (Olteanu et al., 2019):
+
+\begin{enumerate}
+  \item \textbf{Acquisizione e preparazione dei dati.} Si raccolgono dati da fonti
+        identificate (API di piattaforme, scraping, dataset pubblici) tenendo conto
+        dei vincoli di qualità e rappresentatività. In questa fase si effettuano
+        anche le scelte di campionamento.
+  \item \textbf{Elaborazione dei dati.} I dati acquisiti vengono puliti, organizzati
+        e preparati per l'analisi: normalizzazione, rimozione di duplicati,
+        costruzione delle feature e categorizzazione dei dati (utenti, messaggi, eventi).
+  \item \textbf{Analisi dei dati.} Si applicano metodologie computazionali e
+        statistiche in base agli obiettivi specifici dello studio: descrizione,
+        inferenza, predizione, o estrazione di relazioni causali.
+  \item \textbf{Valutazione e interpretazione.} I risultati vengono visualizzati e
+        valutati per verificare se confermano o confutano le ipotesi, e se possono
+        essere generalizzati al di là del contesto specifico. L'interpretazione
+        dipende dalle assunzioni fatte sul significato dei dati (ad es.\ se un
+        legame social riflette un'amicizia reale, o se un ``like'' equivale a
+        un'approvazione).
+\end{enumerate}
+
+\subsection{Qualità dei dati sociali: sparsità, rumore e rappresentatività}
+
+Per i dataset sociali i ricercatori hanno spesso scarso controllo sulla qualità dei dati,
+poiché raccolgono dati da piattaforme esterne. Le principali sfide sono:
+
+\begin{itemize}
+  \item \textbf{Sparsità.} I dati sociali seguono spesso distribuzioni a power-law,
+        che li rendono facili da analizzare sulla ``testa'' (elementi frequenti) ma
+        difficili sulla ``coda lunga'' (elementi rari). Le funzionalità della
+        piattaforma (es.\ limiti sulla lunghezza dei post) possono accentuare
+        questo problema.
+
+  \item \textbf{Rumore.} I dati sociali contengono contenuti inaffidabili o
+        incompleti, errori di battitura, termini rari, e stopword. La distinzione tra
+        ciò che è ``rumore'' e ciò che è ``segnale'' dipende in modo sottile dalla
+        domanda di ricerca: aggiungere più dati può aumentare anche il livello di
+        rumore, deteriorando la qualità dei risultati (Baeza-Yates, 2013).
+
+  \item \textbf{Rappresentatività.} Il campionamento mira a ottenere una porzione
+        di dati che sia rappresentativa di una popolazione più ampia. Esistono diverse
+        accezioni di rappresentatività:
+        \begin{itemize}
+          \item rispetto a una popolazione \emph{offline} (es.\ le donne che giocano
+                online);
+          \item rispetto a un insieme di \emph{contenuti rilevanti} (es.\ post sullo
+                sport);
+          \item rispetto a un \emph{comportamento} (es.\ persone che esprimono
+                felicità).
+        \end{itemize}
+
+  \item \textbf{Bias nei dati.} Un bias è una distorsione sistematica che compromette
+        la rappresentatività. I bias vengono spesso valutati confrontando il campione
+        con molteplici campioni di riferimento provenienti da fonti o contesti diversi.
+\end{itemize}
+
 \subsection{Cosa sono i Big Data?}
 
 ``\textit{Big Data}'' è un termine spesso frainteso: non si riferisce semplicemente a
@@ -2098,6 +2307,48 @@ fondamentali sull'uso dei dati digitali.
   parole chiave. I modelli classici includono LDA (Latent Dirichlet Allocation); i
   modelli moderni come BERTopic usano embedding neurali per una migliore cattura del
   contesto semantico.
+
+  \item[Buco strutturale] Spazio vuoto nella rete tra due gruppi di nodi che non sono
+  direttamente connessi tra loro ma sono entrambi collegati a un nodo intermedio (Burt,
+  1996). Il nodo che attraversa il buco strutturale ha accesso a informazioni da fonti
+  diverse e funge da intermediario (\textit{gatekeeper}), traendo vantaggio dalla
+  sua posizione di broker.
+
+  \item[Capitale sociale] Risorsa derivante dalla struttura delle relazioni sociali di
+  un individuo o di un gruppo. Include sia la fiducia e la coesione derivanti da legami
+  fortemente incorporati (closure), sia l'accesso a informazioni diverse derivante dalla
+  posizione di broker tra buchi strutturali. Borgatti, Jones ed Everett ne distinguono
+  versioni come proprietà del gruppo, intrinseca alla struttura, o basata sulle interazioni
+  con l'esterno.
+
+  \item[Chains of Affection] Studio di Bearman, Moody e Stovel (2004) che ricostruisce
+  la rete romantica e sessuale di un liceo americano negli ultimi 18 mesi. Dimostra
+  l'emergenza di una componente gigante nella rete, con implicazioni dirette per la
+  diffusione delle malattie sessualmente trasmissibili: uno studente con un solo partner
+  può trovarsi in catene di potenziale trasmissione molto più lunghe.
+
+  \item[Ciclo (cycle)] Cammino in un grafo in cui il nodo iniziale e quello finale
+  coincidono, con almeno tre archi e tutti i nodi intermedi distinti. I cicli forniscono
+  ridondanza nelle reti di comunicazione (percorsi alternativi in caso di guasto) e sono
+  presenti nelle reti sociali (es.\ catene di conoscenza che si chiudono su sé stesse).
+
+  \item[DBCV (DB Cluster Relative Validity)] Metrica per la valutazione della qualità
+  del clustering in BERTopic, compresa tra $-1$ e $1$. Valori più alti indicano cluster
+  più coesi e ben separati. Permette di confrontare diversi run con parametri diversi
+  sullo stesso corpus per scegliere la configurazione migliore.
+
+  \item[Incorporamento (embeddedness)] Numero di vicini in comune dei due nodi alle
+  estremità di un arco. Un arco con incorporamento elevato connette due persone le cui
+  interazioni sono ``pubbliche'' (visibili ai loro amici comuni), generando fiducia e
+  riducendo il rischio di comportamenti scorretti. Un ponte locale ha incorporamento $= 0$.
+
+  \item[Coherence score] Metrica di valutazione dei topic che misura quanto spesso le
+  parole chiave di ciascun topic co-occorrono nei documenti del corpus. Un valore alto
+  indica topic semanticamente coerenti.
+
+  \item[Diversity score] Metrica di valutazione dei topic che misura quanto i topic siano
+  distinti tra loro. La variante più comune è la Jaccard Topic Diversity: proporzione di
+  parole chiave uniche rispetto al totale delle parole chiave assegnate a tutti i topic.
 
   \item[UMAP] \textit{Uniform Manifold Approximation and Projection}. Algoritmo di
   riduzione della dimensionalità non lineare che proietta dati da uno spazio ad alta
